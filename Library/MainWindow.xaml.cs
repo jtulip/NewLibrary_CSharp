@@ -18,8 +18,8 @@ using Library.Interfaces.Hardware;
 using Library.Controllers;
 using Library.Hardware;
 using Library.Interfaces.Daos;
-using Library.Daos;
-using Library.Entities;
+//using Library.Daos;
+//using Library.Entities;
 using Library.Interfaces.Entities;
 
 namespace Library
@@ -47,15 +47,12 @@ namespace Library
             _scanner.Show();
             _printer.Show();
 
-            _bookDAO   = new BookDAO(new BookHelper());
-            _loanDAO   = new LoanDAO(new LoanHelper());
-            _memberDAO = new MemberDAO(new MemberHelper());
 
-            SetUpTestData();
+            //SetUpTestData();
 
             MainMenuController mainController =
                 new MainMenuController(this, _reader, _scanner, _printer, 
-                                        _bookDAO, _loanDAO, _memberDAO);
+                                        null, null, null);
             mainController.initialise();
         }
 

@@ -38,6 +38,7 @@ namespace Library.Controls.Borrow
             //addControl(null, EBorrowState.COMPLETED);
 
             InitializeComponent();
+            State = EBorrowState.INITIALIZED;
         }
 
         private void addControl(ABorrowControl control, EBorrowState state)

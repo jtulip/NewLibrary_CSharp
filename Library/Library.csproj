@@ -115,6 +115,7 @@
     <Compile Include="Controls\Borrow\ScanBookControl.xaml.cs">
       <DependentUpon>ScanBookControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Entities\Member.cs" />
     <Compile Include="Hardware\CardReader.xaml.cs">
       <DependentUpon>CardReader.xaml</DependentUpon>
     </Compile>
@@ -187,7 +188,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Daos\" />
-    <Folder Include="Entities\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -8,7 +8,7 @@ namespace Library.Interfaces.Entities
 {
     public interface ILoan
     {
-        void Commit();
+        void Commit(int loanID);
 
         void Complete();
 

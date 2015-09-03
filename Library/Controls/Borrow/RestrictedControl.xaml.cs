@@ -40,12 +40,7 @@ namespace Library.Controls.Borrow
 
         public override void DisplayExistingLoan(string loanDetails)
         {
-            if (existingLoanBox.Text.Length > 0)
-            {
-                existingLoanBox.AppendText("\n\n");
-            }
-            existingLoanBox.AppendText(loanDetails);
-
+            existingLoanBox.Text = loanDetails;
             existingLoanBox.ScrollToLine(existingLoanBox.LineCount - 1);
         }
 

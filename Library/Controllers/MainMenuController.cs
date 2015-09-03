@@ -38,8 +38,8 @@ namespace Library.Controllers
 
         public void initialise()
         {
-            MainMenuControl mainControl = new MainMenuControl(this);
-            _display.Display = mainControl;
+            MainMenuControl mainMenuControl = new MainMenuControl(this);
+            _display.Display = mainMenuControl;
         }
 
         public void borrowBook()
@@ -47,7 +47,6 @@ namespace Library.Controllers
             BorrowController borrowController = new BorrowController(_display, _reader, _scanner, _printer,
                                                                      _bookDAO, _loanDAO, _memberDAO);
             borrowController.initialise();
-            throw new ApplicationException("Test Exception");
         }
     }
 }

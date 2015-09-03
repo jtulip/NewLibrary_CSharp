@@ -57,12 +57,7 @@ namespace Library.Controls.Borrow
 
         public override void DisplayExistingLoan(string loanDetails)
         {
-            if (existingLoanBox.Text.Length > 0)
-            {
-                existingLoanBox.AppendText("\n\n");
-            }
-            existingLoanBox.AppendText(loanDetails);
-
+            existingLoanBox.Text = loanDetails;
             existingLoanBox.ScrollToLine(existingLoanBox.LineCount - 1);
         }
 
@@ -91,12 +86,7 @@ namespace Library.Controls.Borrow
 
         public override void DisplayPendingLoan(string loanDetails)
         {
-            if (pendingLoanBox.Text.Length > 0)
-            {
-                pendingLoanBox.AppendText("\n\n");
-            }
-            pendingLoanBox.AppendText(loanDetails);
-
+            pendingLoanBox.Text = loanDetails;
             pendingLoanBox.ScrollToLine(pendingLoanBox.LineCount-1);
         }
 

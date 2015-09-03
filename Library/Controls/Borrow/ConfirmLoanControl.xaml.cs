@@ -55,12 +55,7 @@ namespace Library.Controls.Borrow
 
         public override void DisplayConfirmingLoan(string loanDetails)
         {
-            if (confirmLoanBox.Text.Length > 0)
-            {
-                confirmLoanBox.AppendText("\n\n");
-            }
-            confirmLoanBox.AppendText(loanDetails);
-
+            confirmLoanBox.Text = loanDetails;
             confirmLoanBox.ScrollToLine(confirmLoanBox.LineCount - 1);
         }
 

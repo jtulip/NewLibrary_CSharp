@@ -14,7 +14,7 @@ namespace Library.Tests
         [Fact]
         public void CanCreateANewMember()
         {
-            var member = new Member();
+            var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
 
             Assert.NotNull(member);
         }
@@ -22,7 +22,7 @@ namespace Library.Tests
         [Fact]
         public void MemberImplementsIMemberInterface()
         {
-            var member = new Member() as IMember;
+            var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1) as IMember;
 
             Assert.NotNull(member);
         }

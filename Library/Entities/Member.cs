@@ -5,6 +5,15 @@ namespace Library.Entities
 {
     public class Member: IMember
     {
+        public Member(string firstName, string lastName, string contactPhone, string emailAddress, int id)
+        {
+            this.ID = id;
+            this.FirstName = firstName;
+            this.LastName = lastName;
+            this.ContactPhone = contactPhone;
+            this.EmailAddress = emailAddress;
+        }
+
         public bool HasOverDueLoans { get; }
         public bool HasReachedLoanLimit { get; }
         public bool HasFinesPayable { get; }
@@ -25,17 +34,17 @@ namespace Library.Entities
             throw new System.NotImplementedException();
         }
 
-        public List<ILoan> Loans { get; }
+        public List<ILoan> Loans { get; internal set; }
         public void RemoveLoan(ILoan loan)
         {
             throw new System.NotImplementedException();
         }
 
-        public string FirstName { get; }
-        public string LastName { get; }
-        public string ContactPhone { get; }
-        public string EmailAddress { get; }
-        public int ID { get; }
-        public MemberState State { get; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string ContactPhone { get; set; }
+        public string EmailAddress { get; set; }
+        public int ID { get; set; }
+        public MemberState State { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Library.Interfaces.Entities;
 
@@ -7,6 +8,13 @@ namespace Library.Entities
     {
         public Member(string firstName, string lastName, string contactPhone, string emailAddress, int id)
         {
+            if (string.IsNullOrWhiteSpace(firstName)) throw new ArgumentException("First Name needs to be provided.");
+            if (string.IsNullOrWhiteSpace(lastName)) throw new ArgumentException("Last Name needs to be provided.");
+            if (string.IsNullOrWhiteSpace(contactPhone)) throw new ArgumentException("Contact Phone needs to be provided.");
+            if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentException("Email Address needs to be provided.");
+
+            if (id <= 0) throw new ArgumentException("ID needs to be greater than 0.");
+
             this.ID = id;
             this.FirstName = firstName;
             this.LastName = lastName;

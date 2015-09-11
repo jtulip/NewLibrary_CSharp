@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Library.Entities;
 using Library.Interfaces.Entities;
+using NSubstitute;
 using Xunit;
 
 namespace Library.Tests
@@ -83,6 +84,37 @@ namespace Library.Tests
             });
 
             Assert.Equal("ID needs to be greater than 0.", ex.Message);
+        }
+
+        [Fact]
+        public void HasOverdueLoansReturnsFalseIfNoLoanIsOverdue()
+        {
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            // Add a single loan that is not overdue.
+            var loan = Substitute.For<ILoan>();
+            loan.IsOverDue.Returns(false);
+            member.Loans.Add(loan);
+
+            Assert.False(member.HasOverDueLoans);
+        }
+
+        [Fact]
+        public void HasOverdueLoansReturnsTrueIfAnyLoanIsOverdue()
+        {
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            // Add a loan that is not overdue.
+            var loan = Substitute.For<ILoan>();
+            loan.IsOverDue.Returns(false);
+            member.Loans.Add(loan);
+
+            // Add a second loan that is overdue.
+            var second = Substitute.For<ILoan>();
+            second.IsOverDue.Returns(true);
+            member.Loans.Add(second);
+
+            Assert.True(member.HasOverDueLoans);
         }
     }
 }

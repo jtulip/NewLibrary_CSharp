@@ -115,6 +115,7 @@
     <Compile Include="Controls\Borrow\ScanBookControl.xaml.cs">
       <DependentUpon>ScanBookControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Entities\Loan.cs" />
     <Compile Include="Entities\Member.cs" />
     <Compile Include="Hardware\CardReader.xaml.cs">
       <DependentUpon>CardReader.xaml</DependentUpon>

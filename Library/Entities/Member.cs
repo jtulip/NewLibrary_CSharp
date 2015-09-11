@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Library.Interfaces.Entities;
 
 namespace Library.Entities
@@ -20,9 +21,12 @@ namespace Library.Entities
             this.LastName = lastName;
             this.ContactPhone = contactPhone;
             this.EmailAddress = emailAddress;
+
+            // Instantiate loan collection
+            this.Loans = new List<ILoan>();
         }
 
-        public bool HasOverDueLoans { get; }
+        public bool HasOverDueLoans { get { return this.Loans.Any(l => l.IsOverDue); } }  // Return true if any loan is overdue.
         public bool HasReachedLoanLimit { get; }
         public bool HasFinesPayable { get; }
         public bool HasReachedFineLimit { get; }

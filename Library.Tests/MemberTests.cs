@@ -116,5 +116,30 @@ namespace Library.Tests
 
             Assert.True(member.HasOverDueLoans);
         }
+
+        [Fact]
+        public void HasReachedLoanLimitReturnsTrueIfLoanCountEqualsLoanLimit()
+        {
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            // Add a loan.
+            var loan = Substitute.For<ILoan>();
+            loan.IsOverDue.Returns(false);
+            member.Loans.Add(loan);
+
+            // Test that Loan Limit is not reached.
+            Assert.True(member.Loans.Count() < BookConstants.LOAN_LIMIT);
+            Assert.False(member.HasReachedLoanLimit);
+
+            // Add additional loans.
+            while (member.Loans.Count() < BookConstants.LOAN_LIMIT)
+            {
+                member.Loans.Add(Substitute.For<ILoan>());
+            }
+
+            // Test that Loan Limit has been reached.
+            Assert.True(member.Loans.Count() == BookConstants.LOAN_LIMIT);
+            Assert.True(member.HasReachedLoanLimit);
+        }
     }
 }

@@ -28,17 +28,22 @@ namespace Library.Entities
 
         public bool HasOverDueLoans => this.Loans.Any(l => l.IsOverDue); // Return true if any loan is overdue.
         public bool HasReachedLoanLimit => this.Loans.Count() == BookConstants.LOAN_LIMIT;
-        public bool HasFinesPayable { get; }
+        public bool HasFinesPayable => this.FineAmount > 0;
         public bool HasReachedFineLimit { get; }
-        public float FineAmount { get; }
+        public float FineAmount { get; private set; }
         public void AddFine(float fine)
         {
-            throw new System.NotImplementedException();
+            if(fine < 0) throw new ArgumentException("Fine must not be negative value");
+
+            this.FineAmount += fine;
         }
 
         public void PayFine(float payment)
         {
-            throw new System.NotImplementedException();
+            if(payment < 0) throw new ArgumentException("Payment must not be negative value");
+            if(payment > this.FineAmount) throw new ArgumentException($"Payment must not exceed fines of {this.FineAmount}");
+
+            this.FineAmount -= payment;
         }
 
         public void AddLoan(ILoan loan)
@@ -52,11 +57,11 @@ namespace Library.Entities
             throw new System.NotImplementedException();
         }
 
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string ContactPhone { get; set; }
-        public string EmailAddress { get; set; }
-        public int ID { get; set; }
-        public MemberState State { get; set; }
+        public string FirstName { get; }
+        public string LastName { get; }
+        public string ContactPhone { get; }
+        public string EmailAddress { get; }
+        public int ID { get; }
+        public MemberState State { get; internal set; }
     }
 }

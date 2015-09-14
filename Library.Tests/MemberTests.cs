@@ -15,7 +15,7 @@ namespace Library.Tests
     public class MemberTests
     {
         [Fact]
-        public void CanCreateANewMember()
+        public void CreateANewMember()
         {
             var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
 
@@ -141,5 +141,105 @@ namespace Library.Tests
             Assert.True(member.Loans.Count() == BookConstants.LOAN_LIMIT);
             Assert.True(member.HasReachedLoanLimit);
         }
+
+        [Fact]
+        public void AddFineToMember()
+        {
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            const float fine1 = 5.50f;
+            const float fine2 = 2.00f;
+
+            // Has no fines after being created.
+            Assert.Equal(0, member.FineAmount);
+
+            // Can add a fine.
+            member.AddFine(fine1);
+
+            Assert.Equal(fine1, member.FineAmount);
+
+            // Make sure it will increment by additional amount.
+            member.AddFine(fine2);
+
+            Assert.Equal(fine1 + fine2, member.FineAmount);
+        }
+
+        [Fact]
+        public void AddFineThrowsArgumentExceptionIfNegative()
+        {
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            var ex = Assert.Throws<ArgumentException>(() => member.AddFine(-5.00f));
+
+            Assert.Equal("Fine must not be negative value", ex.Message);
+
+        }
+
+        [Fact]
+        public void PayFineByMember()
+        {
+            const float fine = 5.50f;
+            const float payment = 2.50f;
+
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            member.AddFine(fine);
+
+            Assert.Equal(fine, member.FineAmount);
+
+            member.PayFine(payment);
+
+            Assert.Equal(fine - payment, member.FineAmount);
+        }
+
+        [Fact]
+        public void PayFineThrowsArgumentExceptionIfNegative()
+        {
+            const float fine = 5.50f;
+            const float payment = -1.00f;
+
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            member.AddFine(fine);
+
+            Assert.Equal(fine, member.FineAmount);
+
+            var ex = Assert.Throws<ArgumentException>(() => member.PayFine(payment));
+
+            Assert.Equal("Payment must not be negative value", ex.Message);
+        }
+
+        [Fact]
+        public void PayFineThrowsArgumentExceptionIfPaymentExceedsFines()
+        {
+            const float fine = 5.50f;
+            const float payment = 6.00f;
+
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            member.AddFine(fine);
+
+            Assert.Equal(fine, member.FineAmount);
+
+            var fineAmount = member.FineAmount;
+
+            var ex = Assert.Throws<ArgumentException>(() => member.PayFine(payment));
+
+            Assert.Equal($"Payment must not exceed fines of {fineAmount}", ex.Message);
+        }
+
+        [Fact]
+        public void HasFinesPayableReturnsTrueIfFinesExceedZero()
+        {
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            Assert.False(member.HasFinesPayable);
+
+            member.AddFine(5.00f);
+
+            Assert.True(member.HasFinesPayable);
+        }
+
+
     }
 }

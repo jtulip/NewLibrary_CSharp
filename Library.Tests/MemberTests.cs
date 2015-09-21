@@ -383,7 +383,20 @@ namespace Library.Tests
             member.State = MemberState.BORROWING_DISALLOWED;
             
             Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
+        }
 
+        [Fact]
+        public void CanGetFirstName()
+        {
+            var firstName = "test";
+            var lastName = "member";
+            var phoneNumber = "phone";
+            var emailAddress = "email";
+            var id = 1;
+
+            var member = new Member(firstName, lastName, phoneNumber, emailAddress, id);
+
+            Assert.Equal(firstName, member.FirstName);
         }
     }
 }

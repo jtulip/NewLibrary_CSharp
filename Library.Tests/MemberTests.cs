@@ -16,7 +16,7 @@ namespace Library.Tests
     public class MemberTests
     {
         [Fact]
-        public void CreateANewMember()
+        public void CanCreateANewMember()
         {
             var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
 
@@ -144,7 +144,7 @@ namespace Library.Tests
         }
 
         [Fact]
-        public void AddFineToMember()
+        public void CanAddFineToMember()
         {
             var member = new Member("test", "member", "phone", "email", 1);
 
@@ -177,7 +177,7 @@ namespace Library.Tests
         }
 
         [Fact]
-        public void PayFineByMember()
+        public void CanPayFineByMember()
         {
             const float fine = 5.50f;
             const float payment = 2.50f;
@@ -271,7 +271,7 @@ namespace Library.Tests
         }
 
         [Fact]
-        public void AddLoanToMember()
+        public void CanAddLoanToMember()
         {
             var member = new Member("test", "member", "phone", "email", 1);
 
@@ -328,7 +328,6 @@ namespace Library.Tests
             Assert.DoesNotContain(loan4, member.Loans);
         }
 
-        [Fact]
         public void RemoveLoanFromMember()
         {
             var member = new Member("test", "member", "phone", "email", 1);

@@ -440,6 +440,20 @@ namespace Library.Tests
 
             Assert.Equal(emailAddress, member.EmailAddress);
         }
+
+        [Fact]
+        public void CanGetID()
+        {
+            var firstName = "test";
+            var lastName = "member";
+            var phoneNumber = "phone";
+            var emailAddress = "email";
+            var id = 1;
+
+            var member = new Member(firstName, lastName, phoneNumber, emailAddress, id);
+
+            Assert.Equal(id, member.ID);
+        }
     }
 }
 

@@ -21,6 +21,8 @@ namespace Library.Entities
 
         public void Borrow(ILoan loan)
         {
+            if(this.State != BookState.AVAILABLE) throw new InvalidOperationException("Cannot borrow a book that is not available");
+
             this.Loan = loan;
         }
 
@@ -45,7 +47,7 @@ namespace Library.Entities
             throw new NotImplementedException();
         }
 
-        public BookState State { get; }
+        public BookState State { get; internal set; }
         public string Author { get; }
         public string Title { get; }
         public string CallNumber { get; }

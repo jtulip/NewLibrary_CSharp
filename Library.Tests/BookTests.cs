@@ -89,5 +89,19 @@ namespace Library.Tests
             Assert.Equal(loan, book.Loan);
         }
 
+        [Fact]
+        public void BorrowBookThrowsRuntimeExceptionIfBookIsNotCurrentlyAvailable()
+        {
+            // Set book state to something other than Available.
+            var book = new Book("author", "title", "call number", 1) { State = BookState.LOST };
+
+            var loan = Substitute.For<ILoan>();
+
+            // Associate the book with the loan.
+            var ex = Assert.Throws<InvalidOperationException>(() => book.Borrow(loan));
+
+            Assert.Equal("Cannot borrow a book that is not available", ex.Message);
+        }
+
     }
 }

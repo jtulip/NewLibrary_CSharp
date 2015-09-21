@@ -21,10 +21,10 @@ namespace Library.Entities
 
         public void Borrow(ILoan loan)
         {
-            throw new NotImplementedException();
+            this.Loan = loan;
         }
 
-        public ILoan Loan { get; }
+        public ILoan Loan { get; private set; }
         public void ReturnBook(bool damaged)
         {
             throw new NotImplementedException();

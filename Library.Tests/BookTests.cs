@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Library.Entities;
 using Library.Interfaces.Entities;
+using NSubstitute;
 using Xunit;
 
 namespace Library.Tests
@@ -73,6 +74,19 @@ namespace Library.Tests
             });
 
             Assert.Equal("ID needs to be greater than 0.", ex.Message);
+        }
+
+        [Fact]
+        public void CanBorrowBook()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var loan = Substitute.For<ILoan>();
+
+            // Associate the book with the loan.
+            book.Borrow(loan);
+
+            Assert.Equal(loan, book.Loan);
         }
 
     }

@@ -59,7 +59,7 @@ namespace Library.Entities
         public List<ILoan> Loans { get; private set; }
         public void RemoveLoan(ILoan loan)
         {
-            throw new System.NotImplementedException();
+            this.Loans.Remove(loan);
         }
 
         public string FirstName { get; }

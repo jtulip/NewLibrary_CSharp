@@ -327,6 +327,24 @@ namespace Library.Tests
             Assert.Contains(loan1, member.Loans);
             Assert.DoesNotContain(loan4, member.Loans);
         }
+
+        [Fact]
+        public void RemoveLoanFromMember()
+        {
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            var loan = Substitute.For<ILoan>();
+
+            member.AddLoan(loan);
+
+            // Make sure Member has Loan.
+            Assert.Contains(loan, member.Loans);
+
+            member.RemoveLoan(loan);
+
+            // Make sure Loan has been removed from Member.
+            Assert.DoesNotContain(loan, member.Loans);
+        }
     }
 }
 

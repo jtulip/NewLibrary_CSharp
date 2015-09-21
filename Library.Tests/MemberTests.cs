@@ -357,6 +357,21 @@ namespace Library.Tests
 
             Assert.Equal("Loan cannot be null", ex.Message);
         }
+
+        [Fact]
+        public void RemoveLoanThrowsArgumentExceptionIfLoanIsNotInCollection()
+        {
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            var loan1 = Substitute.For<ILoan>();
+            var loan2 = Substitute.For<ILoan>();
+
+            member.AddLoan(loan1);
+
+            var ex = Assert.Throws<ArgumentException>(() => member.RemoveLoan(loan2));
+
+            Assert.Equal("Loan was not found in member's loans", ex.Message);
+        }
     }
 }
 

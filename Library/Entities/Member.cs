@@ -61,6 +61,8 @@ namespace Library.Entities
         {
             if(loan == null) throw new ArgumentException("Loan cannot be null");
 
+            if(!this.Loans.Contains(loan)) throw new ArgumentException("Loan was not found in member's loans");
+
             this.Loans.Remove(loan);
         }
 

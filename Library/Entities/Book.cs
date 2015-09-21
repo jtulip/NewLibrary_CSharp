@@ -9,6 +9,16 @@ namespace Library.Entities
 {
     public class Book: IBook
     {
+        public Book(string author, string title, string callNumber, int bookID)
+        {
+            if (string.IsNullOrWhiteSpace(author)) throw new ArgumentException("Author needs to be provided.");
+            if (string.IsNullOrWhiteSpace(title)) throw new ArgumentException("Title needs to be provided.");
+            if (string.IsNullOrWhiteSpace(callNumber)) throw new ArgumentException("Call Number needs to be provided.");
+
+            if (bookID <= 0) throw new ArgumentException("ID needs to be greater than 0.");
+
+        }
+
         public void Borrow(ILoan loan)
         {
             throw new NotImplementedException();

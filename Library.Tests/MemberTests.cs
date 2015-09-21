@@ -412,6 +412,20 @@ namespace Library.Tests
 
             Assert.Equal(lastName, member.LastName);
         }
+
+        [Fact]
+        public void CanGetContactPhone()
+        {
+            var firstName = "test";
+            var lastName = "member";
+            var phoneNumber = "phone";
+            var emailAddress = "email";
+            var id = 1;
+
+            var member = new Member(firstName, lastName, phoneNumber, emailAddress, id);
+
+            Assert.Equal(phoneNumber, member.ContactPhone);
+        }
     }
 }
 

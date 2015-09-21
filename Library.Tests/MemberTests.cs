@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Library.Entities;
@@ -308,6 +309,24 @@ namespace Library.Tests
             Assert.Equal("Cannot add a loan when member is not allowed to borrow", ex.Message);
         }
 
+        [Fact]
+        public void CanGetLoans()
+        {
+            var member = new Member("test", "member", "phone", "email", 1);
 
+            var loan1 = Substitute.For<ILoan>();
+            var loan2 = Substitute.For<ILoan>();
+            var loan3 = Substitute.For<ILoan>();
+            var loan4 = Substitute.For<ILoan>();
+
+            member.AddLoan(loan1);
+            member.AddLoan(loan2);
+            member.AddLoan(loan3);
+
+            Assert.Equal(3, member.Loans.Count());
+            Assert.Contains(loan1, member.Loans);
+            Assert.DoesNotContain(loan4, member.Loans);
+        }
     }
 }
+

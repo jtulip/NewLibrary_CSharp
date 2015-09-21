@@ -48,10 +48,12 @@ namespace Library.Entities
 
         public void AddLoan(ILoan loan)
         {
-            throw new System.NotImplementedException();
+            if(loan == null) throw new ArgumentException("Loan cannot be null");
+
+            this.Loans.Add(loan);
         }
 
-        public List<ILoan> Loans { get; internal set; }
+        public List<ILoan> Loans { get; private set; }
         public void RemoveLoan(ILoan loan)
         {
             throw new System.NotImplementedException();
@@ -62,6 +64,6 @@ namespace Library.Entities
         public string ContactPhone { get; }
         public string EmailAddress { get; }
         public int ID { get; }
-        public MemberState State { get; internal set; }
+        public MemberState State { get; private set; }
     }
 }

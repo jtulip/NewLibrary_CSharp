@@ -269,5 +269,32 @@ namespace Library.Tests
             Assert.True(member.HasReachedFineLimit);
         }
 
+        [Fact]
+        public void AddLoanToMember()
+        {
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            // Can add a loan.
+            var loan = Substitute.For<ILoan>();
+
+            member.AddLoan(loan);
+
+            Assert.Contains(loan, member.Loans);
+        }
+
+        [Fact]
+        public void AddLoanThrowsArgumentExceptionIfLoanIsNull()
+        {
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            // Null loan.
+            ILoan loan = null;
+
+            var ex = Assert.Throws<ArgumentException>(() => member.AddLoan(loan));
+
+            Assert.Equal("Loan cannot be null", ex.Message);
+        }
+
+
     }
 }

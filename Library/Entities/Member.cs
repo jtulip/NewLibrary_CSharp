@@ -50,6 +50,9 @@ namespace Library.Entities
         {
             if(loan == null) throw new ArgumentException("Loan cannot be null");
 
+            if (this.State == MemberState.BORROWING_DISALLOWED)
+                throw new InvalidOperationException("Cannot add a loan when member is not allowed to borrow");
+
             this.Loans.Add(loan);
         }
 
@@ -64,6 +67,6 @@ namespace Library.Entities
         public string ContactPhone { get; }
         public string EmailAddress { get; }
         public int ID { get; }
-        public MemberState State { get; private set; }
+        public MemberState State { get; internal set; }
     }
 }

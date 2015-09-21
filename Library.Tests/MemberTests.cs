@@ -295,6 +295,19 @@ namespace Library.Tests
             Assert.Equal("Loan cannot be null", ex.Message);
         }
 
+        [Fact] // InvalidOperationException is more correct for .NET.
+        public void AddLoanThrowsInvalidOperationExceptionIfMemberIsNotAllowedToBorrow()
+        {
+            // Set member to BORROWING_DISALLOWED
+            var member = new Member("test", "member", "phone", "email", 1) { State = MemberState.BORROWING_DISALLOWED };
+
+            var loan = Substitute.For<ILoan>();
+
+            var ex = Assert.Throws<InvalidOperationException>(() => member.AddLoan(loan));
+
+            Assert.Equal("Cannot add a loan when member is not allowed to borrow", ex.Message);
+        }
+
 
     }
 }

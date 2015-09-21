@@ -240,6 +240,34 @@ namespace Library.Tests
             Assert.True(member.HasFinesPayable);
         }
 
+        [Fact]
+        public void HasReachedFineLimitReturnsTrueIfFinesReachFineMax()
+        {
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            // Add a fine.
+            const float fine1 = 5.50f;
+            const float fine2 = BookConstants.FINE_LIMIT - fine1;
+            const float fine3 = fine2 + 1.0f;
+
+            member.AddFine(fine1);
+
+            // Test that Fine Limit is not reached. Assuming FINE_MAX == FINE_LIMIT.
+            Assert.True(member.FineAmount < BookConstants.FINE_LIMIT);
+            Assert.False(member.HasReachedFineLimit);
+
+            // Add additional fine to reach == FINE_LIMIT.
+            member.AddFine(fine2);
+
+            // Test that Loan Limit has been reached.
+            Assert.True(member.FineAmount == BookConstants.FINE_LIMIT);
+            Assert.True(member.HasReachedFineLimit);
+
+            // Add additional fine to exceed FINE_LIMIT.
+            member.AddFine(fine3);
+            Assert.True(member.FineAmount > BookConstants.FINE_LIMIT);
+            Assert.True(member.HasReachedFineLimit);
+        }
 
     }
 }

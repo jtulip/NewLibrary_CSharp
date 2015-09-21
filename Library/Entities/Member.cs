@@ -59,6 +59,8 @@ namespace Library.Entities
         public List<ILoan> Loans { get; private set; }
         public void RemoveLoan(ILoan loan)
         {
+            if(loan == null) throw new ArgumentException("Loan cannot be null");
+
             this.Loans.Remove(loan);
         }
 

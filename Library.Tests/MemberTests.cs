@@ -284,7 +284,7 @@ namespace Library.Tests
         }
 
         [Fact]
-        public void AddLoanThrowsArgumentExceptionIfLoanIsNull()
+        public void AddLoanThrowsArgumentNullExceptionIfLoanIsNull()
         {
             var member = new Member("test", "member", "phone", "email", 1);
 
@@ -344,6 +344,18 @@ namespace Library.Tests
 
             // Make sure Loan has been removed from Member.
             Assert.DoesNotContain(loan, member.Loans);
+        }
+
+        [Fact]
+        public void RemoveLoanThrowsArgumentNullExceptionIfLoanIsNull()
+        {
+            var member = new Member("test", "member", "phone", "email", 1);
+
+            ILoan loan = null;
+
+            var ex = Assert.Throws<ArgumentException>(() => member.RemoveLoan(loan));
+
+            Assert.Equal("Loan cannot be null", ex.Message);
         }
     }
 }

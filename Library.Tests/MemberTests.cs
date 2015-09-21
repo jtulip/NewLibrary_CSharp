@@ -372,6 +372,19 @@ namespace Library.Tests
 
             Assert.Equal("Loan was not found in member's loans", ex.Message);
         }
+
+        [Fact]
+        public void CanGetState()
+        {
+            var member = new Member("test", "member", "phone", "email", 1) { State = MemberState.BORROWING_ALLOWED };
+
+            Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
+
+            member.State = MemberState.BORROWING_DISALLOWED;
+            
+            Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
+
+        }
     }
 }
 

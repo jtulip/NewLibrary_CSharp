@@ -40,6 +40,8 @@ namespace Library.Entities
 
         public void ReturnBook(bool damaged)
         {
+            if(this.State != BookState.ON_LOAN) throw new InvalidOperationException("Book is currently not on loan");
+
             this.State = damaged ? BookState.DAMAGED : BookState.AVAILABLE;
 
             this.Loan = null;

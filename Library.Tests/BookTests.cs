@@ -215,5 +215,26 @@ namespace Library.Tests
             Assert.Null(book.Loan);
             Assert.Equal(BookState.AVAILABLE, book.State);
         }
+
+        [Fact]
+        public void ReturningBookThrowsExceptionIfNotOnLoan()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var loan = Substitute.For<ILoan>();
+            book.Borrow(loan);
+
+            // Set book state to ON_LOAN - affected by GetLoanFromBookReturnsNullIfBookIsNotON_LOAN()
+            book.State = BookState.ON_LOAN;
+
+            Assert.Equal(loan, book.Loan);
+
+            // Set book state to LOST so we can make sure it's not ON_LOAN already.
+            book.State = BookState.LOST;
+
+            var ex = Assert.Throws<InvalidOperationException>(() => book.ReturnBook(false));
+
+            Assert.Equal("Book is currently not on loan", ex.Message);
+        }
     }
 }

@@ -196,6 +196,24 @@ namespace Library.Tests
             Assert.Equal(BookState.DAMAGED, book.State);
         }
 
+        [Fact]
+        public void ReturningBookSetsStateToAvailable()
+        {
+            var book = new Book("author", "title", "call number", 1);
 
+            var loan = Substitute.For<ILoan>();
+            book.Borrow(loan);
+
+            // Set book state to ON_LOAN - affected by GetLoanFromBookReturnsNullIfBookIsNotON_LOAN()
+            book.State = BookState.ON_LOAN;
+
+            Assert.Equal(loan, book.Loan);
+
+            // Set damaged flag to false.
+            book.ReturnBook(false);
+
+            Assert.Null(book.Loan);
+            Assert.Equal(BookState.AVAILABLE, book.State);
+        }
     }
 }

@@ -40,7 +40,7 @@ namespace Library.Entities
 
         public void ReturnBook(bool damaged)
         {
-            if(damaged) this.State = BookState.DAMAGED;
+            this.State = damaged ? BookState.DAMAGED : BookState.AVAILABLE;
 
             this.Loan = null;
         }

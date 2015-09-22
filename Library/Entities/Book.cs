@@ -40,7 +40,7 @@ namespace Library.Entities
 
         public void ReturnBook(bool damaged)
         {
-            throw new NotImplementedException();
+            this.Loan = null;
         }
 
         public void Lose()

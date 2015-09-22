@@ -19,6 +19,7 @@ namespace Library.Entities
 
             if (bookID <= 0) throw new ArgumentException("ID needs to be greater than 0.");
 
+            this.Author = author;
         }
 
         public void Borrow(ILoan loan)

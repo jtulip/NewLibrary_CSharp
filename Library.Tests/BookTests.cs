@@ -341,5 +341,18 @@ namespace Library.Tests
 
             Assert.Equal(BookState.AVAILABLE, book.State);
         }
+
+        [Fact]
+        public void CanGetAuthor()
+        {
+            var author = "Author";
+            var title = "Title";
+            var callNumber = "Call Number";
+            var id = 1;
+
+            var book = new Book(author, title, callNumber, id);
+
+            Assert.Equal(author, book.Author);
+        }
     }
 }

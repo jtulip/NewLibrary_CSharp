@@ -56,7 +56,7 @@ namespace Library.Entities
 
         public void Repair()
         {
-            throw new NotImplementedException();
+            this.State = BookState.AVAILABLE;
         }
 
         public void Dispose()

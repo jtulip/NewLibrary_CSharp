@@ -260,5 +260,17 @@ namespace Library.Tests
 
             Assert.Equal("Book must be on loan to be marked as lost", ex.Message);
         }
+
+        [Fact]
+        public void RepairSetsBookStateToAvailable()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            book.State = BookState.ON_LOAN;
+
+            book.Repair();
+
+            Assert.Equal(BookState.AVAILABLE, book.State);
+        }
     }
 }

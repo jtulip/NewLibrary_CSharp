@@ -266,11 +266,24 @@ namespace Library.Tests
         {
             var book = new Book("author", "title", "call number", 1);
 
-            book.State = BookState.ON_LOAN;
+            // Must be set to Damaged to be repaired.
+            book.State = BookState.DAMAGED;
 
             book.Repair();
 
             Assert.Equal(BookState.AVAILABLE, book.State);
+        }
+
+        [Fact]
+        public void RepairThrowsExceptionIfBookIsNotDamaged()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            book.State = BookState.ON_LOAN;
+
+            var ex = Assert.Throws<InvalidOperationException>(() => book.Repair());
+
+            Assert.Equal("Book is not damaged so cannot be repaired", ex.Message);
         }
     }
 }

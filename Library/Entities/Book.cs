@@ -56,6 +56,8 @@ namespace Library.Entities
 
         public void Repair()
         {
+            if(this.State != BookState.DAMAGED) throw new InvalidOperationException("Book is not damaged so cannot be repaired");
+
             this.State = BookState.AVAILABLE;
         }
 

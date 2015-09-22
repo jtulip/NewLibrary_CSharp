@@ -94,5 +94,19 @@ namespace Library.Tests
 
             loan.Commit(loanId);
         }
+
+        [Fact]
+        public void CommitLoanSetsStateToCurrent()
+        {
+            var book = Substitute.For<IBook>();
+            var member = Substitute.For<IMember>();
+            var loanId = 1;
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(1), loanId);
+
+            loan.Commit(loanId);
+
+            Assert.Equal(LoanState.CURRENT, loan.State);
+        }
     }
 }

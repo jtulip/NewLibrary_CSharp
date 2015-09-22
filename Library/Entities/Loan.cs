@@ -21,6 +21,7 @@ namespace Library.Entities
 
         public void Commit(int loanID)
         {
+            this.State = LoanState.CURRENT;
         }
 
         public void Complete()
@@ -37,6 +38,6 @@ namespace Library.Entities
         public IMember Borrower { get; }
         public IBook Book { get; }
         public int ID { get; }
-        public LoanState State { get; }
+        public LoanState State { get; internal set; }
     }
 }

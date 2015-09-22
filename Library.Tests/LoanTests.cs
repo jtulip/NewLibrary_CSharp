@@ -26,5 +26,61 @@ namespace Library.Tests
 
             Assert.NotNull(loan);
         }
+
+        [Fact]
+        public void LoanCtorThrowsIllegalParameterException()
+        {
+            var book = Substitute.For<IBook>();
+            var member = Substitute.For<IMember>();
+            DateTime borrowDate = DateTime.Today;
+            DateTime dueDate = DateTime.Today;
+            int loanID = 1;
+
+            var ex = Assert.Throws<ArgumentException>(() =>
+            {
+                var loan = new Loan(null, member, borrowDate, dueDate, loanID);
+            });
+
+            Assert.Equal("Book needs to be provided", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(() =>
+            {
+                new Loan(book, null, borrowDate, dueDate, loanID);
+            });
+
+            Assert.Equal("Member needs to be provided", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(() =>
+            {
+                // DateTime can't be null in .NET
+                new Loan(book, member, DateTime.MinValue, dueDate, loanID);
+            });
+
+            Assert.Equal("Borrow date needs to be provided", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(() =>
+            {
+                // DateTime can't be null in .NET
+                new Loan(book, member, borrowDate, DateTime.MinValue, loanID);
+            });
+
+            Assert.Equal("Due date needs to be provided", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(() =>
+            {
+                // DateTime can't be null in .NET
+                new Loan(book, member, borrowDate, borrowDate.AddDays(-1), loanID);
+            });
+
+            Assert.Equal("Due date cannot be before Borrow date", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(() =>
+            {
+                // DateTime can't be null in .NET
+                new Loan(book, member, borrowDate, dueDate, 0);
+            });
+
+            Assert.Equal("ID must be greater than 0", ex.Message);
+        }
     }
 }

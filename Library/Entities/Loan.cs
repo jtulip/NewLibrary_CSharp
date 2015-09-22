@@ -11,6 +11,12 @@ namespace Library.Entities
     {
         public Loan(IBook book, IMember member, DateTime borrowDate, DateTime dueDate, int loanId)
         {
+            if(book == null) throw new ArgumentException("Book needs to be provided");
+            if(member == null) throw new ArgumentException("Member needs to be provided");
+            if(borrowDate == DateTime.MinValue) throw new ArgumentException("Borrow date needs to be provided");
+            if(dueDate == DateTime.MinValue) throw new ArgumentException("Due date needs to be provided");
+            if(dueDate < borrowDate) throw new ArgumentException("Due date cannot be before Borrow date");
+            if(loanId <= 0) throw new ArgumentException("ID must be greater than 0");
         }
 
         public void Commit(int loanID)

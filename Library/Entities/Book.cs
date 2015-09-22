@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using Library.Interfaces.Entities;
@@ -22,6 +23,7 @@ namespace Library.Entities
             this.Author = author;
             this.Title = title;
             this.CallNumber = callNumber;
+            this.ID = bookID;
         }
 
         public void Borrow(ILoan loan)

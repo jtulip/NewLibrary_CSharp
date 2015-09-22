@@ -9,6 +9,10 @@ namespace Library.Entities
 {
     public class Loan: ILoan
     {
+        public Loan(IBook book, IMember member, DateTime borrowDate, DateTime dueDate, int loanId)
+        {
+        }
+
         public void Commit(int loanID)
         {
             throw new NotImplementedException();

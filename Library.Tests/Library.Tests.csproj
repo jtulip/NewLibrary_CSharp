@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BookTests.cs" />
+    <Compile Include="LoanTests.cs" />
     <Compile Include="MemberTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

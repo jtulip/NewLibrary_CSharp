@@ -49,7 +49,6 @@ namespace Library.Tests
             {
                 var book = new Book("author", "", "", 0);
             });
-
             Assert.Equal("Title needs to be provided.", ex.Message);
 
             // Test to make sure that call number is required.

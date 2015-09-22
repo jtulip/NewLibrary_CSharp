@@ -108,5 +108,21 @@ namespace Library.Tests
 
             Assert.Equal(LoanState.CURRENT, loan.State);
         }
+
+        [Fact]
+        public void CommitLoanCallsBookBorrow()
+        {
+            var book = Substitute.For<IBook>();
+            var member = Substitute.For<IMember>();
+            var loanId = 1;
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(1), loanId);
+
+            // Call the commit and expect that it will call book.Borrow.
+            loan.Commit(loanId);
+
+            // When loan is committed, assert book.Borrow will be called with the loan.
+            book.Received().Borrow(loan);
+        }
     }
 }

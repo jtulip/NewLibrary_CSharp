@@ -17,11 +17,15 @@ namespace Library.Entities
             if(dueDate == DateTime.MinValue) throw new ArgumentException("Due date needs to be provided");
             if(dueDate < borrowDate) throw new ArgumentException("Due date cannot be before Borrow date");
             if(loanId <= 0) throw new ArgumentException("ID must be greater than 0");
+
+            this.Book = book;
         }
 
         public void Commit(int loanID)
         {
             this.State = LoanState.CURRENT;
+
+            this.Book.Borrow(this);
         }
 
         public void Complete()

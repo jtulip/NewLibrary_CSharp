@@ -367,5 +367,18 @@ namespace Library.Tests
 
             Assert.Equal(title, book.Title);
         }
+
+        [Fact]
+        public void CanGetCallNumber()
+        {
+            var author = "Author";
+            var title = "Title";
+            var callNumber = "Call Number";
+            var id = 1;
+
+            var book = new Book(author, title, callNumber, id);
+
+            Assert.Equal(callNumber, book.CallNumber);
+        }
     }
 }

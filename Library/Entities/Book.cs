@@ -21,6 +21,7 @@ namespace Library.Entities
 
             this.Author = author;
             this.Title = title;
+            this.CallNumber = callNumber;
         }
 
         public void Borrow(ILoan loan)

@@ -49,7 +49,7 @@ namespace Library.Entities
 
         public void Lose()
         {
-            throw new NotImplementedException();
+            this.State = BookState.LOST;
         }
 
         public void Repair()

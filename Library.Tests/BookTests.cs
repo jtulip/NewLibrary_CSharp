@@ -236,5 +236,18 @@ namespace Library.Tests
 
             Assert.Equal("Book is currently not on loan", ex.Message);
         }
+
+        [Fact]
+        public void LoseSetsBookStateToLost()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            book.State = BookState.ON_LOAN;
+
+            book.Lose();
+
+            Assert.Equal(BookState.LOST, book.State);
+
+        }
     }
 }

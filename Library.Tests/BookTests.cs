@@ -285,5 +285,17 @@ namespace Library.Tests
 
             Assert.Equal("Book is not damaged so cannot be repaired", ex.Message);
         }
+
+        [Fact]
+        public void DisposeSetsBookStateToDisposed()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            book.State = BookState.ON_LOAN;
+
+            book.Dispose();
+
+            Assert.Equal(BookState.DISPOSED, book.State);
+        }
     }
 }

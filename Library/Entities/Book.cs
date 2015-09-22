@@ -63,7 +63,7 @@ namespace Library.Entities
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            this.State = BookState.DISPOSED;
         }
 
         public BookState State { get; internal set; }

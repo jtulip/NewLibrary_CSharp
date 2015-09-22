@@ -49,6 +49,8 @@ namespace Library.Entities
 
         public void Lose()
         {
+            if(this.State != BookState.ON_LOAN) throw new InvalidOperationException("Book must be on loan to be marked as lost");
+
             this.State = BookState.LOST;
         }
 

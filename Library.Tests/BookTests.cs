@@ -247,7 +247,18 @@ namespace Library.Tests
             book.Lose();
 
             Assert.Equal(BookState.LOST, book.State);
+        }
 
+        [Fact]
+        public void LoseThrowsExceptionIfBookIsNotOnLoan()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            book.State = BookState.AVAILABLE;
+
+            var ex = Assert.Throws<InvalidOperationException>(() => book.Lose());
+
+            Assert.Equal("Book must be on loan to be marked as lost", ex.Message);
         }
     }
 }

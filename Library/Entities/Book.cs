@@ -63,6 +63,9 @@ namespace Library.Entities
 
         public void Dispose()
         {
+            if(this.State != BookState.AVAILABLE && this.State != BookState.DAMAGED && this.State != BookState.LOST)
+                throw new InvalidOperationException("Book cannot be disposed in its current state");
+
             this.State = BookState.DISPOSED;
         }
 

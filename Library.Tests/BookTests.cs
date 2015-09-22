@@ -291,11 +291,47 @@ namespace Library.Tests
         {
             var book = new Book("author", "title", "call number", 1);
 
-            book.State = BookState.ON_LOAN;
+            book.State = BookState.AVAILABLE;
 
             book.Dispose();
 
             Assert.Equal(BookState.DISPOSED, book.State);
+        }
+
+        [Fact]
+        public void DisposeThrowsException()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            // Set book to Available and should be able to dispose.
+            book.State = BookState.AVAILABLE;
+
+            book.Dispose();
+            Assert.Equal(BookState.DISPOSED, book.State);
+
+            // Set book to Damaged and should be able to dispose.
+            book.State = BookState.DAMAGED;
+
+            book.Dispose();
+            Assert.Equal(BookState.DISPOSED, book.State);
+
+            // Set book to Lost and should be able to dispose.
+            book.State = BookState.LOST;
+
+            book.Dispose();
+            Assert.Equal(BookState.DISPOSED, book.State);
+
+            // Should throw for others.
+            book.State = BookState.ON_LOAN;
+            var ex1 = Assert.Throws<InvalidOperationException>(() => book.Dispose());
+
+            book.State = BookState.DISPOSED;
+            var ex2 = Assert.Throws<InvalidOperationException>(() => book.Dispose());
+
+            Assert.Equal(ex1.Message, ex2.Message);
+            Assert.Equal("Book cannot be disposed in its current state", ex2.Message);
+
+
         }
     }
 }

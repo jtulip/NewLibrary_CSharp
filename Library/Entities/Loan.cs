@@ -19,6 +19,7 @@ namespace Library.Entities
             if(loanId <= 0) throw new ArgumentException("ID must be greater than 0");
 
             this.Book = book;
+            this.Borrower = member;
         }
 
         public void Commit(int loanID)
@@ -26,6 +27,7 @@ namespace Library.Entities
             this.State = LoanState.CURRENT;
 
             this.Book.Borrow(this);
+            this.Borrower.AddLoan(this);
         }
 
         public void Complete()

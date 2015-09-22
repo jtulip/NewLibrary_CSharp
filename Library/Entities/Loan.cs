@@ -21,7 +21,6 @@ namespace Library.Entities
 
         public void Commit(int loanID)
         {
-            throw new NotImplementedException();
         }
 
         public void Complete()

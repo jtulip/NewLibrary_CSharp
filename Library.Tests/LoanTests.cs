@@ -82,5 +82,17 @@ namespace Library.Tests
 
             Assert.Equal("ID must be greater than 0", ex.Message);
         }
+
+        [Fact]
+        public void CanCommitLoan()
+        {
+            var book = Substitute.For<IBook>();
+            var member = Substitute.For<IMember>();
+            var loanId = 1;
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(1), loanId);
+
+            loan.Commit(loanId);
+        }
     }
 }

@@ -140,5 +140,31 @@ namespace Library.Tests
             // When loan is committed, assert borrower.AddLoan will be called with the loan.
             borrower.Received().AddLoan(loan);
         }
+
+        [Fact]
+        public void CommitLoanThrowsExceptionIfLoanStateNotPending()
+        {
+            var book = Substitute.For<IBook>();
+            var borrower = Substitute.For<IMember>();
+            var loanId = 1;
+
+            var loan = new Loan(book, borrower, DateTime.Today, DateTime.Today.AddDays(1), loanId);
+
+            // Set loan state to pending
+            loan.State = LoanState.PENDING;
+
+            // Call the commit and expect that it will call book.Borrow.
+            loan.Commit(loanId);
+
+            // Just make a general check it was successful and changed state to current.
+            Assert.Equal(LoanState.CURRENT, loan.State);
+
+            // Set loan state to other than pending
+            loan.State = LoanState.COMPLETE;
+
+            var ex = Assert.Throws<InvalidOperationException>(() => loan.Commit(loanId));
+
+            Assert.Equal("Loan cannot be committed unless state is Pending", ex.Message);
+        }
     }
 }

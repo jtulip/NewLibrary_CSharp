@@ -24,6 +24,8 @@ namespace Library.Entities
 
         public void Commit(int loanID)
         {
+            if(this.State != LoanState.PENDING) throw new InvalidOperationException("Loan cannot be committed unless state is Pending");
+
             this.State = LoanState.CURRENT;
 
             this.Book.Borrow(this);

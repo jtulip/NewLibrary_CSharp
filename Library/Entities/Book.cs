@@ -9,6 +9,8 @@ namespace Library.Entities
 {
     public class Book: IBook
     {
+        private ILoan _loan;
+
         public Book(string author, string title, string callNumber, int bookID)
         {
             if (string.IsNullOrWhiteSpace(author)) throw new ArgumentException("Author needs to be provided.");
@@ -26,7 +28,16 @@ namespace Library.Entities
             this.Loan = loan;
         }
 
-        public ILoan Loan { get; private set; }
+        public ILoan Loan
+        {
+            get
+            {
+                // Return null if book not ON_LOAN.
+                return this.State != BookState.ON_LOAN ? null : _loan;
+            }
+            private set { _loan = value; }
+        }
+
         public void ReturnBook(bool damaged)
         {
             throw new NotImplementedException();

@@ -86,6 +86,9 @@ namespace Library.Tests
             // Associate the book with the loan.
             book.Borrow(loan);
 
+            // Set book state to ON_LOAN - affected by GetLoanFromBookReturnsNullIfBookIsNotON_LOAN()
+            book.State = BookState.ON_LOAN;
+
             Assert.Equal(loan, book.Loan);
         }
 
@@ -103,5 +106,56 @@ namespace Library.Tests
             Assert.Equal("Cannot borrow a book that is not available", ex.Message);
         }
 
+        [Fact]
+        public void CanGetLoanFromBook()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var loan = Substitute.For<ILoan>();
+
+            // Associate the book with the loan.
+            book.Borrow(loan);
+
+            // Set book state to ON_LOAN - affected by GetLoanFromBookReturnsNullIfBookIsNotON_LOAN()
+            book.State = BookState.ON_LOAN;
+
+            // Testing the getter on the book.
+            var loanRetrieved = book.Loan;
+
+            Assert.Equal(loan, loanRetrieved);
+        }
+
+        [Fact]
+        public void GetLoanFromBookReturnsNullIfBookIsNotON_LOAN()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            // Testing the getter on the book.
+            var loanRetrieved = book.Loan;
+
+            // Make sure the book returns null when no loan associated.
+            Assert.Null(loanRetrieved);
+
+            var loan = Substitute.For<ILoan>();
+
+            // Associate the book with the loan.
+            book.Borrow(loan);
+
+            // Make sure the loan comes back if it is on loan.
+            book.State = BookState.ON_LOAN;
+
+            loanRetrieved = book.Loan;
+
+            // Make sure the loan retrieved is the same one loaned out.
+            Assert.Equal(loan, loanRetrieved);
+
+            // Set the loan state to not ON_LOAN.
+            book.State = BookState.AVAILABLE;
+
+            // Make sure null is returned if book is not ON_LOAN.
+            loanRetrieved = book.Loan;
+
+            Assert.Null(loanRetrieved);
+        }
     }
 }

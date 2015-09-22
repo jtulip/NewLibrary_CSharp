@@ -96,7 +96,7 @@ namespace Library.Tests
         public void BorrowBookThrowsRuntimeExceptionIfBookIsNotCurrentlyAvailable()
         {
             // Set book state to something other than Available.
-            var book = new Book("author", "title", "call number", 1) { State = BookState.LOST };
+            var book = new Book("author", "title", "call number", 1) {State = BookState.LOST};
 
             var loan = Substitute.For<ILoan>();
 
@@ -330,8 +330,16 @@ namespace Library.Tests
 
             Assert.Equal(ex1.Message, ex2.Message);
             Assert.Equal("Book cannot be disposed in its current state", ex2.Message);
+        }
 
+        [Fact]
+        public void CanGetState()
+        {
+            var book = new Book("author", "title", "call number", 1);
 
+            book.State = BookState.AVAILABLE;
+
+            Assert.Equal(BookState.AVAILABLE, book.State);
         }
     }
 }

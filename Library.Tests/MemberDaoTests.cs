@@ -158,5 +158,59 @@ namespace Library.Tests
 
             Assert.Null(member);
         }
+
+        [Fact]
+        public void CanGetMemberByLastName()
+        {
+            var helper = Substitute.For<IMemberHelper>();
+
+            var memberDao = new MemberDao(helper);
+
+            var firstName = "first";
+            var lastName = "last";
+            var contactPhone = "phone";
+            var emailAddress = "email address";
+
+            memberDao.MemberList = new List<IMember>
+            {
+                new Member("one", "two", "three", "four", 1),
+                new Member(firstName, lastName, contactPhone, emailAddress, 2),
+                new Member("one", "two", "three", "four", 3),
+            };
+
+            var member = memberDao.FindMembersByLastName(lastName).Single();
+
+            Assert.NotNull(member);
+
+            Assert.Equal(2, member.ID);
+            Assert.Equal(firstName, member.FirstName);
+            Assert.Equal(lastName, member.LastName);
+            Assert.Equal(contactPhone, member.ContactPhone);
+            Assert.Equal(emailAddress, member.EmailAddress);
+        }
+
+        [Fact]
+        public void GetMemberByLastNameReturnsNullIfNotFound()
+        {
+            var helper = Substitute.For<IMemberHelper>();
+
+            var memberDao = new MemberDao(helper);
+
+            var firstName = "first";
+            var lastName = "last";
+            var contactPhone = "phone";
+            var emailAddress = "email address";
+
+            memberDao.MemberList = new List<IMember>
+            {
+                new Member("one", "two", "three", "four", 1),
+                new Member("one", "two", "three", "four", 3),
+            };
+
+            var list = memberDao.FindMembersByLastName(lastName);
+
+            Assert.NotNull(list); // Shouldn't be null, should be an empty collection.
+            Assert.Empty(list);
+        }
     }
 }

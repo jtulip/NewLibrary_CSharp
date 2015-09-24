@@ -261,5 +261,16 @@ namespace Library.Tests
 
             Assert.Equal("Cannot check Over Due if Loan is not Current or Overdue", ex.Message);
         }
+
+        [Fact]
+        public void CanGetBorrower()
+        {
+            var book = Substitute.For<IBook>();
+            var borrower = Substitute.For<IMember>();
+
+            var loan = new Loan(book, borrower, DateTime.Today, DateTime.Today.AddDays(1));
+
+            Assert.Equal(borrower, loan.Borrower);
+        }
     }
 }

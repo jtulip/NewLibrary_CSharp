@@ -272,5 +272,17 @@ namespace Library.Tests
 
             Assert.Equal(borrower, loan.Borrower);
         }
+
+        [Fact]
+        public void CanGetBook()
+        {
+            var book = Substitute.For<IBook>();
+            var borrower = Substitute.For<IMember>();
+
+            var loan = new Loan(book, borrower, DateTime.Today, DateTime.Today.AddDays(1));
+
+            Assert.Equal(book, loan.Book);
+        }
+
     }
 }

@@ -74,11 +74,7 @@ namespace Library.Tests
             Assert.Equal(book, result.Book);
             Assert.Equal(member, result.Borrower);
 
-            Assert.Equal(1, loanDao.LoanList.Count);
-
-            var loan = loanDao.LoanList[0];
-
-            Assert.Equal(loan, result);
+            // We don't want to store until we commit the loan.
         }
 
         [Fact]

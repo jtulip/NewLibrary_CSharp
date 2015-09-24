@@ -29,8 +29,6 @@ namespace Library.Daos
 
             var loan = _helper.MakeLoan(book, borrower, borrowDate, dueDate);
 
-            this.LoanList.Add(loan);
-
             return loan;
         }
 

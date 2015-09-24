@@ -13,13 +13,22 @@ namespace Library.Daos
         public LoanDao(ILoanHelper helper)
         {
             if(helper == null) throw new ArgumentException("Helper must be provided when creating LoanDao");
+
+            _helper = helper;
+
+            this.LoanList = new List<ILoan>();
         }
 
         public List<ILoan> LoanList { get; }
+        private ILoanHelper _helper { get; }
 
         public ILoan CreateLoan(IMember borrower, IBook book, DateTime borrowDate, DateTime dueDate)
         {
-            throw new NotImplementedException();
+            var loan = _helper.MakeLoan(book, borrower, borrowDate, dueDate);
+
+            this.LoanList.Add(loan);
+
+            return loan;
         }
 
         public void CommitLoan(ILoan loan)

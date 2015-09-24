@@ -110,5 +110,53 @@ namespace Library.Tests
                 Assert.Equal(id, result.ID);
             }
         }
+
+        [Fact]
+        public void CanGetMemberById()
+        {
+            var helper = Substitute.For<IMemberHelper>();
+
+            var memberDao = new MemberDao(helper);
+
+            var firstName = "first";
+            var lastName = "last";
+            var contactPhone = "phone";
+            var emailAddress = "email address";
+
+            memberDao.MemberList = new List<IMember>
+            {
+                new Member("one", "two", "three", "four", 1),
+                new Member(firstName, lastName, contactPhone, emailAddress, 2),
+                new Member("one", "two", "three", "four", 3),
+            };
+
+            var member = memberDao.GetMemberByID(2);
+
+            Assert.NotNull(member);
+
+            Assert.Equal(2, member.ID);
+            Assert.Equal(firstName, member.FirstName);
+            Assert.Equal(lastName, member.LastName);
+            Assert.Equal(contactPhone, member.ContactPhone);
+            Assert.Equal(emailAddress, member.EmailAddress);
+        }
+
+        [Fact]
+        public void GetMemberByIdReturnsNullIfNotFound()
+        {
+            var helper = Substitute.For<IMemberHelper>();
+
+            var memberDao = new MemberDao(helper);
+
+            memberDao.MemberList = new List<IMember>
+            {
+                new Member("one", "two", "three", "four", 1),
+                new Member("one", "two", "three", "four", 3),
+            };
+
+            var member = memberDao.GetMemberByID(2);
+
+            Assert.Null(member);
+        }
     }
 }

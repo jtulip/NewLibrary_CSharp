@@ -20,7 +20,7 @@ namespace Library.Daos
         }
 
         private IMemberHelper _helper { get; }
-        public List<IMember> MemberList { get; }
+        public List<IMember> MemberList { get; internal set; }
 
         public IMember AddMember(string firstName, string lastName, string contactPhone, string emailAddress)
         {
@@ -35,7 +35,7 @@ namespace Library.Daos
 
         public IMember GetMemberByID(int id)
         {
-            throw new NotImplementedException();
+            return this.MemberList.SingleOrDefault(m => m.ID == id);
         }
         
         public List<IMember> FindMembersByLastName(string lastName)

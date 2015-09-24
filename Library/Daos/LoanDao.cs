@@ -66,7 +66,7 @@ namespace Library.Daos
 
         public List<ILoan> FindOverDueLoans()
         {
-            throw new NotImplementedException();
+            return this.LoanList.Where(l => l.State == LoanState.OVERDUE).ToList();
         }
     }
 }

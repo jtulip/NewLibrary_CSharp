@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Library.Daos;
+using Library.Interfaces.Daos;
 using Library.Interfaces.Entities;
 using NSubstitute;
 using Xunit;
@@ -29,6 +30,20 @@ namespace Library.Tests
             var ex = Assert.Throws<ArgumentException>(() => { var loanDao = new LoanDao(null); });
 
             Assert.Equal("Helper must be provided when creating LoanDao", ex.Message);
+        }
+
+        [Fact]
+        public void LoanDaoImplementsILoanDAOInterface()
+        {
+            var helper = Substitute.For<ILoanHelper>();
+
+            var loanDao = new LoanDao(helper);
+
+            Assert.IsAssignableFrom<ILoanDAO>(loanDao);
+
+            var typedMember = loanDao as ILoanDAO;
+
+            Assert.NotNull(typedMember);
         }
     }
 }

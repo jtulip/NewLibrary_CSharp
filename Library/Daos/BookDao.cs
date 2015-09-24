@@ -13,11 +13,21 @@ namespace Library.Daos
         public BookDao(IBookHelper helper)
         {
             if(helper == null) throw new ArgumentException("Helper must be provided when creating BookDao");
+
+            this.BookList = new List<IBook>();
+
+            _helper = helper;
         }
+
+        private IBookHelper _helper { get; set; }
 
         public IBook AddBook(string author, string title, string callNo)
         {
-            throw new NotImplementedException();
+            var book = _helper.MakeBook(author, title, callNo, 1);
+
+            this.BookList.Add(book);
+
+            return book;
         }
 
         public IBook GetBookByID(int id)

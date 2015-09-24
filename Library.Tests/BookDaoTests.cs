@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Library.Daos;
+using Library.Entities;
 using Library.Interfaces.Daos;
 using Library.Interfaces.Entities;
 using NSubstitute;
@@ -45,6 +46,41 @@ namespace Library.Tests
             var typedMember = bookDao as IBookDAO;
 
             Assert.NotNull(typedMember);
+        }
+
+        [Fact]
+        public void CanAddBook()
+        {
+            var helper = Substitute.For<IBookHelper>();
+
+            var bookDao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNo = "callNo";
+
+            // Uses Helper to create a new book with a unique book ID.
+            // Adds the book to a collection of books and returns new book.
+            Assert.Equal(0, bookDao.BookList.Count);
+
+            // Tell the mock what to return when it is called.
+            helper.MakeBook(author, title, callNo, Arg.Any<int>()).Returns(new Book(author, title, callNo, 1));
+
+            var result = bookDao.AddBook(author, title, callNo);
+
+            // Assert that the mock's MakeBook method was called.
+            helper.Received().MakeBook(author, title, callNo, Arg.Any<int>()); 
+
+            Assert.NotNull(result);
+            Assert.Equal(author, result.Author);
+            Assert.Equal(title, result.Title);
+            Assert.Equal(callNo, result.CallNumber);
+
+            Assert.Equal(1, bookDao.BookList.Count);
+
+            var book = bookDao.BookList[0];
+
+            Assert.Equal(book, result);
         }
     }
 }

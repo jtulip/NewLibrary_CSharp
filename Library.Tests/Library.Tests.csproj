@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BookDaoTests.cs" />
     <Compile Include="BookTests.cs" />
     <Compile Include="LoanTests.cs" />
     <Compile Include="MemberTests.cs" />

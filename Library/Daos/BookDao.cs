@@ -45,7 +45,7 @@ namespace Library.Daos
 
         public List<IBook> FindBooksByTitle(string title)
         {
-            throw new NotImplementedException();
+            return this.BookList.Where(b => b.Title == title).ToList();
         }
 
         public List<IBook> FindBooksByAuthorTitle(string author, string title)

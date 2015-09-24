@@ -207,5 +207,57 @@ namespace Library.Tests
             Assert.NotNull(list);
             Assert.Empty(list);
         }
+
+        [Fact]
+        public void CanGetBookByTitle()
+        {
+            var helper = Substitute.For<IBookHelper>();
+
+            var bookDao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNo = "callNo";
+
+            bookDao.BookList = new List<IBook>
+            {
+                new Book("one", "two", "three", 1),
+                new Book(author, title, callNo, 2),
+                new Book("one", "two", "three", 3),
+            };
+
+            var book = bookDao.FindBooksByTitle(title).Single();
+
+            Assert.NotNull(book);
+
+            Assert.Equal(2, book.ID);
+            Assert.Equal(author, book.Author);
+            Assert.Equal(title, book.Title);
+            Assert.Equal(callNo, book.CallNumber);
+        }
+
+        [Fact]
+        public void GetBookByTitleReturnsEmptyList()
+        {
+            var helper = Substitute.For<IBookHelper>();
+
+            var bookDao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNo = "callNo";
+
+            bookDao.BookList = new List<IBook>
+            {
+                new Book("one", "two", "three", 1),
+                new Book(author, title, callNo, 2),
+                new Book("one", "two", "three", 3),
+            };
+
+            var list = bookDao.FindBooksByTitle("The Twits");
+
+            Assert.NotNull(list);
+            Assert.Empty(list);
+        }
     }
 }

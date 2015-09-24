@@ -11,6 +11,7 @@ namespace Library.Daos
     {
         public LoanDao(ILoanHelper helper)
         {
+            if(helper == null) throw new ArgumentException("Helper must be provided when creating LoanDao");
         }
     }
 }

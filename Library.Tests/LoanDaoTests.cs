@@ -22,5 +22,13 @@ namespace Library.Tests
 
             Assert.NotNull(loanDao);
         }
+
+        [Fact]
+        public void CreateLoanDaoThrowsExceptionOnNullParameter()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => { var loanDao = new LoanDao(null); });
+
+            Assert.Equal("Helper must be provided when creating LoanDao", ex.Message);
+        }
     }
 }

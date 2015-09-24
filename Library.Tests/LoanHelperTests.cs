@@ -20,5 +20,17 @@ namespace Library.Tests
 
             Assert.NotNull(helper);
         }
+
+        [Fact]
+        public void LoanHelperImplementsILoanHelperInterface()
+        {
+            var helper = new LoanHelper();
+
+            Assert.IsAssignableFrom<ILoanHelper>(helper);
+
+            var typedMember = helper as ILoanHelper;
+
+            Assert.NotNull(typedMember);
+        }
     }
 }

@@ -209,5 +209,30 @@ namespace Library.Tests
             Assert.NotNull(loans);
             Assert.Equal(storedLoan, loans[0]);
         }
+
+        [Fact]
+        public void CanGetLoansByBorrower()
+        {
+            var helper = Substitute.For<ILoanHelper>();
+
+            var loanDao = new LoanDao(helper);
+
+            var borrower = new Member("Borris", "Natasha", "phone", "email", 1);
+
+            var storedLoan = new Loan(new Book("author", "title", "call", 1), borrower, DateTime.Today,
+                DateTime.Today.AddDays(7));
+
+            loanDao.LoanList = new List<ILoan>
+            {
+                new Loan(new Book("author", "title", "call", 1), new Member("first", "last", "phone", "email", 1), DateTime.Today, DateTime.Today.AddDays(7)),
+                new Loan(new Book("author", "title", "call", 1), new Member("first", "last", "phone", "email", 1), DateTime.Today, DateTime.Today.AddDays(7)),
+                storedLoan
+            };
+
+            var loans = loanDao.FindLoansByBorrower(borrower);
+
+            Assert.NotNull(loans);
+            Assert.Equal(storedLoan, loans[0]);
+        }
     }
 }

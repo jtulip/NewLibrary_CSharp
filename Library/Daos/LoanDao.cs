@@ -48,7 +48,7 @@ namespace Library.Daos
         
         public List<ILoan> FindLoansByBorrower(IMember borrower)
         {
-            throw new NotImplementedException();
+            return this.LoanList.Where(l => l.Borrower == borrower).ToList();
         }
 
         public List<ILoan> FindLoansByBookTitle(string title)

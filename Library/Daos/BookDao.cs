@@ -40,7 +40,7 @@ namespace Library.Daos
         public List<IBook> BookList { get; internal set; }
         public List<IBook> FindBooksByAuthor(string author)
         {
-            throw new NotImplementedException();
+            return this.BookList.Where(b => b.Author == author).ToList();
         }
 
         public List<IBook> FindBooksByTitle(string title)

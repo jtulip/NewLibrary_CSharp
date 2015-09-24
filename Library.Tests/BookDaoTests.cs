@@ -259,5 +259,59 @@ namespace Library.Tests
             Assert.NotNull(list);
             Assert.Empty(list);
         }
+
+        [Fact]
+        public void CanGetBookByAuthorAndTitle()
+        {
+            var helper = Substitute.For<IBookHelper>();
+
+            var bookDao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNo = "callNo";
+
+            bookDao.BookList = new List<IBook>
+            {
+                new Book("one", "two", "three", 1),
+                new Book(author, title, callNo, 2),
+                new Book("one", "two", "three", 3),
+                new Book(author, "two", callNo, 4),
+            };
+
+            var book = bookDao.FindBooksByAuthorTitle(author, title).Single();
+
+            Assert.NotNull(book);
+
+            Assert.Equal(2, book.ID);
+            Assert.Equal(author, book.Author);
+            Assert.Equal(title, book.Title);
+            Assert.Equal(callNo, book.CallNumber);
+        }
+
+        [Fact]
+        public void GetBookByAuthorAndTitleReturnsEmptyList()
+        {
+            var helper = Substitute.For<IBookHelper>();
+
+            var bookDao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNo = "callNo";
+
+            bookDao.BookList = new List<IBook>
+            {
+                new Book("one", "two", "three", 1),
+                new Book(author, title, callNo, 2),
+                new Book("one", "two", "three", 3),
+                new Book(author, "two", callNo, 4),
+            };
+
+            var list = bookDao.FindBooksByAuthorTitle("Dahl", "The Twits");
+
+            Assert.NotNull(list);
+            Assert.Empty(list);
+        }
     }
 }

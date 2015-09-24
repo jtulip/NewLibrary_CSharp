@@ -116,6 +116,7 @@
       <DependentUpon>ScanBookControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Daos\BookDao.cs" />
+    <Compile Include="Daos\LoanDao.cs" />
     <Compile Include="Daos\MemberDao.cs" />
     <Compile Include="Entities\Book.cs" />
     <Compile Include="Entities\Loan.cs" />

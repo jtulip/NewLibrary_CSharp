@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="BookDaoTests.cs" />
     <Compile Include="BookTests.cs" />
+    <Compile Include="LoanDaoTests.cs" />
     <Compile Include="LoanTests.cs" />
     <Compile Include="MemberDaoTests.cs" />
     <Compile Include="MemberTests.cs" />

@@ -234,5 +234,41 @@ namespace Library.Tests
             Assert.NotNull(loans);
             Assert.Equal(storedLoan, loans[0]);
         }
+
+        [Fact]
+        public void CanUpdateOverdueStatus()
+        {
+            var helper = Substitute.For<ILoanHelper>();
+            var book = Substitute.For<IBook>();
+            var member = Substitute.For<IMember>();
+
+            var loanDao = new LoanDao(helper);
+
+            var borrowDate = DateTime.Today.AddMonths(-1);
+            var dueDate = DateTime.Today.AddMonths(-1).AddDays(7);
+
+            // Adds the member to a collection of members and returns new member.
+            Assert.Equal(0, loanDao.LoanList.Count);
+
+            // Tell the mock what to return when it is called.
+            helper.MakeLoan(book, member, borrowDate, dueDate).Returns(new Loan(book, member, borrowDate, dueDate));
+
+            var loan = loanDao.CreateLoan(member, book, borrowDate, dueDate);
+
+            // Assert that the mock's MakeLoan method was called.
+            helper.Received().MakeLoan(book, member, borrowDate, dueDate);
+
+            loanDao.CommitLoan(loan);
+
+            // Store two more for iteration
+            loanDao.CommitLoan(loanDao.CreateLoan(member, book, DateTime.Today, DateTime.Today.AddDays(7)));
+            loanDao.CommitLoan(loanDao.CreateLoan(member, book, DateTime.Today, DateTime.Today.AddDays(7)));
+
+            loanDao.UpdateOverDueStatus(DateTime.Today);
+
+            Assert.Contains(loan, loanDao.LoanList);
+
+            Assert.Equal(LoanState.OVERDUE, loan.State);
+        }
     }
 }

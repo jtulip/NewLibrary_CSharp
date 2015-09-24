@@ -58,7 +58,10 @@ namespace Library.Daos
 
         public void UpdateOverDueStatus(DateTime currentDate)
         {
-            throw new NotImplementedException();
+            foreach (var loan in this.LoanList)
+            {
+                loan.CheckOverDue(currentDate);
+            }
         }
 
         public List<ILoan> FindOverDueLoans()

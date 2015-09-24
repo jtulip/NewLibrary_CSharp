@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using Library.Entities;
 using Library.Interfaces.Entities;
 using NSubstitute;
 using Xunit;
 
-namespace Library.Tests
+namespace Library.Tests.UnitTests
 {
     [Trait("Category", "Member Tests")]
     public class MemberTests

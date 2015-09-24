@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using Library.Daos;
 using Library.Entities;
 using Library.Interfaces.Daos;
@@ -11,7 +8,7 @@ using Library.Interfaces.Entities;
 using NSubstitute;
 using Xunit;
 
-namespace Library.Tests
+namespace Library.Tests.UnitTests
 {
     [Trait("Category", "Book Tests")]
     public class BookDaoTests

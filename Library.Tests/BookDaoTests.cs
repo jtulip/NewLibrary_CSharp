@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Library.Daos;
+using Library.Interfaces.Daos;
 using Library.Interfaces.Entities;
 using NSubstitute;
 using Xunit;
@@ -30,6 +31,20 @@ namespace Library.Tests
             var ex = Assert.Throws<ArgumentException>(() => { var bookDao = new BookDao(null); });
 
             Assert.Equal("Helper must be provided when creating BookDao", ex.Message);
+        }
+
+        [Fact]
+        public void BookDaoImplementsIBookDAOInterface()
+        {
+            var helper = Substitute.For<IBookHelper>();
+
+            var bookDao = new BookDao(helper);
+
+            Assert.IsAssignableFrom<IBookDAO>(bookDao);
+
+            var typedMember = bookDao as IBookDAO;
+
+            Assert.NotNull(typedMember);
         }
     }
 }

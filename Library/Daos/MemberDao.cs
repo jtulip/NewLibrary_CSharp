@@ -45,7 +45,7 @@ namespace Library.Daos
 
         public List<IMember> FindMembersByEmailAddress(string emailAddress)
         {
-            throw new NotImplementedException();
+            return this.MemberList.Where(m => m.EmailAddress == emailAddress).ToList();
         }
 
         public List<IMember> FindMembersByNames(string firstName, string lastName)

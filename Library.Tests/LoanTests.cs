@@ -20,11 +20,14 @@ namespace Library.Tests
             var member = Substitute.For<IMember>();
             DateTime borrowDate = DateTime.Today;
             DateTime dueDate = DateTime.Today;
-            int loanID = 1;
 
-            var loan = new Loan(book, member, borrowDate, dueDate, loanID);
+            // Jim has stated that the initial spec is incorrect and it should not take an ID, but should return a default ID of 0.
+            var loan = new Loan(book, member, borrowDate, dueDate);
 
             Assert.NotNull(loan);
+
+            // By new rule, assert ID = 0.
+            Assert.Equal(0, loan.ID);
         }
 
         [Fact]
@@ -38,14 +41,14 @@ namespace Library.Tests
 
             var ex = Assert.Throws<ArgumentException>(() =>
             {
-                var loan = new Loan(null, member, borrowDate, dueDate, loanID);
+                var loan = new Loan(null, member, borrowDate, dueDate);
             });
 
             Assert.Equal("Book needs to be provided", ex.Message);
 
             ex = Assert.Throws<ArgumentException>(() =>
             {
-                new Loan(book, null, borrowDate, dueDate, loanID);
+                new Loan(book, null, borrowDate, dueDate);
             });
 
             Assert.Equal("Member needs to be provided", ex.Message);
@@ -53,7 +56,7 @@ namespace Library.Tests
             ex = Assert.Throws<ArgumentException>(() =>
             {
                 // DateTime can't be null in .NET
-                new Loan(book, member, DateTime.MinValue, dueDate, loanID);
+                new Loan(book, member, DateTime.MinValue, dueDate);
             });
 
             Assert.Equal("Borrow date needs to be provided", ex.Message);
@@ -61,7 +64,7 @@ namespace Library.Tests
             ex = Assert.Throws<ArgumentException>(() =>
             {
                 // DateTime can't be null in .NET
-                new Loan(book, member, borrowDate, DateTime.MinValue, loanID);
+                new Loan(book, member, borrowDate, DateTime.MinValue);
             });
 
             Assert.Equal("Due date needs to be provided", ex.Message);
@@ -69,18 +72,10 @@ namespace Library.Tests
             ex = Assert.Throws<ArgumentException>(() =>
             {
                 // DateTime can't be null in .NET
-                new Loan(book, member, borrowDate, borrowDate.AddDays(-1), loanID);
+                new Loan(book, member, borrowDate, borrowDate.AddDays(-1));
             });
 
             Assert.Equal("Due date cannot be before Borrow date", ex.Message);
-
-            ex = Assert.Throws<ArgumentException>(() =>
-            {
-                // DateTime can't be null in .NET
-                new Loan(book, member, borrowDate, dueDate, 0);
-            });
-
-            Assert.Equal("ID must be greater than 0", ex.Message);
         }
 
         [Fact]
@@ -90,7 +85,7 @@ namespace Library.Tests
             var member = Substitute.For<IMember>();
             var loanId = 1;
 
-            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(1), loanId);
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(1));
 
             loan.Commit(loanId);
         }
@@ -102,7 +97,7 @@ namespace Library.Tests
             var member = Substitute.For<IMember>();
             var loanId = 1;
 
-            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(1), loanId);
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(1));
 
             loan.Commit(loanId);
 
@@ -116,7 +111,7 @@ namespace Library.Tests
             var member = Substitute.For<IMember>();
             var loanId = 1;
 
-            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(1), loanId);
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(1));
 
             // Call the commit and expect that it will call book.Borrow.
             loan.Commit(loanId);
@@ -132,7 +127,7 @@ namespace Library.Tests
             var borrower = Substitute.For<IMember>();
             var loanId = 1;
 
-            var loan = new Loan(book, borrower, DateTime.Today, DateTime.Today.AddDays(1), loanId);
+            var loan = new Loan(book, borrower, DateTime.Today, DateTime.Today.AddDays(1));
 
             // Call the commit and expect that it will call book.Borrow.
             loan.Commit(loanId);
@@ -148,7 +143,7 @@ namespace Library.Tests
             var borrower = Substitute.For<IMember>();
             var loanId = 1;
 
-            var loan = new Loan(book, borrower, DateTime.Today, DateTime.Today.AddDays(1), loanId);
+            var loan = new Loan(book, borrower, DateTime.Today, DateTime.Today.AddDays(1));
 
             // Set loan state to pending
             loan.State = LoanState.PENDING;

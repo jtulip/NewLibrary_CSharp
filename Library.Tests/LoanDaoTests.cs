@@ -59,7 +59,6 @@ namespace Library.Tests
             var borrowDate = DateTime.Today;
             var dueDate = DateTime.Today.AddDays(7);
 
-            // Uses Helper to create a new member with a unique member ID.
             // Adds the member to a collection of members and returns new member.
             Assert.Equal(0, loanDao.LoanList.Count);
 
@@ -68,7 +67,7 @@ namespace Library.Tests
 
             var result = loanDao.CreateLoan(member, book, borrowDate, dueDate);
 
-            // Assert that the mock's MakeMember method was called.
+            // Assert that the mock's MakeLoan method was called.
             helper.Received().MakeLoan(book, member, borrowDate, dueDate);
 
             Assert.NotNull(result);
@@ -80,6 +79,33 @@ namespace Library.Tests
             var loan = loanDao.LoanList[0];
 
             Assert.Equal(loan, result);
+        }
+
+        [Fact]
+        public void CreateLoanThrowsNullWhenBookOrMemberIsNull()
+        {
+            var helper = Substitute.For<ILoanHelper>();
+            var book = Substitute.For<IBook>();
+            var member = Substitute.For<IMember>();
+
+            var loanDao = new LoanDao(helper);
+
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            var ex1 = Assert.Throws<ArgumentException>(() =>
+            {
+                var result = loanDao.CreateLoan(null, book, borrowDate, dueDate);
+            });
+
+            Assert.Equal("A Member must be provided to create a loan", ex1.Message);
+
+            var ex2 = Assert.Throws<ArgumentException>(() =>
+            {
+                var result = loanDao.CreateLoan(member, null, borrowDate, dueDate);
+            });
+
+            Assert.Equal("A Book must be provided to create a loan", ex2.Message);
         }
     }
 }

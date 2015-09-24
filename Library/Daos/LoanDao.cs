@@ -24,6 +24,9 @@ namespace Library.Daos
 
         public ILoan CreateLoan(IMember borrower, IBook book, DateTime borrowDate, DateTime dueDate)
         {
+            if(borrower == null) throw new ArgumentException("A Member must be provided to create a loan");
+            if(book == null) throw new ArgumentException("A Book must be provided to create a loan");
+
             var loan = _helper.MakeLoan(book, borrower, borrowDate, dueDate);
 
             this.LoanList.Add(loan);

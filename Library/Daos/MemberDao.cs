@@ -50,7 +50,7 @@ namespace Library.Daos
 
         public List<IMember> FindMembersByNames(string firstName, string lastName)
         {
-            throw new NotImplementedException();
+            return this.MemberList.Where(m => m.FirstName == firstName && m.LastName == lastName).ToList();
         }
     }
 }

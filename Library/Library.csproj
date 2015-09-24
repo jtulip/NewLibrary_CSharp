@@ -119,6 +119,7 @@
     <Compile Include="Daos\LoanDao.cs" />
     <Compile Include="Daos\MemberDao.cs" />
     <Compile Include="Entities\Book.cs" />
+    <Compile Include="Entities\BookHelper.cs" />
     <Compile Include="Entities\Loan.cs" />
     <Compile Include="Entities\LoanHelper.cs" />
     <Compile Include="Entities\Member.cs" />

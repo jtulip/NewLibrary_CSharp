@@ -35,6 +35,7 @@ namespace Library.Entities
 
         public void Complete()
         {
+            this.State = LoanState.COMPLETE;
         }
 
         public bool IsOverDue { get; }

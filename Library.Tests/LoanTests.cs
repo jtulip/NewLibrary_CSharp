@@ -185,5 +185,24 @@ namespace Library.Tests
 
             Assert.Equal(LoanState.COMPLETE, loan.State);
         }
+
+        [Theory]
+        [InlineData(LoanState.CURRENT)]
+        [InlineData(LoanState.OVERDUE)]
+        public void CommitLoanThrowsRuntimeException(LoanState state)
+        {
+            var book = Substitute.For<IBook>();
+            var borrower = Substitute.For<IMember>();
+
+            var loan = new Loan(book, borrower, DateTime.Today, DateTime.Today.AddDays(1));
+
+            // Set the state to one passed in
+            loan.State = state;
+
+            var ex = Assert.Throws<InvalidOperationException>(() => loan.Complete());
+
+            Assert.Equal("Cannot complete a loan if it's Current or Overdue", ex.Message);
+        }
+
     }
 }

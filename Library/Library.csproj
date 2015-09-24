@@ -123,6 +123,7 @@
     <Compile Include="Entities\Loan.cs" />
     <Compile Include="Entities\LoanHelper.cs" />
     <Compile Include="Entities\Member.cs" />
+    <Compile Include="Entities\MemberHelper.cs" />
     <Compile Include="Hardware\CardReader.xaml.cs">
       <DependentUpon>CardReader.xaml</DependentUpon>
     </Compile>

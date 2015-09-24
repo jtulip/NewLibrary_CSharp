@@ -45,6 +45,8 @@ namespace Library.Entities
 
         public bool CheckOverDue(DateTime currentDate)
         {
+            if(this.State != LoanState.CURRENT && this.State != LoanState.OVERDUE) throw new InvalidOperationException("Cannot check Over Due if Loan is not Current or Overdue");
+
             if (this.DueDate >= currentDate) return false;
 
             this.State = LoanState.OVERDUE;

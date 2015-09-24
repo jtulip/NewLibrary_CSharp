@@ -232,6 +232,9 @@ namespace Library.Tests
 
             var loan = new Loan(book, borrower, DateTime.Today.AddMonths(-1), dueDate);
 
+            // Set loan state to current so it clears next test (Must be Current or Overdue).
+            loan.State = LoanState.CURRENT;
+
             Assert.True(dueDate < DateTime.Today);
 
             // Check if it is overdue as of Today.
@@ -240,6 +243,23 @@ namespace Library.Tests
             // Make sure the check set the loan state to overdue.
             Assert.Equal(LoanState.OVERDUE, loan.State);
             Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData(LoanState.PENDING)]
+        [InlineData(LoanState.COMPLETE)]
+        public void CheckOverDueThrowsExceptionIfNotCurrentOrOverdue(LoanState state)
+        {
+            var book = Substitute.For<IBook>();
+            var borrower = Substitute.For<IMember>();
+
+            var loan = new Loan(book, borrower, DateTime.Today, DateTime.Today.AddDays(1));
+
+            loan.State = state;
+
+            var ex = Assert.Throws<InvalidOperationException>(() => loan.CheckOverDue(DateTime.Today));
+
+            Assert.Equal("Cannot check Over Due if Loan is not Current or Overdue", ex.Message);
         }
     }
 }

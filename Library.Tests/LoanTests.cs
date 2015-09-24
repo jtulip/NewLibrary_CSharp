@@ -161,5 +161,16 @@ namespace Library.Tests
 
             Assert.Equal("Loan cannot be committed unless state is Pending", ex.Message);
         }
+
+        [Fact]
+        public void CanCompleteLoan()
+        {
+            var book = Substitute.For<IBook>();
+            var borrower = Substitute.For<IMember>();
+
+            var loan = new Loan(book, borrower, DateTime.Today, DateTime.Today.AddDays(1));
+
+            loan.Complete();
+        }
     }
 }

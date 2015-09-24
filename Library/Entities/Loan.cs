@@ -35,7 +35,6 @@ namespace Library.Entities
 
         public void Complete()
         {
-            throw new NotImplementedException();
         }
 
         public bool IsOverDue { get; }

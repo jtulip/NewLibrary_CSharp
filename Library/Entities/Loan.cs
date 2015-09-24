@@ -32,6 +32,8 @@ namespace Library.Entities
 
             this.Book.Borrow(this);
             this.Borrower.AddLoan(this);
+
+            this.ID = loanID;
         }
 
         public void Complete()
@@ -56,7 +58,7 @@ namespace Library.Entities
 
         public IMember Borrower { get; }
         public IBook Book { get; }
-        public int ID { get; }
+        public int ID { get; private set; }
         public LoanState State { get; internal set; }
         public DateTime DueDate { get; private set; }
     }

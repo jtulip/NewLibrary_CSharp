@@ -34,7 +34,11 @@ namespace Library.Daos
 
         public void CommitLoan(ILoan loan)
         {
-            throw new NotImplementedException();
+            var newId = this.LoanList.Count == 0 ? 1 : this.LoanList.Max(l => l.ID) + 1;
+
+            loan.Commit(newId);
+
+            this.LoanList.Add(loan);
         }
 
         public ILoan GetLoanByID(int id)

@@ -103,5 +103,40 @@ namespace Library.Tests
 
             Assert.Equal("A Book must be provided to create a loan", ex2.Message);
         }
+
+        [Fact]
+        public void CanCommitLoan()
+        {
+            var helper = Substitute.For<ILoanHelper>();
+            var book = Substitute.For<IBook>();
+            var member = Substitute.For<IMember>();
+
+            var loanDao = new LoanDao(helper);
+
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            // Adds the member to a collection of members and returns new member.
+            Assert.Equal(0, loanDao.LoanList.Count);
+
+            // Tell the mock what to return when it is called.
+            helper.MakeLoan(book, member, borrowDate, dueDate).Returns(new Loan(book, member, borrowDate, dueDate));
+
+            var loan = loanDao.CreateLoan(member, book, borrowDate, dueDate);
+
+            // Assert that the mock's MakeLoan method was called.
+            helper.Received().MakeLoan(book, member, borrowDate, dueDate);
+
+            loanDao.CommitLoan(loan);
+
+            Assert.NotEqual(0, loan.ID);
+
+            Assert.Equal(1, loanDao.LoanList.Count);
+
+            var stored = loanDao.LoanList[0];
+
+            Assert.Equal(loan, stored);
+
+        }
     }
 }

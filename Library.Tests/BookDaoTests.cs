@@ -82,5 +82,31 @@ namespace Library.Tests
 
             Assert.Equal(book, result);
         }
+
+        [Fact]
+        public void AddBookAssignsUniqueID()
+        {
+            var helper = Substitute.For<IBookHelper>();
+
+            var bookDao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNo = "callNo";
+
+            // Make sure the id increments as books are added.
+            for (var id = 1; id < 10; id++)
+            {
+                helper.MakeBook(author, title, callNo, id).Returns(new Book(author, title, callNo, id));
+
+                var result = bookDao.AddBook(author, title, callNo);
+
+                // Assert that the mock's MakeBook method was called.
+                helper.Received().MakeBook(author, title, callNo, id);
+
+                // Make sure the id of the book is new.
+                Assert.Equal(id, result.ID);
+            }
+        }
     }
 }

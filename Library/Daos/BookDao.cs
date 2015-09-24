@@ -23,7 +23,9 @@ namespace Library.Daos
 
         public IBook AddBook(string author, string title, string callNo)
         {
-            var book = _helper.MakeBook(author, title, callNo, 1);
+            var newId = this.BookList.Count == 0 ? 1 : this.BookList.Max(b => b.ID) + 1;  // If there is a book then set it to max(book id) + 1, otherwise start at 1.
+
+            var book = _helper.MakeBook(author, title, callNo, newId);
 
             this.BookList.Add(book);
 

@@ -53,7 +53,7 @@ namespace Library.Daos
 
         public List<ILoan> FindLoansByBookTitle(string title)
         {
-            throw new NotImplementedException();
+            return this.LoanList.Where(l => l.Book.Title == title).ToList();
         }
 
         public void UpdateOverDueStatus(DateTime currentDate)

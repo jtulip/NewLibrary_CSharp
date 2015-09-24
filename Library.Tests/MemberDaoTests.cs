@@ -83,5 +83,32 @@ namespace Library.Tests
 
             Assert.Equal(member, result);
         }
+
+        [Fact]
+        public void AddMemberAssignsUniqueID()
+        {
+            var helper = Substitute.For<IMemberHelper>();
+
+            var memberDao = new MemberDao(helper);
+
+            var firstName = "first";
+            var lastName = "last";
+            var contactPhone = "phone";
+            var emailAddress = "email address";
+
+            // Make sure the id increments as Members are added.
+            for (var id = 1; id < 10; id++)
+            {
+                helper.MakeMember(firstName, lastName, contactPhone, emailAddress, id).Returns(new Member(firstName, lastName, contactPhone, emailAddress, id));
+
+                var result = memberDao.AddMember(firstName, lastName, contactPhone, emailAddress);
+
+                // Assert that the mock's MakeMember method was called.
+                helper.Received().MakeMember(firstName, lastName, contactPhone, emailAddress, id);
+
+                // Make sure the id of the Member is new.
+                Assert.Equal(id, result.ID);
+            }
+        }
     }
 }

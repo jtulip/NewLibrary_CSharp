@@ -24,7 +24,9 @@ namespace Library.Daos
 
         public IMember AddMember(string firstName, string lastName, string contactPhone, string emailAddress)
         {
-            var member = _helper.MakeMember(firstName, lastName, contactPhone, emailAddress, 1);
+            var newId = this.MemberList.Count == 0 ? 1 : this.MemberList.Max(m => m.ID) + 1;  // If there is a member then set it to max(member id) + 1, otherwise start at 1.
+
+            var member = _helper.MakeMember(firstName, lastName, contactPhone, emailAddress, newId);
 
             this.MemberList.Add(member);
 

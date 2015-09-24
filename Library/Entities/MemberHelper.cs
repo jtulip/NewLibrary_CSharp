@@ -11,7 +11,7 @@ namespace Library.Entities
     {
         public IMember MakeMember(string firstName, string lastName, string contactPhone, string emailAddress, int id)
         {
-            throw new NotImplementedException();
+            return new Member(firstName, lastName, contactPhone, emailAddress, id);
         }
     }
 }

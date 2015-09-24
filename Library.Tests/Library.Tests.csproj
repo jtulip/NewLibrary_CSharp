@@ -67,6 +67,7 @@
     <Compile Include="LoanHelperTests.cs" />
     <Compile Include="LoanTests.cs" />
     <Compile Include="MemberDaoTests.cs" />
+    <Compile Include="MemberHelperTests.cs" />
     <Compile Include="MemberTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

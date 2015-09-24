@@ -23,5 +23,13 @@ namespace Library.Tests
 
             Assert.NotNull(bookDao);
         }
+
+        [Fact]
+        public void CreateBookDaoThrowsExceptionOnNullParameter()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => { var bookDao = new BookDao(null); });
+
+            Assert.Equal("Helper must be provided when creating BookDao", ex.Message);
+        }
     }
 }

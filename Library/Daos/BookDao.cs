@@ -11,7 +11,7 @@ namespace Library.Daos
     {
         public BookDao(IBookHelper helper)
         {
-            
+            if(helper == null) throw new ArgumentException("Helper must be provided when creating BookDao");
         }
     }
 }

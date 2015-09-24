@@ -220,5 +220,26 @@ namespace Library.Tests
 
             Assert.True(loan.IsOverDue);
         }
+
+        [Fact]
+        public void CheckOverDueSetsLoanStateToOverdue()
+        {
+            var book = Substitute.For<IBook>();
+            var borrower = Substitute.For<IMember>();
+
+            // Set DueDate to the past so we can check it is < Today.
+            var dueDate = DateTime.Today.AddMonths(-1).AddDays(1);
+
+            var loan = new Loan(book, borrower, DateTime.Today.AddMonths(-1), dueDate);
+
+            Assert.True(dueDate < DateTime.Today);
+
+            // Check if it is overdue as of Today.
+            var result = loan.CheckOverDue(DateTime.Today);
+
+            // Make sure the check set the loan state to overdue.
+            Assert.Equal(LoanState.OVERDUE, loan.State);
+            Assert.True(result);
+        }
     }
 }

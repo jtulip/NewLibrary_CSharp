@@ -19,6 +19,7 @@ namespace Library.Entities
 
             this.Book = book;
             this.Borrower = member;
+            this.DueDate = dueDate;
 
             this.ID = 0;
         }
@@ -44,12 +45,17 @@ namespace Library.Entities
 
         public bool CheckOverDue(DateTime currentDate)
         {
-            throw new NotImplementedException();
+            if (this.DueDate >= currentDate) return false;
+
+            this.State = LoanState.OVERDUE;
+
+            return true;
         }
 
         public IMember Borrower { get; }
         public IBook Book { get; }
         public int ID { get; }
         public LoanState State { get; internal set; }
+        public DateTime DueDate { get; private set; }
     }
 }

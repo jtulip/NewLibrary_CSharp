@@ -34,10 +34,10 @@ namespace Library.Daos
 
         public IBook GetBookByID(int id)
         {
-            throw new NotImplementedException();
+            return this.BookList.Single(b => b.ID == id);
         }
 
-        public List<IBook> BookList { get; }
+        public List<IBook> BookList { get; internal set; }
         public List<IBook> FindBooksByAuthor(string author)
         {
             throw new NotImplementedException();

@@ -31,5 +31,24 @@ namespace Library.Tests
 
             Assert.NotNull(typedMember);
         }
+
+        [Fact]
+        public void CanMakeBook()
+        {
+            var author = "author";
+            var title = "title";
+            var callNumber = "callNumber";
+            var id = 5;
+
+            var helper = new BookHelper();
+
+            var book = helper.MakeBook(author, title, callNumber, id);
+
+            Assert.NotNull(book);
+            Assert.Equal(id, book.ID);
+            Assert.Equal(author, book.Author);
+            Assert.Equal(title, book.Title);
+            Assert.Equal(callNumber, book.CallNumber);
+        }
     }
 }

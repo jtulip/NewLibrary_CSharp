@@ -11,7 +11,7 @@ namespace Library.Entities
     {
         public IBook MakeBook(string author, string title, string callNumber, int id)
         {
-            throw new NotImplementedException();
+            return new Book(author, title, callNumber, id);
         }
     }
 }

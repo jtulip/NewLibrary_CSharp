@@ -34,7 +34,7 @@ namespace Library.Daos
 
         public IBook GetBookByID(int id)
         {
-            return this.BookList.Single(b => b.ID == id);
+            return this.BookList.SingleOrDefault(b => b.ID == id);
         }
 
         public List<IBook> BookList { get; internal set; }

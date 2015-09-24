@@ -136,5 +136,24 @@ namespace Library.Tests
             Assert.Equal(title, book.Title);
             Assert.Equal(callNo, book.CallNumber);
         }
+
+        [Fact]
+        public void GetBookByIdReturnsNullIfNotFound()
+        {
+            var helper = Substitute.For<IBookHelper>();
+
+            var bookDao = new BookDao(helper);
+
+
+            bookDao.BookList = new List<IBook>
+            {
+                new Book("one", "two", "three", 1),
+                new Book("one", "two", "three", 3),
+            };
+
+            var book = bookDao.GetBookByID(2);
+
+            Assert.Null(book);
+        }
     }
 }

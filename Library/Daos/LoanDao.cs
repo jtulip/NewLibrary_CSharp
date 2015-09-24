@@ -19,7 +19,7 @@ namespace Library.Daos
             this.LoanList = new List<ILoan>();
         }
 
-        public List<ILoan> LoanList { get; }
+        public List<ILoan> LoanList { get; internal set; }
         private ILoanHelper _helper { get; }
 
         public ILoan CreateLoan(IMember borrower, IBook book, DateTime borrowDate, DateTime dueDate)
@@ -43,7 +43,7 @@ namespace Library.Daos
 
         public ILoan GetLoanByID(int id)
         {
-            throw new NotImplementedException();
+            return this.LoanList.SingleOrDefault(l => l.ID == id);
         }
         
         public List<ILoan> FindLoansByBorrower(IMember borrower)

@@ -136,7 +136,54 @@ namespace Library.Tests
             var stored = loanDao.LoanList[0];
 
             Assert.Equal(loan, stored);
-
         }
+
+        [Fact]
+        public void CanGetLoanById()
+        {
+            var helper = Substitute.For<ILoanHelper>();
+
+            var loanDao = new LoanDao(helper);
+
+            var book = Substitute.For<IBook>();
+            var member = Substitute.For<IMember>();
+
+            helper.MakeLoan(book, member, DateTime.Today, DateTime.Today.AddDays(7))
+                .Returns(new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(7)));
+
+            // Commit one we can test.
+            var loan = loanDao.CreateLoan(member, book, DateTime.Today, DateTime.Today.AddDays(7));
+            loanDao.CommitLoan(loan);
+
+            helper.Received().MakeLoan(book, member, DateTime.Today, DateTime.Today.AddDays(7));
+
+            var max = loanDao.LoanList.Max(l => l.ID);
+
+            var result = loanDao.GetLoanByID(max);
+
+            Assert.NotNull(loan);
+
+            Assert.Equal(loan.ID, result.ID);
+            Assert.Equal(loan, result);
+        }
+
+        [Fact]
+        public void GetMemberByIdReturnsNullIfNotFound()
+        {
+            var helper = Substitute.For<ILoanHelper>();
+
+            var loanDao = new LoanDao(helper);
+
+            loanDao.LoanList = new List<ILoan>
+            {
+                new Loan(Substitute.For<IBook>(), Substitute.For<IMember>(), DateTime.Today, DateTime.Today.AddDays(7)),
+                new Loan(Substitute.For<IBook>(), Substitute.For<IMember>(), DateTime.Today, DateTime.Today.AddDays(7)),
+            };
+
+            var loan = loanDao.GetLoanByID(2);
+
+            Assert.Null(loan);
+        }
+
     }
 }

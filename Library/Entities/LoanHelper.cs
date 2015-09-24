@@ -11,7 +11,7 @@ namespace Library.Entities
     {
         public ILoan MakeLoan(IBook book, IMember borrower, DateTime borrowDate, DateTime dueDate)
         {
-            throw new NotImplementedException();
+            return new Loan(book, borrower, borrowDate, dueDate);
         }
     }
 }

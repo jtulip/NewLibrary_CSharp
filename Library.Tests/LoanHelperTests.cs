@@ -14,7 +14,7 @@ namespace Library.Tests
     public class LoanHelperTests
     {
         [Fact]
-        public void CanMakeLoan()
+        public void CanCreateLoanHelper()
         {
             var helper = new LoanHelper();
 
@@ -31,6 +31,24 @@ namespace Library.Tests
             var typedMember = helper as ILoanHelper;
 
             Assert.NotNull(typedMember);
+        }
+
+        [Fact]
+        public void CanMakeLoan()
+        {
+            var book = Substitute.For<IBook>();
+            var borrower = Substitute.For<IMember>();
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            var helper = new LoanHelper();
+
+            var loan = helper.MakeLoan(book, borrower, borrowDate, dueDate);
+
+            Assert.NotNull(loan);
+            Assert.Equal(0, loan.ID);
+            Assert.Equal(book, loan.Book);
+            Assert.Equal(borrower, loan.Borrower);
         }
     }
 }

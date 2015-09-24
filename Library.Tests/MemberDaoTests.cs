@@ -22,5 +22,15 @@ namespace Library.Tests
 
             Assert.NotNull(memberDao);
         }
+
+        [Fact]
+        public void CreateMemberDaoThrowsExceptionOnNullParameter()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => { var memberDao = new MemberDao(null); });
+
+            Assert.Equal("Helper must be provided when creating MemberDao", ex.Message);
+        }
+
+
     }
 }

@@ -40,7 +40,8 @@ namespace Library.Entities
             this.State = LoanState.COMPLETE;
         }
 
-        public bool IsOverDue { get; }
+        public bool IsOverDue => this.State == LoanState.OVERDUE;  // Return true if LoanState is Overdue.
+
         public bool CheckOverDue(DateTime currentDate)
         {
             throw new NotImplementedException();

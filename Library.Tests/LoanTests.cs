@@ -204,5 +204,21 @@ namespace Library.Tests
             Assert.Equal("Cannot complete a loan if it's Current or Overdue", ex.Message);
         }
 
+        [Fact]
+        public void IsOverdueShouldReturnTrueIfLoanIsOverdue()
+        {
+            var book = Substitute.For<IBook>();
+            var borrower = Substitute.For<IMember>();
+
+            var loan = new Loan(book, borrower, DateTime.Today, DateTime.Today.AddDays(1));
+
+            loan.State = LoanState.CURRENT;
+
+            Assert.False(loan.IsOverDue);
+
+            loan.State = LoanState.OVERDUE;
+
+            Assert.True(loan.IsOverDue);
+        }
     }
 }

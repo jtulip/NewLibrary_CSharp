@@ -134,5 +134,21 @@ namespace Library.Tests.UnitTests
 
             Assert.Equal(BookState.DAMAGED, book.State);
         }
+
+        [Fact]
+        public void WhenBookIsDamagedAndRepairedShouldBeAvailable()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var loan = Substitute.For<ILoan>();
+
+            book.Borrow(loan);
+
+            book.ReturnBook(true);
+
+            book.Repair();
+
+            Assert.Equal(BookState.AVAILABLE, book.State);
+        }
     }
 }

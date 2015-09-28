@@ -90,5 +90,21 @@ namespace Library.Tests.UnitTests
 
         //    Assert.Equal(BookState.DAMAGED, book.State);
         //}
+
+        [Fact]
+        public void WhenBookIsLostAndDisposedShouldBeDisposed()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var loan = Substitute.For<ILoan>();
+
+            book.Borrow(loan);
+
+            book.Lose();
+
+            book.Dispose();
+
+            Assert.Equal(BookState.DISPOSED, book.State);
+        }
     }
 }

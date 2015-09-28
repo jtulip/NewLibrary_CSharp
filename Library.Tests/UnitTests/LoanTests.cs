@@ -166,6 +166,8 @@ namespace Library.Tests.UnitTests
 
             var loan = new Loan(book, borrower, DateTime.Today, DateTime.Today.AddDays(1));
 
+            loan.Commit(1);
+
             loan.Complete();
         }
 
@@ -177,14 +179,15 @@ namespace Library.Tests.UnitTests
 
             var loan = new Loan(book, borrower, DateTime.Today, DateTime.Today.AddDays(1));
 
+            loan.Commit(1);
+
             loan.Complete();
 
             Assert.Equal(LoanState.COMPLETE, loan.State);
         }
 
         [Theory]
-        [InlineData(LoanState.CURRENT)]
-        [InlineData(LoanState.OVERDUE)]
+        [InlineData(LoanState.PENDING)]
         public void CommitLoanThrowsRuntimeException(LoanState state)
         {
             var book = Substitute.For<IBook>();
@@ -197,7 +200,7 @@ namespace Library.Tests.UnitTests
 
             var ex = Assert.Throws<InvalidOperationException>(() => loan.Complete());
 
-            Assert.Equal("Cannot complete a loan if it's Current or Overdue", ex.Message);
+            Assert.Equal("Cannot complete a loan if it's not Current or Overdue", ex.Message);
         }
 
         [Fact]

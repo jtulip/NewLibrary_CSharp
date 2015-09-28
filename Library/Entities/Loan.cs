@@ -38,7 +38,7 @@ namespace Library.Entities
 
         public void Complete()
         {
-            if(this.State == LoanState.CURRENT || this.State == LoanState.OVERDUE) throw new InvalidOperationException("Cannot complete a loan if it's Current or Overdue");
+            if(this.State != LoanState.CURRENT && this.State != LoanState.OVERDUE) throw new InvalidOperationException("Cannot complete a loan if it's not Current or Overdue");
 
             this.State = LoanState.COMPLETE;
         }

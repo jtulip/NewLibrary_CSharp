@@ -150,5 +150,21 @@ namespace Library.Tests.UnitTests
 
             Assert.Equal(BookState.AVAILABLE, book.State);
         }
+
+        [Fact]
+        public void WhenBookIsDamagedAndDisposedShouldBeDisposed()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var loan = Substitute.For<ILoan>();
+
+            book.Borrow(loan);
+
+            book.ReturnBook(true);
+
+            book.Dispose();
+
+            Assert.Equal(BookState.DISPOSED, book.State);
+        }
     }
 }

@@ -106,5 +106,19 @@ namespace Library.Tests.UnitTests
 
             Assert.Equal(BookState.DISPOSED, book.State);
         }
+
+        [Fact]
+        public void WhenBookIsOnLoanAndReturnedUndamagedShouldBeAvailable()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var loan = Substitute.For<ILoan>();
+
+            book.Borrow(loan);
+
+            book.ReturnBook(false);
+
+            Assert.Equal(BookState.AVAILABLE, book.State);
+        }
     }
 }

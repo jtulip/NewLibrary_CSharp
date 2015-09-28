@@ -73,5 +73,22 @@ namespace Library.Tests.UnitTests
 
         //    Assert.Equal(BookState.AVAILABLE, book.State);
         //}
+
+        // This test will fail as the text states that a book has to be status ON_LOAN to return, and won't work for LOST.
+        //[Fact]
+        //public void WhenBookIsLostAndReturnedDamagedShouldBeDamaged()
+        //{
+        //    var book = new Book("author", "title", "call number", 1);
+
+        //    var loan = Substitute.For<ILoan>();
+
+        //    book.Borrow(loan);
+
+        //    book.Lose();
+
+        //    book.ReturnBook(true);
+
+        //    Assert.Equal(BookState.DAMAGED, book.State);
+        //}
     }
 }

@@ -24,6 +24,8 @@ namespace Library.Entities
             this.Title = title;
             this.CallNumber = callNumber;
             this.ID = bookID;
+
+            this.State = BookState.AVAILABLE;
         }
 
         public void Borrow(ILoan loan)

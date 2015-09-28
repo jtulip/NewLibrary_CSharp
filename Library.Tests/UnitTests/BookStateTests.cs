@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Library.Entities;
 using Library.Interfaces.Entities;
+using NSubstitute;
 using Xunit;
 
 namespace Library.Tests.UnitTests
@@ -28,6 +29,18 @@ namespace Library.Tests.UnitTests
             book.Dispose();
 
             Assert.Equal(BookState.DISPOSED, book.State);
+        }
+
+        [Fact]
+        public void WhenBookIsBorrowedShouldBeOnLoan()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var loan = Substitute.For<ILoan>();
+
+            book.Borrow(loan);
+
+            Assert.Equal(BookState.ON_LOAN, book.State);
         }
     }
 }

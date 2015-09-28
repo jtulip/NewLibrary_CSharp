@@ -33,6 +33,8 @@ namespace Library.Entities
             if(this.State != BookState.AVAILABLE) throw new InvalidOperationException("Cannot borrow a book that is not available");
 
             this.Loan = loan;
+
+            this.State = BookState.ON_LOAN;
         }
 
         public ILoan Loan

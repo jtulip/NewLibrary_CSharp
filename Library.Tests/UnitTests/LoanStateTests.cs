@@ -25,5 +25,20 @@ namespace Library.Tests.UnitTests
 
             Assert.Equal(LoanState.PENDING, loan.State);
         }
+
+        [Fact]
+        public void WhenLoanIsPendingAndCommittedShouldBeCurrent()
+        {
+            var book = Substitute.For<IBook>();
+            var member = Substitute.For<IMember>();
+            DateTime borrowDate = DateTime.Today;
+            DateTime dueDate = DateTime.Today;
+
+            var loan = new Loan(book, member, borrowDate, dueDate);
+
+            loan.Commit(1);
+
+            Assert.Equal(LoanState.CURRENT, loan.State);
+        }
     }
 }

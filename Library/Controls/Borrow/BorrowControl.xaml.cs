@@ -21,8 +21,8 @@ namespace Library.Controls.Borrow
     /// </summary>
     public partial class BorrowControl : ABorrowControl
     {
-        private IBorrowListener _listener;
-        private Dictionary<EBorrowState, ABorrowControl> _controlDict;
+        internal IBorrowListener _listener;
+        internal Dictionary<EBorrowState, ABorrowControl> _controlDict;
         private ABorrowControl _currentControl;
 
         public BorrowControl(IBorrowListener listener)

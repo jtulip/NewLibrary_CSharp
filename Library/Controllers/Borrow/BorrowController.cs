@@ -17,7 +17,7 @@ namespace Library.Controllers.Borrow
     {
         private IDisplay _display;
         private UserControl _previousDisplay;
-        private ABorrowControl _ui;
+        internal ABorrowControl _ui;
         private ICardReader _reader;
         private ICardReaderListener _previousReaderListener;
         private IScanner _scanner;
@@ -30,7 +30,7 @@ namespace Library.Controllers.Borrow
 
         private IMember _borrower;
         private int scanCount = 0;
-        private EBorrowState _state;
+        internal EBorrowState _state;
 
         private List<IBook> _bookList;
         private List<ILoan> _loanList;

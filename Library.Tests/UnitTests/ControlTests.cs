@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -50,6 +51,47 @@ namespace Library.Tests.UnitTests
                     Assert.NotNull(ctrl);
                 }));
         }
+
+        [Fact]
+        public void BBUC_OP1_BeginUseCase()
+        {
+            // Must be done on an STA thread for WPF
+            Dispatcher.CurrentDispatcher.BeginInvoke(
+                DispatcherPriority.Normal,
+                new Action(() =>
+                {
+                    var mockThis = Substitute.For<IBorrowListener>();
+
+                    var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+                    _reader.Received().Listener = ctrl;
+                    _scanner.Received().Listener = ctrl;
+
+                    Assert.Equal(ctrl, _reader.Listener);
+                    Assert.Equal(ctrl, _scanner.Listener);
+
+                    Assert.Equal(EBorrowState.CREATED, ctrl._state);
+
+                    ctrl._ui = new BorrowControl(mockThis);
+
+                    ctrl.initialise();
+
+                    Assert.Equal(mockThis, ((BorrowControl)ctrl._ui)._listener);
+                    Assert.Equal(4, ((BorrowControl)ctrl._ui)._controlDict.Count);
+
+                    var swipeCardPanel = ((BorrowControl) ctrl._ui)._controlDict.Values.Single(c => c is SwipeCardControl);
+
+                    Assert.True(((SwipeCardControl) swipeCardPanel).IsVisible);
+                    Assert.True(((SwipeCardControl)swipeCardPanel).cancelButton.IsVisible);
+
+                    Assert.True(_reader.Enabled);
+                    Assert.False(_scanner.Enabled);
+
+                    Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
+                }));
+        }
+
+
 
         public void Dispose()
         {

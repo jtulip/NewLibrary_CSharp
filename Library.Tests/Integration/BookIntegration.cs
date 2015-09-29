@@ -171,5 +171,51 @@ namespace Library.Tests.Integration
 
             Assert.Empty(result);
         }
+
+        [Fact]
+        public void CanGetBookByTitle()
+        {
+            IBookHelper helper = new BookHelper();
+            IBookDAO dao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNumber = "call number";
+
+            var book = dao.AddBook(author, title, callNumber);
+
+            for (int i = 0; i < 10; i++)
+            {
+                dao.AddBook("Test", "Test", "Test");
+            }
+
+            var result = dao.FindBooksByTitle(book.Title);
+
+            var single = result.Single();
+
+            Assert.Equal(book, single);
+        }
+
+        [Fact]
+        public void GetBookByTitleReturnsEmptyCollectionIfNotFound()
+        {
+            IBookHelper helper = new BookHelper();
+            IBookDAO dao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNumber = "call number";
+
+            var book = dao.AddBook(author, title, callNumber);
+
+            for (int i = 0; i < 10; i++)
+            {
+                dao.AddBook("Test", "Test", "Test");
+            }
+
+            var result = dao.FindBooksByAuthor("Adventures in Programming");
+
+            Assert.Empty(result);
+        }
     }
 }

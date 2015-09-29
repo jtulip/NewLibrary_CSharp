@@ -26,7 +26,18 @@ namespace Library.Entities
             this.Loans = new List<ILoan>();
         }
 
-        public bool HasOverDueLoans => this.Loans.Any(l => l.IsOverDue); // Return true if any loan is overdue.
+        public bool HasOverDueLoans
+        {
+            get
+            {
+                var anyOverdue = this.Loans.Any(l => l.IsOverDue);
+                if(anyOverdue) this.State = MemberState.BORROWING_DISALLOWED;  // If there are any overdue then set borrow state to disallowed.
+
+                return anyOverdue;
+            }  // Return true if any loan is overdue.
+        }
+
+        
         public bool HasReachedLoanLimit => this.Loans.Count() == BookConstants.LOAN_LIMIT;
         public bool HasFinesPayable => this.FineAmount > 0;
         public bool HasReachedFineLimit => this.FineAmount >= BookConstants.FINE_LIMIT;

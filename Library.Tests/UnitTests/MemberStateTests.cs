@@ -162,5 +162,28 @@ namespace Library.Tests.UnitTests
             Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
         }
 
+        [Fact]
+        public void WhenBorrowingAllowedAndHasOverdueLoansBorrowingDisallowed()
+        {
+            var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
+
+            var loan = Substitute.For<ILoan>();
+
+            loan.CheckOverDue(DateTime.Today).Returns(true);
+            loan.IsOverDue.Returns(true);
+
+            member.AddLoan(loan);
+
+            Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
+
+            foreach (var l in member.Loans) l.CheckOverDue(DateTime.Today);
+
+            Assert.True(member.HasOverDueLoans);
+
+            loan.Received().CheckOverDue(DateTime.Today);
+
+            Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
+        }
+
     }
 }

@@ -36,6 +36,8 @@ namespace Library.Tests.UnitTests
 
             var loan = new Loan(book, member, borrowDate, dueDate);
 
+            Assert.Equal(LoanState.PENDING, loan.State);
+
             loan.Commit(1);
 
             Assert.Equal(LoanState.CURRENT, loan.State);
@@ -53,6 +55,8 @@ namespace Library.Tests.UnitTests
 
             loan.Commit(1);
 
+            Assert.Equal(LoanState.CURRENT, loan.State);
+
             loan.CheckOverDue(DateTime.Today);
 
             Assert.Equal(LoanState.CURRENT, loan.State);
@@ -69,6 +73,8 @@ namespace Library.Tests.UnitTests
             var loan = new Loan(book, member, borrowDate, dueDate);
 
             loan.Commit(1);
+
+            Assert.Equal(LoanState.CURRENT, loan.State);
 
             loan.CheckOverDue(DateTime.Today.AddDays(14));
 

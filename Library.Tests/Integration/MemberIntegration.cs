@@ -50,6 +50,30 @@ namespace Library.Tests.Integration
         }
 
         [Fact]
+        public void CreateMemberFailsOnIllegalArguments()
+        {
+            IMemberHelper helper = new MemberHelper();
+            IMemberDAO dao = new MemberDao(helper);
+
+            var firstName = "first";
+            var lastName = "last";
+            var contactPhone = "contactPhone";
+            var emailAddress = "emailAddress";
+
+            Assert.Throws<ArgumentException>(
+                () => { var member = dao.AddMember(null, lastName, contactPhone, emailAddress); });
+
+            Assert.Throws<ArgumentException>(
+                () => { var member = dao.AddMember(firstName, null, contactPhone, emailAddress); });
+
+            Assert.Throws<ArgumentException>(
+                () => { var member = dao.AddMember(firstName, lastName, null, emailAddress); });
+
+            Assert.Throws<ArgumentException>(
+                () => { var member = dao.AddMember(firstName, lastName, contactPhone, null); });
+        }
+
+        [Fact]
         public void CreateMemberCreatesAUniqueId()
         {
             IMemberHelper helper = new MemberHelper();

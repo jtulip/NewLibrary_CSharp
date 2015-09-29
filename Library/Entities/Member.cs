@@ -82,6 +82,8 @@ namespace Library.Entities
             if(!this.Loans.Contains(loan)) throw new ArgumentException("Loan was not found in member's loans");
 
             this.Loans.Remove(loan);
+
+            this.State = MemberState.BORROWING_ALLOWED;
         }
 
         public string FirstName { get; }

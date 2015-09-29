@@ -111,6 +111,27 @@ namespace Library.Tests.Integration.Entity
             Assert.Equal("Cannot add a loan when member is not allowed to borrow", ex.Message);
         }
 
+
+        [Fact]
+        public void CanGetLoans()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            var loan1 = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(14)) { State = LoanState.CURRENT };
+            var loan2 = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(14)) { State = LoanState.CURRENT };
+            var loan3 = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(14)) { State = LoanState.CURRENT };
+            var loan4 = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(14)) { State = LoanState.CURRENT };
+
+            member.AddLoan(loan1);
+            member.AddLoan(loan2);
+            member.AddLoan(loan3);
+
+            Assert.Equal(3, member.Loans.Count());
+            Assert.Contains(loan1, member.Loans);
+            Assert.DoesNotContain(loan4, member.Loans);
+        }
     }
 }
 

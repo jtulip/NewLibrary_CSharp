@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Library.Entities;
 using Library.Interfaces.Entities;
+using NSubstitute;
 using Xunit;
 
 namespace Library.Tests.UnitTests
@@ -16,6 +17,20 @@ namespace Library.Tests.UnitTests
         public void WhenMemberCreatedShouldBeBorrowingAllowed()
         {
             var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
+
+            Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
+        }
+
+        [Fact]
+        public void WhenMemberCreatedAndLoanAddedAndNotLimitReachedBorrowingAllowed()
+        {
+            var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
+
+            var loan = Substitute.For<ILoan>();
+
+            member.AddLoan(loan);
+
+            Assert.False(member.HasReachedLoanLimit);
 
             Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
         }

@@ -68,22 +68,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DaoIntegration\BookIntegration.cs" />
-    <Compile Include="DaoIntegration\LoanIntegration.cs" />
-    <Compile Include="DaoIntegration\MemberIntegration.cs" />
-    <Compile Include="UnitTests\BookDaoTests.cs" />
-    <Compile Include="UnitTests\BookHelperTests.cs" />
-    <Compile Include="UnitTests\BookStateTests.cs" />
-    <Compile Include="UnitTests\BookTests.cs" />
-    <Compile Include="UnitTests\ControlTests.cs" />
-    <Compile Include="UnitTests\LoanDaoTests.cs" />
-    <Compile Include="UnitTests\LoanHelperTests.cs" />
-    <Compile Include="UnitTests\LoanStateTests.cs" />
-    <Compile Include="UnitTests\LoanTests.cs" />
-    <Compile Include="UnitTests\MemberDaoTests.cs" />
-    <Compile Include="UnitTests\MemberHelperTests.cs" />
-    <Compile Include="UnitTests\MemberStateTests.cs" />
-    <Compile Include="UnitTests\MemberTests.cs" />
+    <Compile Include="Integration\Dao\BookIntegration.cs" />
+    <Compile Include="Integration\Dao\LoanIntegration.cs" />
+    <Compile Include="Integration\Dao\MemberIntegration.cs" />
+    <Compile Include="UnitTests\Dao\BookDaoTests.cs" />
+    <Compile Include="UnitTests\Helper\BookHelperTests.cs" />
+    <Compile Include="UnitTests\Entity\BookStateTests.cs" />
+    <Compile Include="UnitTests\Entity\BookTests.cs" />
+    <Compile Include="UnitTests\Control\BrowserControlTests.cs" />
+    <Compile Include="UnitTests\Dao\LoanDaoTests.cs" />
+    <Compile Include="UnitTests\Helper\LoanHelperTests.cs" />
+    <Compile Include="UnitTests\Entity\LoanStateTests.cs" />
+    <Compile Include="UnitTests\Entity\LoanTests.cs" />
+    <Compile Include="UnitTests\Dao\MemberDaoTests.cs" />
+    <Compile Include="UnitTests\Helper\MemberHelperTests.cs" />
+    <Compile Include="UnitTests\Entity\MemberStateTests.cs" />
+    <Compile Include="UnitTests\Entity\MemberTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WpfFactAttribute.cs" />
     <Compile Include="WpfFactDiscoverer.cs" />

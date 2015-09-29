@@ -36,6 +36,8 @@ namespace Library.Entities
             if(fine < 0) throw new ArgumentException("Fine must not be negative value");
 
             this.FineAmount += fine;
+
+            if(this.HasReachedFineLimit) this.State = MemberState.BORROWING_DISALLOWED;
         }
 
         public void PayFine(float payment)

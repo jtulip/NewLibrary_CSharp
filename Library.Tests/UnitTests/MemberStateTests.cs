@@ -77,7 +77,7 @@ namespace Library.Tests.UnitTests
         }
 
         [Fact]
-        public void WhenBorrowingAllowedAndLoanPaidBorrowingAllowed()
+        public void WhenBorrowingAllowedAndFinePaidBorrowingAllowed()
         {
             var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
 
@@ -96,6 +96,30 @@ namespace Library.Tests.UnitTests
             member.PayFine(5.00f);
 
             Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
+        }
+
+        [Fact]
+        public void WhenBorrowingAllowedAndFinedMoreThanMaxBorrowingDisallowed()
+        {
+            var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
+
+            var loan = Substitute.For<ILoan>();
+
+            var fineAmount = BookConstants.FINE_LIMIT + 1.00f;
+
+            member.AddLoan(loan);
+
+            Assert.False(member.HasReachedLoanLimit);
+
+            Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
+
+            member.AddFine(fineAmount);
+
+            Assert.True(member.HasReachedFineLimit);
+
+            Assert.True(fineAmount > BookConstants.FINE_LIMIT);
+
+            Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
         }
     }
 }

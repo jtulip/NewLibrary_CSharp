@@ -57,6 +57,9 @@ namespace Library.Entities
             if(payment > this.FineAmount) throw new ArgumentException($"Payment must not exceed fines of {this.FineAmount}");
 
             this.FineAmount -= payment;
+
+            if(this.FineAmount < BookConstants.FINE_LIMIT && !this.HasOverDueLoans && !this.HasReachedLoanLimit)
+                this.State = MemberState.BORROWING_ALLOWED;
         }
 
         public void AddLoan(ILoan loan)

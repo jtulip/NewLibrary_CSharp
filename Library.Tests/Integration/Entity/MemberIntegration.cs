@@ -152,6 +152,24 @@ namespace Library.Tests.Integration.Entity
             // Make sure Loan has been removed from Member.
             Assert.DoesNotContain(loan, member.Loans);
         }
+
+        [Fact]
+        public void RemoveLoanThrowsArgumentExceptionIfLoanIsNotInCollection()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            var loan1 = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(14)) { State = LoanState.CURRENT };
+
+            var loan2 = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(14)) { State = LoanState.CURRENT };
+
+            member.AddLoan(loan1);
+
+            var ex = Assert.Throws<ArgumentException>(() => member.RemoveLoan(loan2));
+
+            Assert.Equal("Loan was not found in member's loans", ex.Message);
+        }
     }
 }
 

@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Integration\BookIntegration.cs" />
+    <Compile Include="Integration\LoanIntegration.cs" />
     <Compile Include="Integration\MemberIntegration.cs" />
     <Compile Include="UnitTests\BookDaoTests.cs" />
     <Compile Include="UnitTests\BookHelperTests.cs" />

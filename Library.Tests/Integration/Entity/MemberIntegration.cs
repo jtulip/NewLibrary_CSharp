@@ -80,7 +80,21 @@ namespace Library.Tests.Integration.Entity
             Assert.True(member.Loans.Count() == BookConstants.LOAN_LIMIT);
             Assert.True(member.HasReachedLoanLimit);
         }
-        
+
+        [Fact]
+        public void CanAddLoanToMember()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            // Add a loan.
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(14)) { State = LoanState.CURRENT };
+
+            member.AddLoan(loan);
+
+            Assert.Contains(loan, member.Loans);
+        }
     }
 }
 

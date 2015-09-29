@@ -98,7 +98,6 @@ namespace Library.Tests.Integration.Entity
             Assert.Null(loanRetrieved);
         }
 
-
         [Fact]
         public void CanReturnBook()
         {
@@ -117,6 +116,28 @@ namespace Library.Tests.Integration.Entity
             book.ReturnBook(false);
 
             Assert.Null(book.Loan);
+        }
+
+        [Fact]
+        public void ReturningBookSetsStateToDamaged()
+        {
+            var book = new Book("author", "title", "call number", 1);
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(7));
+
+            book.Borrow(loan);
+
+            // Set book state to ON_LOAN - affected by GetLoanFromBookReturnsNullIfBookIsNotON_LOAN()
+            book.State = BookState.ON_LOAN;
+
+            Assert.Equal(loan, book.Loan);
+
+            // Set damaged flag to true.
+            book.ReturnBook(true);
+
+            Assert.Null(book.Loan);
+            Assert.Equal(BookState.DAMAGED, book.State);
         }
     }
 }

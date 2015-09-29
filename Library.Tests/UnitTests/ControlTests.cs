@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Library.Controllers.Borrow;
@@ -15,8 +16,27 @@ using Xunit;
 namespace Library.Tests.UnitTests
 {
     [Trait("Category", "Control Tests")]
-    public class ControlTests
+    public class ControlTests : IDisposable
     {
+        public ControlTests()
+        {
+            _display = Substitute.For<IDisplay>();
+            _reader = Substitute.For<ICardReader>();
+            _scanner = Substitute.For<IScanner>();
+            _printer = Substitute.For<IPrinter>();
+            _bookDao = Substitute.For<IBookDAO>();
+            _loanDao = Substitute.For<ILoanDAO>();
+            _memberDao = Substitute.For<IMemberDAO>();
+        }
+
+        private IDisplay _display;
+        private ICardReader _reader;
+        private IScanner _scanner;
+        private IPrinter _printer;
+        private IBookDAO _bookDao;
+        private ILoanDAO _loanDao;
+        private IMemberDAO _memberDao;
+
         [Fact]
         public void CanCreateControl()
         {
@@ -25,19 +45,21 @@ namespace Library.Tests.UnitTests
                 DispatcherPriority.Normal,
                 new Action(() =>
                 {
-                    var display = Substitute.For<IDisplay>();
-                    var reader = Substitute.For<ICardReader>();
-                    var scanner = Substitute.For<IScanner>();
-                    var printer = Substitute.For<IPrinter>();
-                    var bookDao = Substitute.For<IBookDAO>();
-                    var loanDao = Substitute.For<ILoanDAO>();
-                    var memberDao = Substitute.For<IMemberDAO>();
-
-                    var ctrl = new BorrowController(display, reader, scanner, printer, bookDao, loanDao, memberDao);
+                    var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
                     Assert.NotNull(ctrl);
                 }));
         }
 
+        public void Dispose()
+        {
+            _display = null;
+            _reader = null;
+            _scanner = null;
+            _printer = null;
+            _bookDao = null;
+            _loanDao = null;
+            _memberDao = null;
+        }
     }
 }

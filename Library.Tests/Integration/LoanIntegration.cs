@@ -152,5 +152,81 @@ namespace Library.Tests.Integration
             Assert.Null(result);
         }
 
+        public void CanGetLoanByBookTitle()
+        {
+            ILoanHelper loanHelper = new LoanHelper();
+            ILoanDAO loanDao = new LoanDao(loanHelper);
+
+            IMemberHelper memberHelper = new MemberHelper();
+            IMemberDAO memberDao = new MemberDao(memberHelper);
+
+            IBookHelper bookHelper = new BookHelper();
+            IBookDAO bookDao = new BookDao(bookHelper);
+
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            var member = memberDao.AddMember("Jim", "Tulip", "csu phone", "jim@example.com");
+
+            var book = bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+            var loan = loanDao.CreateLoan(member, book, borrowDate, dueDate);
+
+            loanDao.CommitLoan(loan);
+
+            for (int i = 0; i < 10; i++)
+            {
+                var m = memberDao.AddMember("Test", "Test", "Test Phone", "Test Email");
+                var b = bookDao.AddBook("Test", "Test", "Test");
+
+                var l = loanDao.CreateLoan(m, b, borrowDate, dueDate);
+
+                loanDao.CommitLoan(l);
+            }
+
+            var result = loanDao.FindLoansByBookTitle(book.Title);
+
+            var single = result.Single();
+
+            Assert.Equal(loan, single);
+        }
+
+        [Fact]
+        public void GetLoanByBookTitleReturnsEmptyCollectionIfNotFound()
+        {
+            ILoanHelper loanHelper = new LoanHelper();
+            ILoanDAO loanDao = new LoanDao(loanHelper);
+
+            IMemberHelper memberHelper = new MemberHelper();
+            IMemberDAO memberDao = new MemberDao(memberHelper);
+
+            IBookHelper bookHelper = new BookHelper();
+            IBookDAO bookDao = new BookDao(bookHelper);
+
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            var member = memberDao.AddMember("Jim", "Tulip", "csu phone", "jim@example.com");
+
+            var book = bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+            var loan = loanDao.CreateLoan(member, book, borrowDate, dueDate);
+
+            loanDao.CommitLoan(loan);
+
+            for (int i = 0; i < 10; i++)
+            {
+                var m = memberDao.AddMember("Test", "Test", "Test Phone", "Test Email");
+                var b = bookDao.AddBook("Test", "Test", "Test");
+
+                var l = loanDao.CreateLoan(m, b, borrowDate, dueDate);
+
+                loanDao.CommitLoan(l);
+            }
+
+            var result = loanDao.FindLoansByBookTitle("No Title");
+
+            Assert.Empty(result);
+        }
     }
 }

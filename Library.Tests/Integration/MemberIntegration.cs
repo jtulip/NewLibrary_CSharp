@@ -48,5 +48,21 @@ namespace Library.Tests.Integration
             IMemberHelper helper = null;
             Assert.Throws<ArgumentException>(() => { IMemberDAO dao = new MemberDao(helper); });
         }
+
+        [Fact]
+        public void CreateMemberCreatesAUniqueID()
+        {
+            IMemberHelper helper = new MemberHelper();
+            IMemberDAO dao = new MemberDao(helper);
+
+            var firstName = "first";
+            var lastName = "last";
+            var contactPhone = "contactPhone";
+            var emailAddress = "emailAddress";
+
+            var member = dao.AddMember(firstName, lastName, contactPhone, emailAddress);
+
+            Assert.NotEqual(0, member.ID);
+        }
     }
 }

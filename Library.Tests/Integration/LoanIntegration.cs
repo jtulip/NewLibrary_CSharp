@@ -305,5 +305,34 @@ namespace Library.Tests.Integration
 
             Assert.Empty(result);
         }
+
+        public void CanUpdateOverdueStatus()
+        {
+            ILoanHelper loanHelper = new LoanHelper();
+            ILoanDAO loanDao = new LoanDao(loanHelper);
+
+            IMemberHelper memberHelper = new MemberHelper();
+            IMemberDAO memberDao = new MemberDao(memberHelper);
+
+            IBookHelper bookHelper = new BookHelper();
+            IBookDAO bookDao = new BookDao(bookHelper);
+
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            var member = memberDao.AddMember("Jim", "Tulip", "csu phone", "jim@example.com");
+
+            var book = bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+            var loan = loanDao.CreateLoan(member, book, borrowDate, dueDate);
+
+            loanDao.CommitLoan(loan);
+
+            Assert.Equal(LoanState.CURRENT, loan.State);
+
+            loanDao.UpdateOverDueStatus(DateTime.Today.AddMonths(1));
+
+            Assert.Equal(LoanState.OVERDUE, loan.State);
+        }
     }
 }

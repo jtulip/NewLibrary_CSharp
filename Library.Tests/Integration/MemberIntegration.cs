@@ -87,5 +87,28 @@ namespace Library.Tests.Integration
 
             Assert.Equal(member, result);
         }
+
+        [Fact]
+        public void GetMemberByIdReturnsNullIfNotFound()
+        {
+            IMemberHelper helper = new MemberHelper();
+            IMemberDAO dao = new MemberDao(helper);
+
+            var firstName = "first";
+            var lastName = "last";
+            var contactPhone = "contactPhone";
+            var emailAddress = "emailAddress";
+
+            var member = dao.AddMember(firstName, lastName, contactPhone, emailAddress);
+
+            for (int i = 0; i < 10; i++)
+            {
+                dao.AddMember("Test", "Test", "test phone", "test email");
+            }
+
+            var result = dao.GetMemberByID(1000);
+
+            Assert.Null(result);
+        }
     }
 }

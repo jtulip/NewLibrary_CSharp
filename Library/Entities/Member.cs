@@ -54,6 +54,8 @@ namespace Library.Entities
                 throw new InvalidOperationException("Cannot add a loan when member is not allowed to borrow");
 
             this.Loans.Add(loan);
+
+            if(this.HasReachedLoanLimit) this.State = MemberState.BORROWING_DISALLOWED;
         }
 
         public List<ILoan> Loans { get; private set; }

@@ -1,23 +1,14 @@
 ﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 using Library.Controllers.Borrow;
 using Library.Controls.Borrow;
-using Library.Entities;
 using Library.Interfaces.Controllers.Borrow;
 using Library.Interfaces.Daos;
 using Library.Interfaces.Entities;
 using Library.Interfaces.Hardware;
 using NSubstitute;
-using NSubstitute.Core;
 using Xunit;
 
-namespace Library.Tests.UnitTests
+namespace Library.Tests.UnitTests.Control
 {
     [Trait("Category", "BrowserControl Tests")]
     public class BrowserControlTests : IDisposable

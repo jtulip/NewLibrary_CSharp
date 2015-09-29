@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Library.Entities;
+﻿using Library.Entities;
 using Library.Interfaces.Entities;
 using NSubstitute;
 using Xunit;
 
-namespace Library.Tests.UnitTests
+namespace Library.Tests.UnitTests.Entity
 {
     [Trait("Category", "Book Tests")]
     public class BookStateTests

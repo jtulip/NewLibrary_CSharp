@@ -2,7 +2,7 @@
 using Library.Interfaces.Entities;
 using Xunit;
 
-namespace Library.Tests.UnitTests
+namespace Library.Tests.UnitTests.Helper
 {
     [Trait("Category", "Book Tests")]
     public class BookHelperTests

@@ -5,7 +5,7 @@ using Library.Interfaces.Entities;
 using NSubstitute;
 using Xunit;
 
-namespace Library.Tests.UnitTests
+namespace Library.Tests.UnitTests.Entity
 {
     [Trait("Category", "Member Tests")]
     public class MemberTests

@@ -47,5 +47,25 @@ namespace Library.Tests.Integration
             Assert.Throws<ArgumentException>(() => { IBookDAO dao = new BookDao(helper); });
         }
 
+        [Fact]
+        public void CreateBookFailsOnIllegalArguments()
+        {
+            IBookHelper helper = new BookHelper();
+            IBookDAO dao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNumber = "call number";
+
+            Assert.Throws<ArgumentException>(
+                () => { var book = dao.AddBook(null, title, callNumber); });
+
+            Assert.Throws<ArgumentException>(
+                () => { var book = dao.AddBook(author, null, callNumber); });
+
+            Assert.Throws<ArgumentException>(
+                () => { var book = dao.AddBook(author, title, null); });
+        }
+
     }
 }

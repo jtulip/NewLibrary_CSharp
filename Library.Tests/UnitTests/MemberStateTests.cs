@@ -53,6 +53,30 @@ namespace Library.Tests.UnitTests
         }
 
         [Fact]
+        public void WhenBorrowingAllowedAndFinedLessThanMaxBorrowingAllowed()
+        {
+            var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
+
+            var loan = Substitute.For<ILoan>();
+
+            var fineAmount = 5.00f;
+
+            member.AddLoan(loan);
+
+            Assert.False(member.HasReachedLoanLimit);
+
+            Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
+
+            member.AddFine(fineAmount);
+
+            Assert.False(member.HasReachedFineLimit);
+
+            Assert.True(fineAmount < BookConstants.FINE_LIMIT);
+
+            Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
+        }
+
+        [Fact]
         public void WhenBorrowingAllowedAndLoanPaidBorrowingAllowed()
         {
             var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);

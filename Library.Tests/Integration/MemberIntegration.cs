@@ -50,7 +50,7 @@ namespace Library.Tests.Integration
         }
 
         [Fact]
-        public void CreateMemberCreatesAUniqueID()
+        public void CreateMemberCreatesAUniqueId()
         {
             IMemberHelper helper = new MemberHelper();
             IMemberDAO dao = new MemberDao(helper);
@@ -63,6 +63,29 @@ namespace Library.Tests.Integration
             var member = dao.AddMember(firstName, lastName, contactPhone, emailAddress);
 
             Assert.NotEqual(0, member.ID);
+        }
+
+        [Fact]
+        public void CanGetMemberById()
+        {
+            IMemberHelper helper = new MemberHelper();
+            IMemberDAO dao = new MemberDao(helper);
+
+            var firstName = "first";
+            var lastName = "last";
+            var contactPhone = "contactPhone";
+            var emailAddress = "emailAddress";
+
+            var member = dao.AddMember(firstName, lastName, contactPhone, emailAddress);
+
+            for (int i = 0; i < 10; i++)
+            {
+                dao.AddMember("Test", "Test", "test phone", "test email");
+            }
+
+            var result = dao.GetMemberByID(member.ID);
+
+            Assert.Equal(member, result);
         }
     }
 }

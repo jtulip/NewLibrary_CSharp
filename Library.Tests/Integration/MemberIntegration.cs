@@ -42,5 +42,11 @@ namespace Library.Tests.Integration
             Assert.NotEqual(0, member.ID);
         }
 
+        [Fact]
+        public void CreateMemberFailsOnNullHelper()
+        {
+            IMemberHelper helper = null;
+            Assert.Throws<ArgumentException>(() => { IMemberDAO dao = new MemberDao(helper); });
+        }
     }
 }

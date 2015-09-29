@@ -95,6 +95,22 @@ namespace Library.Tests.Integration.Entity
 
             Assert.Contains(loan, member.Loans);
         }
+
+        [Fact] // InvalidOperationException is more correct for .NET.
+        public void AddLoanThrowsInvalidOperationExceptionIfMemberIsNotAllowedToBorrow()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            // Set member to BORROWING_DISALLOWED
+            var member = new Member("first", "last", "phone", "email", 1) { State = MemberState.BORROWING_DISALLOWED };
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(14)) { State = LoanState.CURRENT };
+
+            var ex = Assert.Throws<InvalidOperationException>(() => member.AddLoan(loan));
+
+            Assert.Equal("Cannot add a loan when member is not allowed to borrow", ex.Message);
+        }
+
     }
 }
 

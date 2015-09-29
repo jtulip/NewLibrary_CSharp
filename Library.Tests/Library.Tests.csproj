@@ -71,6 +71,7 @@
     <Compile Include="UnitTests\LoanTests.cs" />
     <Compile Include="UnitTests\MemberDaoTests.cs" />
     <Compile Include="UnitTests\MemberHelperTests.cs" />
+    <Compile Include="UnitTests\MemberStateTests.cs" />
     <Compile Include="UnitTests\MemberTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

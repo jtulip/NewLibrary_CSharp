@@ -71,6 +71,7 @@
     <Compile Include="Integration\Dao\BookIntegration.cs" />
     <Compile Include="Integration\Dao\LoanIntegration.cs" />
     <Compile Include="Integration\Dao\MemberIntegration.cs" />
+    <Compile Include="Integration\Entity\BookIntegration.cs" />
     <Compile Include="UnitTests\Dao\BookDaoTests.cs" />
     <Compile Include="UnitTests\Helper\BookHelperTests.cs" />
     <Compile Include="UnitTests\Entity\BookStateTests.cs" />

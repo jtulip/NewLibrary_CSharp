@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Library.Daos;
 using Library.Entities;
 using Library.Interfaces.Daos;
 using Library.Interfaces.Entities;
 using Xunit;
 
-namespace Library.Tests.Integration
+namespace Library.Tests.Integration.Dao
 {
     [Trait("Category", "Member Tests")]
     public class MemberIntegration

@@ -83,7 +83,7 @@ namespace Library.Entities
 
             this.Loans.Remove(loan);
 
-            this.State = MemberState.BORROWING_ALLOWED;
+            if(!this.HasOverDueLoans) this.State = MemberState.BORROWING_ALLOWED;
         }
 
         public string FirstName { get; }

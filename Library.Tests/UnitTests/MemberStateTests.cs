@@ -317,5 +317,32 @@ namespace Library.Tests.UnitTests
 
             Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
         }
+
+        [Fact]
+        public void WhenBorrowingDisallowedAndLoanRemovedButHasOverdueLoanBorrowingDisallowed()
+        {
+            var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
+
+            var overdue = Substitute.For<ILoan>();
+
+            member.AddLoan(overdue);
+
+            overdue.IsOverDue.Returns(true);
+
+            while (!member.HasReachedLoanLimit)
+            {
+                var loan = Substitute.For<ILoan>();
+
+                member.AddLoan(loan);
+            }
+
+            // Borrowing state disallowed.
+            Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
+
+            // Remove the first one that isn't the overdue mock.
+            member.RemoveLoan(member.Loans.First(l => l != overdue));
+
+            Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
+        }
     }
 }

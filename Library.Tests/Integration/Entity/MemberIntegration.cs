@@ -54,6 +54,33 @@ namespace Library.Tests.Integration.Entity
             Assert.True(member.HasOverDueLoans);
         }
 
+        [Fact]
+        public void HasReachedLoanLimitReturnsTrueIfLoanCountEqualsLoanLimit()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            // Add a loan.
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(14)) { State = LoanState.CURRENT };
+
+            member.AddLoan(loan);
+
+            // Test that Loan Limit is not reached.
+            Assert.True(member.Loans.Count() < BookConstants.LOAN_LIMIT);
+            Assert.False(member.HasReachedLoanLimit);
+
+            // Add additional loans.
+            while (member.Loans.Count() < BookConstants.LOAN_LIMIT)
+            {
+                member.AddLoan(new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(7)));
+            }
+
+            // Test that Loan Limit has been reached.
+            Assert.True(member.Loans.Count() == BookConstants.LOAN_LIMIT);
+            Assert.True(member.HasReachedLoanLimit);
+        }
+        
     }
 }
 

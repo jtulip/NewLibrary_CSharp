@@ -206,5 +206,53 @@ namespace Library.Tests.Integration
 
             Assert.Empty(result);
         }
+
+        [Fact]
+        public void CanGetMemberByNames()
+        {
+            IMemberHelper helper = new MemberHelper();
+            IMemberDAO dao = new MemberDao(helper);
+
+            var firstName = "first";
+            var lastName = "last";
+            var contactPhone = "contactPhone";
+            var emailAddress = "emailAddress";
+
+            var member = dao.AddMember(firstName, lastName, contactPhone, emailAddress);
+
+            for (int i = 0; i < 10; i++)
+            {
+                dao.AddMember("Test", "Test", "test phone", "test email");
+            }
+
+            var result = dao.FindMembersByNames(member.FirstName, member.LastName);
+
+            var singleResult = result.Single(); // Test there should only be one result and get it.
+
+            Assert.Equal(member, singleResult);
+        }
+
+        [Fact]
+        public void GetMemberByNamesReturnsEmptyCollectionIfNotFound()
+        {
+            IMemberHelper helper = new MemberHelper();
+            IMemberDAO dao = new MemberDao(helper);
+
+            var firstName = "first";
+            var lastName = "last";
+            var contactPhone = "contactPhone";
+            var emailAddress = "emailAddress";
+
+            var member = dao.AddMember(firstName, lastName, contactPhone, emailAddress);
+
+            for (int i = 0; i < 10; i++)
+            {
+                dao.AddMember("Test", "Test", "test phone", "test email");
+            }
+
+            var result = dao.FindMembersByNames("Jim", "Tulip");
+
+            Assert.Empty(result);
+        }
     }
 }

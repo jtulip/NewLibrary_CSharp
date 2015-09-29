@@ -121,5 +121,24 @@ namespace Library.Tests.UnitTests
 
             Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
         }
+
+        [Fact]
+        public void WhenBorrowingAllowedAndRemovingLoanBorrowingAllowed()
+        {
+            var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
+
+            var loan = Substitute.For<ILoan>();
+
+            member.AddLoan(loan);
+
+            Assert.False(member.HasReachedLoanLimit);
+
+            Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
+
+            member.RemoveLoan(loan);
+
+            Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
+        }
+
     }
 }

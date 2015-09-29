@@ -81,5 +81,49 @@ namespace Library.Tests.Integration
 
             Assert.NotEqual(0, book.ID);
         }
+
+        [Fact]
+        public void CanGetBookById()
+        {
+            IBookHelper helper = new BookHelper();
+            IBookDAO dao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNumber = "call number";
+
+            var book = dao.AddBook(author, title, callNumber);
+
+            for (int i = 0; i < 10; i++)
+            {
+                dao.AddBook("Test", "Test", "Test");
+            }
+
+            var result = dao.GetBookByID(book.ID);
+
+            Assert.Equal(book, result);
+        }
+
+        [Fact]
+        public void GetBookByIdReturnsNullIfNotFound()
+        {
+            IBookHelper helper = new BookHelper();
+            IBookDAO dao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNumber = "call number";
+
+            var book = dao.AddBook(author, title, callNumber);
+
+            for (int i = 0; i < 10; i++)
+            {
+                dao.AddBook("Test", "Test", "Test");
+            }
+
+            var result = dao.GetBookByID(1000);
+
+            Assert.Null(result);
+        }
     }
 }

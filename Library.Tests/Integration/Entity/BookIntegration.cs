@@ -43,5 +43,26 @@ namespace Library.Tests.Integration.Entity
 
             Assert.Equal("Cannot borrow a book that is not available", ex.Message);
         }
+
+        [Fact]
+        public void CanGetLoanFromBook()
+        {
+            var book = new Book("author", "title", "call number", 1);
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(7));
+
+            // Associate the book with the loan.
+            book.Borrow(loan);
+
+            // Set book state to ON_LOAN - affected by GetLoanFromBookReturnsNullIfBookIsNotON_LOAN()
+            book.State = BookState.ON_LOAN;
+
+            // Testing the getter on the book.
+            var loanRetrieved = book.Loan;
+
+            Assert.Equal(loan, loanRetrieved);
+        }
+
     }
 }

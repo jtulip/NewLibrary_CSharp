@@ -58,7 +58,7 @@ namespace Library.Entities
 
             this.FineAmount -= payment;
 
-            if(this.FineAmount < BookConstants.FINE_LIMIT && !this.HasOverDueLoans && !this.HasReachedLoanLimit)
+            if(!this.HasReachedFineLimit && !this.HasOverDueLoans && !this.HasReachedLoanLimit)
                 this.State = MemberState.BORROWING_ALLOWED;
         }
 
@@ -71,7 +71,7 @@ namespace Library.Entities
 
             this.Loans.Add(loan);
 
-            if(this.HasReachedLoanLimit) this.State = MemberState.BORROWING_DISALLOWED;
+            if(this.HasReachedLoanLimit || this.HasReachedFineLimit) this.State = MemberState.BORROWING_DISALLOWED;
         }
 
         public List<ILoan> Loans { get; private set; }
@@ -83,7 +83,7 @@ namespace Library.Entities
 
             this.Loans.Remove(loan);
 
-            if(!this.HasOverDueLoans) this.State = MemberState.BORROWING_ALLOWED;
+            if(!this.HasOverDueLoans && ! this.HasReachedFineLimit) this.State = MemberState.BORROWING_ALLOWED;
         }
 
         public string FirstName { get; }

@@ -303,18 +303,17 @@ namespace Library.Tests.UnitTests
         {
             var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
 
-            var loan = Substitute.For<ILoan>();
+            while (!member.HasReachedLoanLimit)
+            {
+                var loan = Substitute.For<ILoan>();
 
-            member.AddLoan(loan);
-            
-            var fineAmount = BookConstants.FINE_LIMIT + 5.00f;
-
-            member.AddFine(fineAmount);
+                member.AddLoan(loan);
+            }
 
             // Borrowing state disallowed.
             Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
 
-            member.RemoveLoan(loan);
+            member.RemoveLoan(member.Loans[0]);
 
             Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
         }

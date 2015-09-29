@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Library.Daos;
 using Library.Entities;
+using Library.Interfaces.Daos;
 using Library.Interfaces.Entities;
 using Xunit;
 
@@ -38,5 +39,13 @@ namespace Library.Tests.Integration
 
             Assert.NotEqual(0, book.ID);
         }
+
+        [Fact]
+        public void CreateBookFailsOnNullHelper()
+        {
+            IBookHelper helper = null;
+            Assert.Throws<ArgumentException>(() => { IBookDAO dao = new BookDao(helper); });
+        }
+
     }
 }

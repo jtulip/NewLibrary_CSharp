@@ -33,7 +33,6 @@ namespace Library.Tests.UnitTests
             var member = Substitute.For<IMember>();
             DateTime borrowDate = DateTime.Today;
             DateTime dueDate = DateTime.Today;
-            int loanID = 1;
 
             var ex = Assert.Throws<ArgumentException>(() =>
             {

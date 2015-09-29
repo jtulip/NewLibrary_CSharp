@@ -194,10 +194,7 @@ namespace Library.Tests.UnitTests
 
             var memberDao = new MemberDao(helper);
 
-            var firstName = "first";
             var lastName = "last";
-            var contactPhone = "phone";
-            var emailAddress = "email address";
 
             memberDao.MemberList = new List<IMember>
             {
@@ -248,9 +245,6 @@ namespace Library.Tests.UnitTests
 
             var memberDao = new MemberDao(helper);
 
-            var firstName = "first";
-            var lastName = "last";
-            var contactPhone = "phone";
             var emailAddress = "email address";
 
             memberDao.MemberList = new List<IMember>
@@ -305,8 +299,6 @@ namespace Library.Tests.UnitTests
 
             var firstName = "first";
             var lastName = "last";
-            var contactPhone = "phone";
-            var emailAddress = "email address";
 
             memberDao.MemberList = new List<IMember>
             {

@@ -67,5 +67,19 @@ namespace Library.Tests.Integration
                 () => { var book = dao.AddBook(author, title, null); });
         }
 
+        [Fact]
+        public void CreateMemberCreatesAUniqueId()
+        {
+            IBookHelper helper = new BookHelper();
+            IBookDAO dao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNumber = "call number";
+
+            var book = dao.AddBook(author, title, callNumber);
+
+            Assert.NotEqual(0, book.ID);
+        }
     }
 }

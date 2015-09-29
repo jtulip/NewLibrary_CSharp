@@ -114,5 +114,28 @@ namespace Library.Tests.UnitTests
 
             Assert.Equal(LoanState.COMPLETE, loan.State);
         }
+
+        [Fact]
+        public void WhenLoanIsOverdueAndCompletedShouldBeComplete()
+        {
+            var book = Substitute.For<IBook>();
+            var member = Substitute.For<IMember>();
+            DateTime borrowDate = DateTime.Today;
+            DateTime dueDate = DateTime.Today.AddDays(7);
+
+            var loan = new Loan(book, member, borrowDate, dueDate);
+
+            loan.Commit(1);
+
+            Assert.Equal(LoanState.CURRENT, loan.State);
+
+            loan.CheckOverDue(DateTime.Today.AddDays(14));
+
+            Assert.Equal(LoanState.OVERDUE, loan.State);
+
+            loan.Complete();
+
+            Assert.Equal(LoanState.COMPLETE, loan.State);
+        }
     }
 }

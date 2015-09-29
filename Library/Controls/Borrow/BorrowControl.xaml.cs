@@ -23,7 +23,7 @@ namespace Library.Controls.Borrow
     {
         internal IBorrowListener _listener;
         internal Dictionary<EBorrowState, ABorrowControl> _controlDict;
-        private ABorrowControl _currentControl;
+        internal ABorrowControl _currentControl;
 
         public BorrowControl(IBorrowListener listener)
         {

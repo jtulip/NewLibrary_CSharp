@@ -8,10 +8,13 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using Library.Controllers.Borrow;
 using Library.Controls.Borrow;
+using Library.Entities;
 using Library.Interfaces.Controllers.Borrow;
 using Library.Interfaces.Daos;
+using Library.Interfaces.Entities;
 using Library.Interfaces.Hardware;
 using NSubstitute;
+using NSubstitute.Core;
 using Xunit;
 
 namespace Library.Tests.UnitTests
@@ -38,59 +41,105 @@ namespace Library.Tests.UnitTests
         private ILoanDAO _loanDao;
         private IMemberDAO _memberDao;
 
-        [Fact]
+        [WpfFact]
         public void CanCreateControl()
         {
-            // Must be done on an STA thread for WPF
-            Dispatcher.CurrentDispatcher.BeginInvoke(
-                DispatcherPriority.Normal,
-                new Action(() =>
-                {
-                    var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
-                    Assert.NotNull(ctrl);
-                }));
+            Assert.NotNull(ctrl);
         }
 
-        [Fact]
+        [WpfFact]
         public void BBUC_OP1_BeginUseCase()
         {
             // Must be done on an STA thread for WPF
-            Dispatcher.CurrentDispatcher.BeginInvoke(
-                DispatcherPriority.Normal,
-                new Action(() =>
-                {
-                    var mockThis = Substitute.For<IBorrowListener>();
+            var mockThis = Substitute.For<IBorrowListener>();
 
-                    var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
-                    _reader.Received().Listener = ctrl;
-                    _scanner.Received().Listener = ctrl;
+            _reader.Received().Listener = ctrl;
+            _scanner.Received().Listener = ctrl;
 
-                    Assert.Equal(ctrl, _reader.Listener);
-                    Assert.Equal(ctrl, _scanner.Listener);
+            Assert.Equal(ctrl, _reader.Listener);
+            Assert.Equal(ctrl, _scanner.Listener);
 
-                    Assert.Equal(EBorrowState.CREATED, ctrl._state);
+            Assert.Equal(EBorrowState.CREATED, ctrl._state);
 
-                    ctrl._ui = new BorrowControl(mockThis);
+            ctrl._ui = new BorrowControl(mockThis);
 
-                    ctrl.initialise();
+            ctrl.initialise();
 
-                    Assert.Equal(mockThis, ((BorrowControl)ctrl._ui)._listener);
-                    Assert.Equal(4, ((BorrowControl)ctrl._ui)._controlDict.Count);
+            var borrowControl = (BorrowControl)ctrl._ui;
 
-                    var swipeCardPanel = ((BorrowControl) ctrl._ui)._controlDict.Values.Single(c => c is SwipeCardControl);
+            Assert.Equal(mockThis, borrowControl._listener);
+            Assert.Equal(4, borrowControl._controlDict.Count);
 
-                    Assert.True(((SwipeCardControl) swipeCardPanel).IsVisible);
-                    Assert.True(((SwipeCardControl)swipeCardPanel).cancelButton.IsVisible);
+            var swipeCardPanel = borrowControl._controlDict.Values.Single(c => c is SwipeCardControl);
 
-                    Assert.True(_reader.Enabled);
-                    Assert.False(_scanner.Enabled);
+            Assert.Equal(swipeCardPanel, borrowControl._currentControl);
+            Assert.True(((SwipeCardControl)swipeCardPanel).IsEnabled);
+            Assert.True(((SwipeCardControl)swipeCardPanel).cancelButton.IsEnabled);
 
-                    Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
-                }));
+            Assert.True(_reader.Enabled);
+            Assert.False(_scanner.Enabled);
+
+            Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
         }
 
+        [WpfFact]
+        public void BBUC_OP2_SwipeBorrowerCard()
+        {
+            var mockThis = Substitute.For<IBorrowListener>();
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            _reader.Received().Listener = ctrl;
+            _scanner.Received().Listener = ctrl;
+
+            Assert.Equal(ctrl, _reader.Listener);
+            Assert.Equal(ctrl, _scanner.Listener);
+
+            Assert.Equal(EBorrowState.CREATED, ctrl._state);
+
+            ctrl._ui = new BorrowControl(mockThis);
+
+            ctrl.initialise();
+
+            var borrowControl = (BorrowControl)ctrl._ui;
+
+            Assert.Equal(mockThis, borrowControl._listener);
+            Assert.Equal(4, borrowControl._controlDict.Count);
+
+            var swipeCardPanel = borrowControl._controlDict.Values.Single(c => c is SwipeCardControl);
+            var scanBookPanel = borrowControl._controlDict.Values.Single(c => c is ScanBookControl);
+
+            Assert.Equal(swipeCardPanel, borrowControl._currentControl);
+            Assert.True(((SwipeCardControl)swipeCardPanel).IsEnabled);
+            Assert.True(((SwipeCardControl)swipeCardPanel).cancelButton.IsEnabled);
+
+            Assert.True(_reader.Enabled);
+            Assert.False(_scanner.Enabled);
+
+            Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
+
+            var member = Substitute.For<IMember>();
+
+            _memberDao.GetMemberByID(1).Returns(member);
+
+            ctrl.cardSwiped(1);
+
+            _memberDao.Received().GetMemberByID(1);
+
+            Assert.False(_reader.Enabled);
+            Assert.True(_scanner.Enabled);
+
+            Assert.False(((SwipeCardControl)swipeCardPanel).IsEnabled);
+            Assert.True(((ScanBookControl)scanBookPanel).IsEnabled);
+            Assert.True(((ScanBookControl)scanBookPanel).cancelButton.IsEnabled);
+            Assert.True(((ScanBookControl)scanBookPanel).completeButton.IsEnabled);
+            //Assert.Equal(3, ((ScanBookControl)scanBookPanel).);
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
+        }
 
 
         public void Dispose()

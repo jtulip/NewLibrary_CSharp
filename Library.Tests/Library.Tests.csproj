@@ -85,6 +85,9 @@
     <Compile Include="UnitTests\MemberStateTests.cs" />
     <Compile Include="UnitTests\MemberTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WpfFactAttribute.cs" />
+    <Compile Include="WpfFactDiscoverer.cs" />
+    <Compile Include="WpfTestCase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

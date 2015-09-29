@@ -43,9 +43,11 @@ namespace Library.Controllers.Borrow
             _reader = reader;
             _scanner = scanner;
             _printer = printer;
-
-
+            
             _ui = new BorrowControl(this);
+
+            _reader.Listener = this;
+            _scanner.Listener = this;
 
             _state = EBorrowState.CREATED;
         }
@@ -57,7 +59,11 @@ namespace Library.Controllers.Borrow
             _previousDisplay = _display.Display;
             Console.WriteLine("BorrowController Initialising, previous display = " + _previousDisplay);
             _display.Display = _ui;
-            //setState(EBorrowState.INITIALIZED);
+
+            _reader.Enabled = true;
+            _scanner.Enabled = false;
+
+            setState(EBorrowState.INITIALIZED);
         }
 
 
@@ -69,7 +75,16 @@ namespace Library.Controllers.Borrow
 
         public void cardSwiped(int memberID)
         {
-            throw new ApplicationException("Not implemented yet");
+            //var member = _memberDAO.GetMemberByID(memberID);
+
+            //if (member == null) return;
+
+            //_borrower = member;
+
+            _reader.Enabled = false;
+            _scanner.Enabled = true;
+            
+            _state = EBorrowState.SCANNING_BOOKS;
         }
 
         public void bookScanned(int barcode)
@@ -95,7 +110,7 @@ namespace Library.Controllers.Borrow
 
         private void setState(EBorrowState state)
         {
-            throw new ApplicationException("Not implemented yet");
+            _state = state;
         }
 
 

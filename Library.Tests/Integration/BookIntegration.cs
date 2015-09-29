@@ -125,5 +125,51 @@ namespace Library.Tests.Integration
 
             Assert.Null(result);
         }
+
+        [Fact]
+        public void CanGetBookByAuthor()
+        {
+            IBookHelper helper = new BookHelper();
+            IBookDAO dao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNumber = "call number";
+
+            var book = dao.AddBook(author, title, callNumber);
+
+            for (int i = 0; i < 10; i++)
+            {
+                dao.AddBook("Test", "Test", "Test");
+            }
+
+            var result = dao.FindBooksByAuthor(book.Author);
+
+            var single = result.Single();
+
+            Assert.Equal(book, single);
+        }
+
+        [Fact]
+        public void GetBookByAuthorReturnsEmptyCollectionIfNotFound()
+        {
+            IBookHelper helper = new BookHelper();
+            IBookDAO dao = new BookDao(helper);
+
+            var author = "author";
+            var title = "title";
+            var callNumber = "call number";
+
+            var book = dao.AddBook(author, title, callNumber);
+
+            for (int i = 0; i < 10; i++)
+            {
+                dao.AddBook("Test", "Test", "Test");
+            }
+
+            var result = dao.FindBooksByAuthor("Jim Tulip");
+
+            Assert.Empty(result);
+        }
     }
 }

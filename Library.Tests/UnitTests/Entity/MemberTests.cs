@@ -323,7 +323,8 @@ namespace Library.Tests.UnitTests.Entity
             Assert.DoesNotContain(loan4, member.Loans);
         }
 
-        public void RemoveLoanFromMember()
+        [Fact]
+        public void CanRemoveLoanFromMember()
         {
             var member = new Member("test", "member", "phone", "email", 1);
 

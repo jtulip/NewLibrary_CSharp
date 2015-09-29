@@ -132,6 +132,26 @@ namespace Library.Tests.Integration.Entity
             Assert.Contains(loan1, member.Loans);
             Assert.DoesNotContain(loan4, member.Loans);
         }
+
+        [Fact]
+        public void CanRemoveLoanFromMember()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(14)) { State = LoanState.CURRENT };
+
+            member.AddLoan(loan);
+
+            // Make sure Member has Loan.
+            Assert.Contains(loan, member.Loans);
+
+            member.RemoveLoan(loan);
+
+            // Make sure Loan has been removed from Member.
+            Assert.DoesNotContain(loan, member.Loans);
+        }
     }
 }
 

@@ -185,6 +185,17 @@ namespace Library.Tests.UnitTests.Control
         [WpfFact]
         public void CanSwipeBorrowerCard()
         {
+            var member = Substitute.For<IMember>();
+            member.HasOverDueLoans.Returns(false);
+            member.HasReachedLoanLimit.Returns(false);
+            member.HasReachedFineLimit.Returns(false);
+            member.FineAmount.Returns(0.00f);
+            member.ID.Returns(1);
+            member.FirstName.Returns("Jim");
+            member.LastName.Returns("Tulip");
+            member.ContactPhone.Returns("Phone");
+            member.Loans.Returns(new List<ILoan>());
+
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
             ctrl.initialise();
@@ -195,7 +206,9 @@ namespace Library.Tests.UnitTests.Control
             Assert.NotNull(ctrl._memberDAO);
             Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
 
-            ctrl.cardSwiped(1); // If we get to the end of the method then it hasn't thrown an exception.
+            _memberDao.GetMemberByID(member.ID).Returns(member);
+
+            ctrl.cardSwiped(member.ID); // If we get to the end of the method then it hasn't thrown an exception.
         }
 
         [WpfFact]
@@ -235,6 +248,7 @@ namespace Library.Tests.UnitTests.Control
             member.HasOverDueLoans.Returns(true);
             member.HasReachedLoanLimit.Returns(false);
             member.HasReachedFineLimit.Returns(false);
+            member.Loans.Returns(new List<ILoan>());
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
@@ -267,7 +281,7 @@ namespace Library.Tests.UnitTests.Control
             member.HasOverDueLoans.Returns(false);
             member.HasReachedLoanLimit.Returns(true);
             member.HasReachedFineLimit.Returns(false);
-            
+            member.Loans.Returns(new List<ILoan>());
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
@@ -301,6 +315,7 @@ namespace Library.Tests.UnitTests.Control
             member.HasReachedLoanLimit.Returns(false);
             member.HasReachedFineLimit.Returns(true);
             member.FineAmount.Returns(100.00f);
+            member.Loans.Returns(new List<ILoan>());
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
@@ -324,6 +339,50 @@ namespace Library.Tests.UnitTests.Control
 
             borrowctrl.Received().DisplayOverFineLimitMessage(member.FineAmount);
         }
+
+        [WpfFact]
+        public void SwipeBorrowerCardShowsCurrentLoans()
+        {
+            var loan = Substitute.For<ILoan>();
+
+            var member = Substitute.For<IMember>();
+            member.HasOverDueLoans.Returns(false);
+            member.HasReachedLoanLimit.Returns(false);
+            member.HasReachedFineLimit.Returns(false);
+            member.FineAmount.Returns(0.00f);
+            member.ID.Returns(1);
+            member.FirstName.Returns("Jim");
+            member.LastName.Returns("Tulip");
+            member.ContactPhone.Returns("Phone");
+            member.Loans.Returns(new List<ILoan>() { loan, loan, loan });
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            ctrl.initialise();
+
+            //Test pre-conditions
+            Assert.True(ctrl._reader.Enabled);
+            Assert.Equal(ctrl, ctrl._reader.Listener);
+            Assert.NotNull(ctrl._memberDAO);
+            Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
+
+            _memberDao.GetMemberByID(member.ID).Returns(member);
+
+            ctrl.cardSwiped(member.ID);
+
+            _memberDao.Received().GetMemberByID(member.ID);
+
+            foreach (var l in member.Loans)
+            {
+                borrowctrl.Received().DisplayExistingLoan(l.ToString());
+            }
+        }
+
+
 
         [WpfFact]
         public void SwipeBorrowerCardNotRestricted()

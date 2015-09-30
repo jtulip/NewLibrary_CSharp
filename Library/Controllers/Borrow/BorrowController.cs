@@ -119,7 +119,6 @@ namespace Library.Controllers.Borrow
             }
 
 
-
             _ui.DisplayScannedBookDetails("");
 
             _ui.DisplayPendingLoan("");
@@ -136,6 +135,8 @@ namespace Library.Controllers.Borrow
             _borrower = member;
 
             _ui.DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
+
+            foreach(var loan in member.Loans) _ui.DisplayExistingLoan(loan.ToString());
         }
 
         public void bookScanned(int barcode)

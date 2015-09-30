@@ -290,5 +290,34 @@ namespace Library.Tests.Integration.Entity
 
             Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
         }
+
+        [Fact]
+        public void WhenBorrowingDisallowedAndFinePaidButLoanLimitStillReachedBorrowingDisallowed()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            var fineAmount = BookConstants.FINE_LIMIT + 5.00f;
+
+            while (!member.HasReachedLoanLimit)
+            {
+                var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(7)) { State = LoanState.CURRENT };
+
+                member.AddLoan(loan);
+            }
+
+            member.AddFine(fineAmount);
+
+            // Borrowing state disallowed.
+            Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
+
+            member.PayFine(fineAmount);
+
+            Assert.True(member.HasReachedLoanLimit);
+
+            Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
+        }
+
     }
 }

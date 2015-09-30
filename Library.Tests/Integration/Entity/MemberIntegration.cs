@@ -205,6 +205,26 @@ namespace Library.Tests.Integration.Entity
 
             Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
         }
+
+        [Fact]
+        public void WhenBorrowingAllowedAndRemovingLoanBorrowingAllowed()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(14)) { State = LoanState.CURRENT };
+
+            member.AddLoan(loan);
+
+            Assert.False(member.HasReachedLoanLimit);
+
+            Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
+
+            member.RemoveLoan(loan);
+
+            Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
+        }
+
     }
 }
-

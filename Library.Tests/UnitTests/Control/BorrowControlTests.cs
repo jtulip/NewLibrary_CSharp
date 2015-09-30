@@ -152,6 +152,16 @@ namespace Library.Tests.UnitTests.Control
         }
 
         [WpfFact]
+        public void InitialiseControllerEnablesCardReader()
+        {
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            ctrl.initialise();
+
+            Assert.True(ctrl._reader.Enabled);
+        }
+
+        [WpfFact]
         public void BBUC_OP1_BeginUseCase()
         {
             // Must be done on an STA thread for WPF

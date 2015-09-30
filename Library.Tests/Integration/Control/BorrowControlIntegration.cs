@@ -108,6 +108,20 @@ namespace Library.Tests.Integration.Control
             Assert.Equal("MemberDAO object was not provided to begin the application", ex.Message);
         }
 
+        [WpfFact]
+        public void CreateControlAssignsArgumentsToLocalProperties()
+        {
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            Assert.Equal(_display, ctrl._display);
+            Assert.Equal(_reader, ctrl._reader);
+            Assert.Equal(_scanner, ctrl._scanner);
+            Assert.Equal(_printer, ctrl._printer);
+            Assert.Equal(_bookDao, ctrl._bookDAO);
+            Assert.Equal(_loanDao, ctrl._loanDAO);
+            Assert.Equal(_memberDao, ctrl._memberDAO);
+        }
+
 
         public void Dispose()
         {

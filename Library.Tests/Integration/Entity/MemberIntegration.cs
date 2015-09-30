@@ -340,5 +340,35 @@ namespace Library.Tests.Integration.Entity
 
             Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
         }
+
+        [Fact]
+        public void WhenBorrowingDisallowedAndLoanRemovedButHasOverdueLoanBorrowingDisallowed()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            var overdue = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(7)) { State = LoanState.CURRENT };
+
+            member.AddLoan(overdue);
+
+            // Set it to overdue
+            overdue.CheckOverDue(DateTime.Today.AddMonths(1));
+
+            while (!member.HasReachedLoanLimit)
+            {
+                var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(7)) { State = LoanState.CURRENT };
+
+                member.AddLoan(loan);
+            }
+
+            // Borrowing state disallowed.
+            Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
+
+            // Remove the first one that isn't the overdue mock.
+            member.RemoveLoan(member.Loans.First(l => l != overdue));
+
+            Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
+        }
     }
 }

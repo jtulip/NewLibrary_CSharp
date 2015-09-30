@@ -122,6 +122,18 @@ namespace Library.Tests.UnitTests.Control
         }
 
         [WpfFact]
+        public void CreateControlBookControlAddedAsListenerToCardReaderAndScanner()
+        {
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            _reader.Received().Listener = ctrl;
+            _scanner.Received().Listener = ctrl;
+
+            Assert.Equal(ctrl, _reader.Listener);
+            Assert.Equal(ctrl, _scanner.Listener);
+        }
+
+        [WpfFact]
         public void BBUC_OP1_BeginUseCase()
         {
             // Must be done on an STA thread for WPF

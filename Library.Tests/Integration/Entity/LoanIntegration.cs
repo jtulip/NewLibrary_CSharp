@@ -78,6 +78,19 @@ namespace Library.Tests.Integration.Entity
             Assert.Equal("Due date cannot be before Borrow date", ex.Message);
         }
 
+        [Fact]
+        public void CanCommitLoan()
+        {
+            var book = new Book("author", "title", "call number", 1);
+            var member = new Member("first", "last", "phone", "email", 1);
 
+            DateTime borrowDate = DateTime.Today;
+            DateTime dueDate = DateTime.Today.AddDays(7);
+            var loanId = 1;
+
+            var loan = new Loan(book, member, borrowDate, dueDate);
+
+            loan.Commit(loanId);
+        }
     }
 }

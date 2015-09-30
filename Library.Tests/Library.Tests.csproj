@@ -68,6 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Integration\Control\BorrowControlIntegration.cs" />
     <Compile Include="Integration\Dao\BookIntegration.cs" />
     <Compile Include="Integration\Dao\LoanIntegration.cs" />
     <Compile Include="Integration\Dao\MemberIntegration.cs" />

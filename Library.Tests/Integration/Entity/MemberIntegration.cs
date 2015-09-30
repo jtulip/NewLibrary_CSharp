@@ -170,6 +170,41 @@ namespace Library.Tests.Integration.Entity
 
             Assert.Equal("Loan was not found in member's loans", ex.Message);
         }
+
+        [Fact]
+        public void WhenBorrowingAllowedAndLoanAddedAndNotLimitReachedBorrowingAllowed()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(14)) { State = LoanState.CURRENT };
+
+            member.AddLoan(loan);
+
+            Assert.False(member.HasReachedLoanLimit);
+
+            Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
+        }
+
+        [Fact]
+        public void WhenBorrowingAllowedAndLoanAddedAndLimitReachedBorrowingDisallowed()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            while (!member.HasReachedLoanLimit)
+            {
+                var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(14)) { State = LoanState.CURRENT };
+
+                member.AddLoan(loan);
+            }
+
+            Assert.True(member.HasReachedLoanLimit);
+
+            Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
+        }
     }
 }
 

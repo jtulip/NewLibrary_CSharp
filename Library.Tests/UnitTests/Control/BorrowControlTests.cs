@@ -146,9 +146,7 @@ namespace Library.Tests.UnitTests.Control
         {
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
-            ctrl.initialise();
-
-            Assert.NotNull(ctrl);  // If test does not fail to this point it hasn't thrown, so Initialise method has worked.
+            ctrl.initialise();  // If test does not fail to this point it hasn't thrown, so Initialise method has worked.
         }
 
         [WpfFact]
@@ -179,6 +177,22 @@ namespace Library.Tests.UnitTests.Control
             ctrl.initialise();
 
             Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
+        }
+
+        [WpfFact]
+        public void CanSwipeBorrowerCard()
+        {
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            ctrl.initialise();
+
+            //Test pre-conditions
+            Assert.True(ctrl._reader.Enabled);
+            Assert.Equal(ctrl, ctrl._reader.Listener);
+            Assert.NotNull(ctrl._memberDAO);
+            Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
+
+            ctrl.cardSwiped(1);     // If we get to the end of the method then it hasn't thrown an exception.
         }
 
         //[WpfFact]

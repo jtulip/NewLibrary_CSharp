@@ -51,7 +51,6 @@ namespace Library.Tests.Scenarios
             var borrowctrl = Substitute.For<ABorrowControl>();
             controller._ui = borrowctrl;
 
-
             controller.initialise();
 
             // Some test data initialisation
@@ -88,15 +87,63 @@ namespace Library.Tests.Scenarios
 
             Assert.Equal(member, controller._borrower);
             Assert.Equal(EBorrowState.SCANNING_BOOKS, controller._state);
-
         }
 
-        //[WpfFact]
-        //public void RunMemberExistsAndRestricted()
-        //{
-        //    var controller = SetPreConditions();
+        [WpfFact]
+        public void RunMemberExistsAndRestricted()
+        {
+            // Set up
+            var controller = new BorrowController(_display, _reader, _scanner, _printer,
+                                                    _bookDao, _loanDao, _memberDao);
 
-        //}
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            controller._ui = borrowctrl;
+
+            controller.initialise();
+
+            // Some test data initialisation
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
+
+            var book = _bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+            var loan = _loanDao.CreateLoan(member, book, borrowDate, dueDate);
+
+            _loanDao.CommitLoan(loan);
+            
+            // Make the loan overdue to put member on restricted status
+            _loanDao.UpdateOverDueStatus(DateTime.Today.AddMonths(1));
+
+            // Test Pre-conditions
+            Assert.True(_reader.Enabled);
+            Assert.Equal(controller, _reader.Listener);
+            Assert.NotNull(controller._memberDAO);
+            Assert.Equal(EBorrowState.INITIALIZED, controller._state);
+
+            // Run use case
+            controller.cardSwiped(member.ID);
+
+            // Test Post-conditions
+            Assert.True(!_reader.Enabled);
+            Assert.True(!_scanner.Enabled);
+
+            borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
+
+            borrowctrl.Received().DisplayErrorMessage("Member has been restricted from borrowing");
+
+            borrowctrl.Received().DisplayOverDueMessage();
+
+            foreach (var l in member.Loans)
+            {
+                borrowctrl.Received().DisplayExistingLoan(l.ToString());
+            }
+
+            Assert.Equal(member, controller._borrower);
+            Assert.Equal(EBorrowState.BORROWING_RESTRICTED, controller._state);
+        }
 
         public void Dispose()
         {

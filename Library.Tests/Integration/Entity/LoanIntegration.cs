@@ -402,5 +402,29 @@ namespace Library.Tests.Integration.Entity
 
             Assert.Equal(LoanState.OVERDUE, loan.State);
         }
+
+        [Fact]
+        public void WhenLoanIsOverdueAndCheckedShouldStayOverdue()
+        {
+            var book = new Book("author", "title", "call number", 1);
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            DateTime borrowDate = DateTime.Today;
+            DateTime dueDate = DateTime.Today.AddDays(7);
+
+            var loanId = 1;
+
+            var loan = new Loan(book, member, borrowDate, dueDate);
+
+            loan.Commit(loanId);
+
+            loan.CheckOverDue(DateTime.Today.AddDays(14));
+
+            Assert.Equal(LoanState.OVERDUE, loan.State);
+
+            loan.CheckOverDue(DateTime.Today.AddDays(21));
+
+            Assert.Equal(LoanState.OVERDUE, loan.State);
+        }
     }
 }

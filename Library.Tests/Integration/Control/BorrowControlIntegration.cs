@@ -175,6 +175,42 @@ namespace Library.Tests.Integration.Control
             borrowctrl.Received().DisplayOverDueMessage();
         }
 
+        [WpfFact]
+        public void SwipeBorrowerCardShowErrorIfMemberHasReachedLoanLimit()
+        {
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
+
+            while (!member.HasReachedLoanLimit)
+            {
+                var book = _bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+                var loan = _loanDao.CreateLoan(member, book, borrowDate, dueDate);
+
+                _loanDao.CommitLoan(loan);
+            }
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            ctrl.initialise();
+
+            //Test pre-conditions
+            Assert.True(ctrl._reader.Enabled);
+            Assert.Equal(ctrl, ctrl._reader.Listener);
+            Assert.NotNull(ctrl._memberDAO);
+            Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
+
+            ctrl.cardSwiped(member.ID);
+
+            borrowctrl.Received().DisplayAtLoanLimitMessage();
+        }
+
 
         public void Dispose()
         {

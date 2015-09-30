@@ -116,12 +116,10 @@ namespace Library.Controllers.Borrow
 
                 _reader.Enabled = false;
                 _scanner.Enabled = true;
+
+                _ui.DisplayScannedBookDetails("");
+                _ui.DisplayPendingLoan("");
             }
-
-
-            _ui.DisplayScannedBookDetails("");
-
-            _ui.DisplayPendingLoan("");
 
             if (hasOverdueLoans)
                 _ui.DisplayOverDueMessage();
@@ -137,6 +135,8 @@ namespace Library.Controllers.Borrow
             _ui.DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
 
             foreach(var loan in member.Loans) _ui.DisplayExistingLoan(loan.ToString());
+
+            this.scanCount = member.Loans.Count;
         }
 
         public void bookScanned(int barcode)

@@ -7,6 +7,7 @@ using Library.Controllers.Borrow;
 using Library.Controls.Borrow;
 using Library.Daos;
 using Library.Entities;
+using Library.Hardware;
 using Library.Interfaces.Controllers.Borrow;
 using Library.Interfaces.Daos;
 using Library.Interfaces.Hardware;
@@ -24,11 +25,11 @@ namespace Library.Tests.Scenarios
             _loanDao = new LoanDao(new LoanHelper());
             _memberDao = new MemberDao(new MemberHelper());
 
-            // Only mocking UI concerns
-            _display = Substitute.For<IDisplay>();
-            _reader = Substitute.For<ICardReader>();
-            _scanner = Substitute.For<IScanner>();
-            _printer = Substitute.For<IPrinter>();
+            _display = new MainWindow();
+            _reader = new CardReader();
+            _scanner = new Scanner();
+            _printer = new Printer();
+
         }
 
         private IDisplay _display;
@@ -47,10 +48,6 @@ namespace Library.Tests.Scenarios
             var controller = new BorrowController(_display, _reader, _scanner, _printer,
                                                     _bookDao, _loanDao, _memberDao);
 
-            // Set the UI to the mock so we can test
-            var borrowctrl = Substitute.For<ABorrowControl>();
-            controller._ui = borrowctrl;
-
             controller.initialise();
 
             // Some test data initialisation
@@ -66,6 +63,16 @@ namespace Library.Tests.Scenarios
             _loanDao.CommitLoan(loan);
 
             // Test Pre-conditions
+            Assert.True(_display.Display.IsEnabled);
+
+            var borrowCtrl = ((BorrowControl)_display.Display);
+            var swipeCtrl = borrowCtrl._controlDict.Single(c => c.Value is SwipeCardControl).Value as SwipeCardControl;
+            var scanBookCtrl = borrowCtrl._controlDict.Single(c => c.Value is ScanBookControl).Value as ScanBookControl;
+
+            Assert.NotNull(swipeCtrl);
+            Assert.True(swipeCtrl.IsEnabled);
+            Assert.True(swipeCtrl.cancelButton.IsEnabled);
+
             Assert.True(_reader.Enabled);
             Assert.Equal(controller, _reader.Listener);
             Assert.NotNull(controller._memberDAO);
@@ -75,16 +82,19 @@ namespace Library.Tests.Scenarios
             controller.cardSwiped(member.ID);
 
             // Test Post-conditions
+            Assert.NotNull(scanBookCtrl);
+            Assert.True(scanBookCtrl.IsEnabled);
+            Assert.True(scanBookCtrl.cancelButton.IsEnabled);
+            Assert.True(scanBookCtrl.completeButton.IsEnabled);
+
             Assert.True(!_reader.Enabled);
             Assert.True(_scanner.Enabled);
 
-            borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
+            Assert.Equal(member.ID, scanBookCtrl.idLabel.Content);
+            Assert.Equal($"{member.FirstName} {member.LastName}", scanBookCtrl.nameLabel.Content.ToString());
+            Assert.Equal(member.Loans[0].ToString(), scanBookCtrl.existingLoanBox.Text);  // Test one existing loan is present
 
-            foreach (var l in member.Loans)
-            {
-                borrowctrl.Received().DisplayExistingLoan(l.ToString());
-            }
-
+            Assert.Equal(member.Loans.Count, controller.scanCount);
             Assert.Equal(member, controller._borrower);
             Assert.Equal(EBorrowState.SCANNING_BOOKS, controller._state);
         }
@@ -95,10 +105,6 @@ namespace Library.Tests.Scenarios
             // Set up
             var controller = new BorrowController(_display, _reader, _scanner, _printer,
                                                     _bookDao, _loanDao, _memberDao);
-
-            // Set the UI to the mock so we can test
-            var borrowctrl = Substitute.For<ABorrowControl>();
-            controller._ui = borrowctrl;
 
             controller.initialise();
 
@@ -118,6 +124,16 @@ namespace Library.Tests.Scenarios
             _loanDao.UpdateOverDueStatus(DateTime.Today.AddMonths(1));
 
             // Test Pre-conditions
+            Assert.True(_display.Display.IsEnabled);
+
+            var borrowCtrl = ((BorrowControl)_display.Display);
+            var swipeCtrl = borrowCtrl._controlDict.Single(c => c.Value is SwipeCardControl).Value as SwipeCardControl;
+            var restrictedCtrl = borrowCtrl._controlDict.Single(c => c.Value is RestrictedControl).Value as RestrictedControl;
+
+            Assert.NotNull(swipeCtrl);
+            Assert.True(swipeCtrl.IsEnabled);
+            Assert.True(swipeCtrl.cancelButton.IsEnabled);
+
             Assert.True(_reader.Enabled);
             Assert.Equal(controller, _reader.Listener);
             Assert.NotNull(controller._memberDAO);
@@ -127,19 +143,21 @@ namespace Library.Tests.Scenarios
             controller.cardSwiped(member.ID);
 
             // Test Post-conditions
+            Assert.NotNull(restrictedCtrl);
+            Assert.True(restrictedCtrl.IsEnabled);
+            Assert.True(restrictedCtrl.cancelButton.IsEnabled);
+
+
             Assert.True(!_reader.Enabled);
             Assert.True(!_scanner.Enabled);
 
-            borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
+            Assert.Equal(member.ID, restrictedCtrl.idLabel.Content);
+            Assert.Equal($"{member.FirstName} {member.LastName}", restrictedCtrl.nameLabel.Content.ToString());
+            Assert.Equal(member.Loans[0].ToString(), restrictedCtrl.existingLoanBox.Text);  // Test one existing loan is present
 
-            borrowctrl.Received().DisplayErrorMessage("Member has been restricted from borrowing");
+            Assert.Equal("Borrower has overdue loans", restrictedCtrl.overDueLoanLabel.Content);
+            Assert.Equal("Member has been restricted from borrowing", restrictedCtrl.errorMessage.Content);
 
-            borrowctrl.Received().DisplayOverDueMessage();
-
-            foreach (var l in member.Loans)
-            {
-                borrowctrl.Received().DisplayExistingLoan(l.ToString());
-            }
 
             Assert.Equal(member, controller._borrower);
             Assert.Equal(EBorrowState.BORROWING_RESTRICTED, controller._state);

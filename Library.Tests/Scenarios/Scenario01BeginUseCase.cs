@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Library.Controllers.Borrow;
+using Library.Controls.Borrow;
 using Library.Daos;
 using Library.Entities;
+using Library.Hardware;
 using Library.Interfaces.Controllers.Borrow;
 using Library.Interfaces.Hardware;
 using NSubstitute;
@@ -23,12 +25,11 @@ namespace Library.Tests.Scenarios
            var bookDao = new BookDao(new BookHelper());
            var loanDao = new LoanDao(new LoanHelper());
            var memberDao = new MemberDao(new MemberHelper());
-           
-           // Only mocking UI concerns
-           var display = Substitute.For<IDisplay>();
-           var reader = Substitute.For<ICardReader>();
-           var scanner = Substitute.For<IScanner>();
-           var printer = Substitute.For<IPrinter>();
+
+            var display = new MainWindow();
+            var reader = new CardReader();
+            var scanner = new Scanner();
+            var printer = new Printer();
 
             var controller = new BorrowController(display, reader, scanner, printer,
                 bookDao, loanDao, memberDao);
@@ -61,6 +62,16 @@ namespace Library.Tests.Scenarios
             controller.initialise();
 
             // Test post-conditions
+            // Borrow book UI Displayed
+            Assert.True(display.Display.IsEnabled);
+
+            var borrowCtrl = ((BorrowControl) display.Display);
+            var swipeCtrl = borrowCtrl._controlDict.Single(c => c.Value is SwipeCardControl).Value as SwipeCardControl;
+
+            Assert.NotNull(swipeCtrl);
+            Assert.True(swipeCtrl.IsEnabled);
+            Assert.True(swipeCtrl.cancelButton.IsEnabled);
+
             Assert.True(reader.Enabled);
             Assert.True(!scanner.Enabled);
             Assert.Equal(EBorrowState.INITIALIZED, controller._state);

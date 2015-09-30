@@ -7,6 +7,7 @@ using Library.Controllers.Borrow;
 using Library.Controls.Borrow;
 using Library.Daos;
 using Library.Entities;
+using Library.Hardware;
 using Library.Interfaces.Controllers.Borrow;
 using Library.Interfaces.Daos;
 using Library.Interfaces.Entities;
@@ -26,11 +27,10 @@ namespace Library.Tests.Integration.Control
             _loanDao = new LoanDao(new LoanHelper());
             _memberDao = new MemberDao(new MemberHelper());
 
-            // Only mocking UI concerns
-            _display = Substitute.For<IDisplay>();
-            _reader = Substitute.For<ICardReader>();
-            _scanner = Substitute.For<IScanner>();
-            _printer = Substitute.For<IPrinter>();
+            _display = new MainWindow();
+            _reader = new CardReader();
+            _scanner = new Scanner();
+            _printer = new Printer();
         }
 
         private IDisplay _display;
@@ -158,7 +158,7 @@ namespace Library.Tests.Integration.Control
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
-            // Set the UI to the mock so we can test
+            // Set the UI to the mock so we can test calls being made
             var borrowctrl = Substitute.For<ABorrowControl>();
             ctrl._ui = borrowctrl;
 
@@ -194,7 +194,7 @@ namespace Library.Tests.Integration.Control
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
-            // Set the UI to the mock so we can test
+            // Set the UI to the mock so we can test calls being made
             var borrowctrl = Substitute.For<ABorrowControl>();
             ctrl._ui = borrowctrl;
 
@@ -229,7 +229,7 @@ namespace Library.Tests.Integration.Control
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
-            // Set the UI to the mock so we can test
+            // Set the UI to the mock so we can test calls being made
             var borrowctrl = Substitute.For<ABorrowControl>();
             ctrl._ui = borrowctrl;
 
@@ -298,7 +298,7 @@ namespace Library.Tests.Integration.Control
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
-            // Set the UI to the mock so we can test
+            // Set the UI to the mock so we can test calls being made
             var borrowctrl = Substitute.For<ABorrowControl>();
             ctrl._ui = borrowctrl;
 
@@ -311,9 +311,6 @@ namespace Library.Tests.Integration.Control
             Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
 
             ctrl.cardSwiped(member.ID);
-
-            _reader.Received().Enabled = false;
-            _scanner.Received().Enabled = true;
 
             borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
 
@@ -346,7 +343,7 @@ namespace Library.Tests.Integration.Control
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
-            // Set the UI to the mock so we can test
+            // Set the UI to the mock so we can test calls being made
             var borrowctrl = Substitute.For<ABorrowControl>();
             ctrl._ui = borrowctrl;
 
@@ -359,9 +356,6 @@ namespace Library.Tests.Integration.Control
             Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
 
             ctrl.cardSwiped(member.ID);
-
-            _reader.Received().Enabled = false;
-            _scanner.Received().Enabled = false;
 
             borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
 

@@ -101,12 +101,24 @@ namespace Library.Controllers.Borrow
             var hasReachedLoanLimit = member.HasReachedLoanLimit;
             var hasReachedFineLimit = member.HasReachedFineLimit;
 
-            if (hasOverdueLoans || hasReachedLoanLimit || hasReachedFineLimit) borrowingRestricted = true;
+            if (hasOverdueLoans || hasReachedLoanLimit || hasReachedFineLimit)
+            {
+                setState(EBorrowState.BORROWING_RESTRICTED);
 
-            setState(borrowingRestricted ? EBorrowState.BORROWING_RESTRICTED : EBorrowState.SCANNING_BOOKS);
+                _reader.Enabled = false;
+                _scanner.Enabled = false;
 
-            _reader.Enabled = false;
-            _scanner.Enabled = true;
+                _ui.DisplayErrorMessage("Member has been restricted from borrowing");
+            }
+            else
+            {
+                setState(EBorrowState.SCANNING_BOOKS);
+
+                _reader.Enabled = false;
+                _scanner.Enabled = true;
+            }
+
+
 
             _ui.DisplayScannedBookDetails("");
 

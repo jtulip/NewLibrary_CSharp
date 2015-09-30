@@ -375,6 +375,58 @@ namespace Library.Tests.UnitTests.Control
             Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
         }
 
+        [WpfFact]
+        public void SwipeBorrowerCardRestricted()
+        {
+            var member = Substitute.For<IMember>();
+            member.HasOverDueLoans.Returns(true);
+            member.HasReachedLoanLimit.Returns(false);
+            member.HasReachedFineLimit.Returns(false);
+            member.FineAmount.Returns(0.00f);
+            member.ID.Returns(1);
+            member.FirstName.Returns("Jim");
+            member.LastName.Returns("Tulip");
+            member.ContactPhone.Returns("Phone");
+            member.Loans.Returns(new List<ILoan>());
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            ctrl.initialise();
+
+            //Test pre-conditions
+            Assert.True(ctrl._reader.Enabled);
+            Assert.Equal(ctrl, ctrl._reader.Listener);
+            Assert.NotNull(ctrl._memberDAO);
+            Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
+
+            _memberDao.GetMemberByID(member.ID).Returns(member);
+
+            ctrl.cardSwiped(member.ID);
+
+            _memberDao.Received().GetMemberByID(member.ID);
+
+            _reader.Received().Enabled = false;
+            _scanner.Received().Enabled = false;
+
+            borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
+
+            borrowctrl.Received().DisplayErrorMessage("Member has been restricted from borrowing");
+
+            foreach (var l in member.Loans)
+            {
+                borrowctrl.Received().DisplayExistingLoan(l.ToString());
+            }
+
+            Assert.Equal(member, ctrl._borrower);
+            Assert.True(!ctrl._reader.Enabled);
+            Assert.True(!ctrl._scanner.Enabled);
+            Assert.Equal(EBorrowState.BORROWING_RESTRICTED, ctrl._state);
+        }
+
 
         //[WpfFact]
         //public void BBUC_OP1_BeginUseCase()

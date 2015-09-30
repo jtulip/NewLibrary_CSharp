@@ -87,7 +87,7 @@ namespace Library.Controllers.Borrow
 
         public void cardSwiped(int memberID)
         {
-            var borrowingRestricted = false;
+            if(_state != EBorrowState.INITIALIZED) throw new InvalidOperationException("Controls must be initialised before member's card is swiped");
 
             var member = _memberDAO.GetMemberByID(memberID);
 

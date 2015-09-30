@@ -212,6 +212,18 @@ namespace Library.Tests.UnitTests.Control
         }
 
         [WpfFact]
+        public void SwipeBorrowerCardControlNotInitialized()
+        {
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            Assert.Equal(EBorrowState.CREATED, ctrl._state);
+
+            var ex = Assert.Throws<InvalidOperationException>(() => { ctrl.cardSwiped(1); });
+
+            Assert.Equal("Controls must be initialised before member's card is swiped", ex.Message);
+        }
+
+        [WpfFact]
         public void SwipeBorrowerCardMemberDoesntExist()
         {
             var memberId = 1;

@@ -259,5 +259,23 @@ namespace Library.Tests.Integration.Entity
 
             Assert.Equal(BookState.DAMAGED, book.State);
         }
+
+        [Fact]
+        public void WhenBookIsDamagedAndRepairedShouldBeAvailable()
+        {
+            var book = new Book("author", "title", "call number", 1);
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(7));
+
+            book.Borrow(loan);
+
+            book.ReturnBook(true);
+
+            book.Repair();
+
+            Assert.Equal(BookState.AVAILABLE, book.State);
+        }
+
     }
 }

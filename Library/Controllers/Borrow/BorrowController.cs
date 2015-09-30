@@ -87,10 +87,21 @@ namespace Library.Controllers.Borrow
 
         public void cardSwiped(int memberID)
         {
+            var borrowingRestricted = false;
+
             var member = _memberDAO.GetMemberByID(memberID);
 
-            if (member == null) _ui.DisplayErrorMessage("Borrower was not found in database");
+            if (member == null)
+            {
+                _ui.DisplayErrorMessage("Borrower was not found in database");
+                return;
+            }
 
+            if (member.HasOverDueLoans)
+            {
+                _ui.DisplayOverDueMessage();
+                borrowingRestricted = true;
+            }
             //_borrower = member;
 
             _reader.Enabled = false;

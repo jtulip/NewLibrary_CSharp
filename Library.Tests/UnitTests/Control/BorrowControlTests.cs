@@ -227,11 +227,33 @@ namespace Library.Tests.UnitTests.Control
         }
 
         [WpfFact]
-        public void SwipeBorrowerCardCheckIfMemberRestricted()        
+        public void SwipeBorrowerCardShowErrorIfMemberHasOverdueLoans()        
         {
-            //TODO: MUST DO THESE CHECKS HERE NEXT!
+            var memberId = 1;
+            var member = Substitute.For<IMember>();
+            member.HasOverDueLoans.Returns(true);
 
-            Assert.True(true);    
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            ctrl.initialise();
+
+            //Test pre-conditions
+            Assert.True(ctrl._reader.Enabled);
+            Assert.Equal(ctrl, ctrl._reader.Listener);
+            Assert.NotNull(ctrl._memberDAO);
+            Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
+
+            _memberDao.GetMemberByID(memberId).Returns(member);
+
+            ctrl.cardSwiped(memberId);
+
+            _memberDao.Received().GetMemberByID(memberId);
+
+            borrowctrl.Received().DisplayOverDueMessage();
         }
 
 

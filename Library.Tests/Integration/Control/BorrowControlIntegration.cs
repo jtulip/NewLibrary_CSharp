@@ -122,6 +122,24 @@ namespace Library.Tests.Integration.Control
             Assert.Equal(_memberDao, ctrl._memberDAO);
         }
 
+        [WpfFact]
+        public void CanSwipeBorrowerCard()
+        {
+            var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            ctrl.initialise();
+
+            //Test pre-conditions
+            Assert.True(ctrl._reader.Enabled);
+            Assert.Equal(ctrl, ctrl._reader.Listener);
+            Assert.NotNull(ctrl._memberDAO);
+            Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
+
+            ctrl.cardSwiped(member.ID); // If we get to the end of the method then it hasn't thrown an exception.
+        }
+
 
         public void Dispose()
         {

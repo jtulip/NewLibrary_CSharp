@@ -51,6 +51,10 @@ namespace Library.Controllers.Borrow
             _reader = reader;
             _scanner = scanner;
             _printer = printer;
+
+            _bookDAO = bookDAO;
+            _loanDAO = loanDAO;
+            _memberDAO = memberDAO;
             
             _ui = new BorrowControl(this);
 

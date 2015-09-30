@@ -72,6 +72,7 @@
     <Compile Include="Integration\Dao\LoanIntegration.cs" />
     <Compile Include="Integration\Dao\MemberIntegration.cs" />
     <Compile Include="Integration\Entity\BookIntegration.cs" />
+    <Compile Include="Integration\Entity\LoanIntegration.cs" />
     <Compile Include="Integration\Entity\MemberIntegration.cs" />
     <Compile Include="UnitTests\Dao\BookDaoTests.cs" />
     <Compile Include="UnitTests\Helper\BookHelperTests.cs" />

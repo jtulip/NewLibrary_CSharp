@@ -130,5 +130,24 @@ namespace Library.Tests.Integration.Entity
             Assert.Equal(BookState.ON_LOAN, book.State);
         }
 
+        [Fact]
+        public void CommitLoanCallsBorrowerAddLoan()
+        {
+            var book = new Book("author", "title", "call number", 1);
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            DateTime borrowDate = DateTime.Today;
+            DateTime dueDate = DateTime.Today.AddDays(7);
+            var loanId = 1;
+
+            var loan = new Loan(book, member, borrowDate, dueDate);
+
+            // Call the commit and expect that it will call book.Borrow.
+            loan.Commit(loanId);
+
+            // When loan is committed, assert borrower.AddLoan will be called with the loan.
+            Assert.Equal(loan, member.Loans[0]);
+        }
+
     }
 }

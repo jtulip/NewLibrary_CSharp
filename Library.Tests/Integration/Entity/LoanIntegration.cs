@@ -28,5 +28,56 @@ namespace Library.Tests.Integration.Entity
             // By new rule, assert ID = 0.
             Assert.Equal(0, loan.ID);
         }
+
+
+        [Fact]
+        public void LoanCtorThrowsIllegalParameterException()
+        {
+            var book = new Book("author", "title", "call number", 1);
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            DateTime borrowDate = DateTime.Today;
+            DateTime dueDate = DateTime.Today.AddDays(7);
+
+            var ex = Assert.Throws<ArgumentException>(() =>
+            {
+                var loan = new Loan(null, member, borrowDate, dueDate);
+            });
+
+            Assert.Equal("Book needs to be provided", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(() =>
+            {
+                new Loan(book, null, borrowDate, dueDate);
+            });
+
+            Assert.Equal("Member needs to be provided", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(() =>
+            {
+                // DateTime can't be null in .NET
+                new Loan(book, member, DateTime.MinValue, dueDate);
+            });
+
+            Assert.Equal("Borrow date needs to be provided", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(() =>
+            {
+                // DateTime can't be null in .NET
+                new Loan(book, member, borrowDate, DateTime.MinValue);
+            });
+
+            Assert.Equal("Due date needs to be provided", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(() =>
+            {
+                // DateTime can't be null in .NET
+                new Loan(book, member, borrowDate, borrowDate.AddDays(-1));
+            });
+
+            Assert.Equal("Due date cannot be before Borrow date", ex.Message);
+        }
+
+
     }
 }

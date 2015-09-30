@@ -149,5 +149,34 @@ namespace Library.Tests.Integration.Entity
             Assert.Equal(loan, member.Loans[0]);
         }
 
+        [Fact]
+        public void CommitLoanThrowsExceptionIfLoanStateNotPending()
+        {
+            var book = new Book("author", "title", "call number", 1);
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            DateTime borrowDate = DateTime.Today;
+            DateTime dueDate = DateTime.Today.AddDays(7);
+            var loanId = 1;
+
+            var loan = new Loan(book, member, borrowDate, dueDate);
+
+            // Set loan state to pending
+            loan.State = LoanState.PENDING;
+
+            // Call the commit and expect that it will call book.Borrow.
+            loan.Commit(loanId);
+
+            // Just make a general check it was successful and changed state to current.
+            Assert.Equal(LoanState.CURRENT, loan.State);
+
+            // Set loan state to other than pending
+            loan.State = LoanState.COMPLETE;
+
+            var ex = Assert.Throws<InvalidOperationException>(() => loan.Commit(loanId));
+
+            Assert.Equal("Loan cannot be committed unless state is Pending", ex.Message);
+        }
+
     }
 }

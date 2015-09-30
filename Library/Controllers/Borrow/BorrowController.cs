@@ -102,6 +102,13 @@ namespace Library.Controllers.Borrow
                 _ui.DisplayOverDueMessage();
                 borrowingRestricted = true;
             }
+
+            if (member.HasReachedLoanLimit)
+            {
+                _ui.DisplayAtLoanLimitMessage();
+                borrowingRestricted = true;
+            }
+
             //_borrower = member;
 
             _reader.Enabled = false;

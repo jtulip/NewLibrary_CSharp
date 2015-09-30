@@ -310,5 +310,20 @@ namespace Library.Tests.Integration.Entity
 
             Assert.Equal(book, loan.Book);
         }
+
+        [Fact]
+        public void CanGetID()
+        {
+            var book = new Book("author", "title", "call number", 1);
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            DateTime borrowDate = DateTime.Today;
+            DateTime dueDate = DateTime.Today.AddDays(7);
+
+            var loan = new Loan(book, member, borrowDate, dueDate);
+
+            Assert.Equal(0, loan.ID);
+        }
+
     }
 }

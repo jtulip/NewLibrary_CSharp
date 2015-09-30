@@ -134,6 +134,14 @@ namespace Library.Tests.UnitTests.Control
         }
 
         [WpfFact]
+        public void CreateControlSetsStateToCreated()
+        {
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            Assert.Equal(EBorrowState.CREATED, ctrl._state);
+        }
+
+        [WpfFact]
         public void BBUC_OP1_BeginUseCase()
         {
             // Must be done on an STA thread for WPF

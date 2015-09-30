@@ -140,6 +140,41 @@ namespace Library.Tests.Integration.Control
             ctrl.cardSwiped(member.ID); // If we get to the end of the method then it hasn't thrown an exception.
         }
 
+        [WpfFact]
+        public void SwipeBorrowerCardShowErrorIfMemberHasOverdueLoans()
+        {
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
+
+            var book = _bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+            var loan = _loanDao.CreateLoan(member, book, borrowDate, dueDate);
+
+            _loanDao.CommitLoan(loan);
+
+            _loanDao.UpdateOverDueStatus(DateTime.Today.AddMonths(1));
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            ctrl.initialise();
+
+            //Test pre-conditions
+            Assert.True(ctrl._reader.Enabled);
+            Assert.Equal(ctrl, ctrl._reader.Listener);
+            Assert.NotNull(ctrl._memberDAO);
+            Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
+
+            ctrl.cardSwiped(member.ID);
+
+            borrowctrl.Received().DisplayOverDueMessage();
+        }
+
 
         public void Dispose()
         {

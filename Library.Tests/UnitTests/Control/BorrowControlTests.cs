@@ -1,7 +1,9 @@
 ﻿using System;
 using Library.Controllers.Borrow;
 using Library.Controls.Borrow;
+using Library.Entities;
 using Library.Interfaces.Controllers.Borrow;
+using Library.Interfaces.Controls.Borrow;
 using Library.Interfaces.Daos;
 using Library.Interfaces.Entities;
 using Library.Interfaces.Hardware;
@@ -193,6 +195,35 @@ namespace Library.Tests.UnitTests.Control
             Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
 
             ctrl.cardSwiped(1);     // If we get to the end of the method then it hasn't thrown an exception.
+        }
+
+        [WpfFact]
+        public void SwipeBorrowerCardMemberDoesntExist()
+        {
+            var memberId = 1;
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            ctrl.initialise();
+
+            //Test pre-conditions
+            Assert.True(ctrl._reader.Enabled);
+            Assert.Equal(ctrl, ctrl._reader.Listener);
+            Assert.NotNull(ctrl._memberDAO);
+            Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
+
+            _memberDao.GetMemberByID(memberId).Returns((Member)null);
+
+            ctrl.cardSwiped(memberId);
+
+            _memberDao.Received().GetMemberByID(memberId);
+
+            // Test using mocks that it received a Borrower not found error.
+            borrowctrl.Received().DisplayErrorMessage("Borrower was not found in database");
         }
 
         //[WpfFact]

@@ -265,5 +265,30 @@ namespace Library.Tests.Integration.Entity
 
             Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
         }
+
+        [Fact]
+        public void WhenBorrowingDisallowedAndFinePaidButHasOverdueLoansBorrowingDisallowed()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(7)) { State = LoanState.CURRENT };
+
+            var fineAmount = BookConstants.FINE_LIMIT + 5.00f;
+
+            member.AddLoan(loan);
+
+            member.AddFine(fineAmount);
+
+            foreach (var l in member.Loans) l.CheckOverDue(DateTime.Today.AddMonths(1));
+
+            // Borrowing state disallowed.
+            Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
+
+            member.PayFine(fineAmount);
+
+            Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
+        }
     }
 }

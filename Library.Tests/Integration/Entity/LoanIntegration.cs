@@ -263,5 +263,24 @@ namespace Library.Tests.Integration.Entity
             Assert.True(result);
         }
 
+        [Theory]
+        [InlineData(LoanState.PENDING)]
+        [InlineData(LoanState.COMPLETE)]
+        public void CheckOverDueThrowsExceptionIfNotCurrentOrOverdue(LoanState state)
+        {
+            var book = new Book("author", "title", "call number", 1);
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            DateTime borrowDate = DateTime.Today;
+            DateTime dueDate = DateTime.Today.AddDays(7);
+
+            var loan = new Loan(book, member, borrowDate, dueDate);
+
+            loan.State = state;
+
+            var ex = Assert.Throws<InvalidOperationException>(() => loan.CheckOverDue(DateTime.Today));
+
+            Assert.Equal("Cannot check Over Due if Loan is not Current or Overdue", ex.Message);
+        }
     }
 }

@@ -54,11 +54,7 @@ namespace Library.Tests.UnitTests.Entity
         {
             var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
 
-            var loan = Substitute.For<ILoan>();
-
             var fineAmount = 5.00f;
-
-            member.AddLoan(loan);
 
             Assert.False(member.HasReachedLoanLimit);
 
@@ -78,10 +74,6 @@ namespace Library.Tests.UnitTests.Entity
         {
             var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
 
-            var loan = Substitute.For<ILoan>();
-
-            member.AddLoan(loan);
-
             Assert.False(member.HasReachedLoanLimit);
 
             Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
@@ -100,11 +92,7 @@ namespace Library.Tests.UnitTests.Entity
         {
             var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
 
-            var loan = Substitute.For<ILoan>();
-
             var fineAmount = BookConstants.FINE_LIMIT + 1.00f;
-
-            member.AddLoan(loan);
 
             Assert.False(member.HasReachedLoanLimit);
 
@@ -187,11 +175,7 @@ namespace Library.Tests.UnitTests.Entity
         {
             var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
 
-            var loan = Substitute.For<ILoan>();
-
             var fineAmount = BookConstants.FINE_LIMIT + 1.00f;
-
-            member.AddLoan(loan);
 
             member.AddFine(fineAmount);
 
@@ -208,11 +192,7 @@ namespace Library.Tests.UnitTests.Entity
         {
             var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
 
-            var loan = Substitute.For<ILoan>();
-
             var fineAmount = BookConstants.FINE_LIMIT + 1.00f;
-
-            member.AddLoan(loan);
 
             member.AddFine(fineAmount);
 
@@ -229,11 +209,7 @@ namespace Library.Tests.UnitTests.Entity
         {
             var member = new Member("firstName", "lastName", "contactPhone", "emailAddress", 1);
 
-            var loan = Substitute.For<ILoan>();
-
             var fineAmount = BookConstants.FINE_LIMIT + 5.00f;
-
-            member.AddLoan(loan);
 
             member.AddFine(fineAmount);
 

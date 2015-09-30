@@ -245,5 +245,25 @@ namespace Library.Tests.Integration.Entity
 
             Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
         }
+
+        [Fact]
+        public void WhenBorrowingAllowedAndHasOverdueLoansBorrowingDisallowed()
+        {
+            var book = new Book("author", "title", "call number", 1);
+
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(7)) { State = LoanState.CURRENT };
+
+            member.AddLoan(loan);
+
+            Assert.Equal(MemberState.BORROWING_ALLOWED, member.State);
+
+            foreach (var l in member.Loans) l.CheckOverDue(DateTime.Today.AddMonths(1));
+
+            Assert.True(member.HasOverDueLoans);
+
+            Assert.Equal(MemberState.BORROWING_DISALLOWED, member.State);
+        }
     }
 }

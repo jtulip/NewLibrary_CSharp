@@ -78,7 +78,7 @@
     <Compile Include="UnitTests\Helper\BookHelperTests.cs" />
     <Compile Include="UnitTests\Entity\BookStateTests.cs" />
     <Compile Include="UnitTests\Entity\BookTests.cs" />
-    <Compile Include="UnitTests\Control\BrowserControlTests.cs" />
+    <Compile Include="UnitTests\Control\BorrowControlTests.cs" />
     <Compile Include="UnitTests\Dao\LoanDaoTests.cs" />
     <Compile Include="UnitTests\Helper\LoanHelperTests.cs" />
     <Compile Include="UnitTests\Entity\LoanStateTests.cs" />

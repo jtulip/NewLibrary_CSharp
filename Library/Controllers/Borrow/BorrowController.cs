@@ -15,30 +15,38 @@ namespace Library.Controllers.Borrow
 {
     class BorrowController : IBorrowListener, ICardReaderListener, IScannerListener
     {
-        private IDisplay _display;
-        private UserControl _previousDisplay;
+        internal IDisplay _display;
+        internal UserControl _previousDisplay;
         internal ABorrowControl _ui;
-        private ICardReader _reader;
-        private ICardReaderListener _previousReaderListener;
-        private IScanner _scanner;
-        private IScannerListener _previousScannerListener;
-        private IPrinter _printer;
+        internal ICardReader _reader;
+        internal ICardReaderListener _previousReaderListener;
+        internal IScanner _scanner;
+        internal IScannerListener _previousScannerListener;
+        internal IPrinter _printer;
 
-        private IBookDAO _bookDAO;
-        private ILoanDAO _loanDAO;
-        private IMemberDAO _memberDAO;
+        internal IBookDAO _bookDAO;
+        internal ILoanDAO _loanDAO;
+        internal IMemberDAO _memberDAO;
 
-        private IMember _borrower;
-        private int scanCount = 0;
+        internal IMember _borrower;
+        internal int scanCount = 0;
         internal EBorrowState _state;
 
-        private List<IBook> _bookList;
-        private List<ILoan> _loanList;
+        internal List<IBook> _bookList;
+        internal List<ILoan> _loanList;
 
 
         public BorrowController(IDisplay display, ICardReader reader, IScanner scanner, IPrinter printer,
                                     IBookDAO bookDAO, ILoanDAO loanDAO, IMemberDAO memberDAO)
         {
+            if(display == null) throw new ArgumentException("Display object was not provided to begin the application");
+            if (reader == null) throw new ArgumentException("Reader object was not provided to begin the application");
+            if (scanner == null) throw new ArgumentException("Scanner object was not provided to begin the application");
+            if (printer == null) throw new ArgumentException("Printer object was not provided to begin the application");
+            if (bookDAO == null) throw new ArgumentException("BookDAO object was not provided to begin the application");
+            if (loanDAO == null) throw new ArgumentException("LoanDAO object was not provided to begin the application");
+            if (memberDAO == null) throw new ArgumentException("MemberDAO object was not provided to begin the application");
+
             _display = display;
             _reader = reader;
             _scanner = scanner;

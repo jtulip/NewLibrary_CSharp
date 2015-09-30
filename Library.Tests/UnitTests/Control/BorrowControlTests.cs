@@ -10,10 +10,10 @@ using Xunit;
 
 namespace Library.Tests.UnitTests.Control
 {
-    [Trait("Category", "BrowserControl Tests")]
-    public class BrowserControlTests : IDisposable
+    [Trait("Category", "BorrowControl Tests")]
+    public class BorrowControlTests : IDisposable
     {
-        public BrowserControlTests()
+        public BorrowControlTests()
         {
             _display = Substitute.For<IDisplay>();
             _reader = Substitute.For<ICardReader>();
@@ -38,6 +38,73 @@ namespace Library.Tests.UnitTests.Control
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
             Assert.NotNull(ctrl);
+        }
+
+        [WpfFact]
+        public void CreateControlThrowsExceptionOnNullArguments()
+        {
+            var ex = Assert.Throws<ArgumentException>(
+                () =>
+                {
+                    var ctrl = new BorrowController(null, _reader, _scanner, _printer, _bookDao, _loanDao,
+                        _memberDao);
+                });
+
+            Assert.Equal("Display object was not provided to begin the application", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(
+                () =>
+                {
+                    var ctrl = new BorrowController(_display, null, _scanner, _printer, _bookDao, _loanDao,
+                        _memberDao);
+                });
+
+            Assert.Equal("Reader object was not provided to begin the application", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(
+                () =>
+                {
+                    var ctrl = new BorrowController(_display, _reader, null, _printer, _bookDao, _loanDao,
+                        _memberDao);
+                });
+
+            Assert.Equal("Scanner object was not provided to begin the application", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(
+                () =>
+                {
+                    var ctrl = new BorrowController(_display, _reader, _scanner, null, _bookDao, _loanDao,
+                        _memberDao);
+                });
+
+            Assert.Equal("Printer object was not provided to begin the application", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(
+                () =>
+                {
+                    var ctrl = new BorrowController(_display, _reader, _scanner, _printer, null, _loanDao,
+                        _memberDao);
+                });
+
+            Assert.Equal("BookDAO object was not provided to begin the application", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(
+                () =>
+                {
+                    var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, null,
+                        _memberDao);
+                });
+
+            Assert.Equal("LoanDAO object was not provided to begin the application", ex.Message);
+
+            ex = Assert.Throws<ArgumentException>(
+                () =>
+                {
+                    var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao,
+                        null);
+                });
+
+            Assert.Equal("MemberDAO object was not provided to begin the application", ex.Message);
         }
 
         [WpfFact]

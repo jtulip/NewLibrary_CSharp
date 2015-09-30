@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Library.Entities;
+using Library.Interfaces.Entities;
 using Xunit;
 
 namespace Library.Tests.Integration.Entity
@@ -92,5 +93,23 @@ namespace Library.Tests.Integration.Entity
 
             loan.Commit(loanId);
         }
+
+        [Fact]
+        public void CommitLoanSetsStateToCurrent()
+        {
+            var book = new Book("author", "title", "call number", 1);
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            DateTime borrowDate = DateTime.Today;
+            DateTime dueDate = DateTime.Today.AddDays(7);
+            var loanId = 1;
+
+            var loan = new Loan(book, member, borrowDate, dueDate);
+
+            loan.Commit(loanId);
+
+            Assert.Equal(LoanState.CURRENT, loan.State);
+        }
+
     }
 }

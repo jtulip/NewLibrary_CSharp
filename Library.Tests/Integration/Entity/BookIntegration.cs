@@ -212,5 +212,22 @@ namespace Library.Tests.Integration.Entity
 
             Assert.Equal(BookState.LOST, book.State);
         }
+
+        [Fact]
+        public void WhenBookIsLostAndDisposedShouldBeDisposed()
+        {
+            var book = new Book("author", "title", "call number", 1);
+            var member = new Member("first", "last", "phone", "email", 1);
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(7));
+
+            book.Borrow(loan);
+
+            book.Lose();
+
+            book.Dispose();
+
+            Assert.Equal(BookState.DISPOSED, book.State);
+        }
     }
 }

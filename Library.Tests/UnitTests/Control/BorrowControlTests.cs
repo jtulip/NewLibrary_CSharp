@@ -162,6 +162,16 @@ namespace Library.Tests.UnitTests.Control
         }
 
         [WpfFact]
+        public void InitialiseControllerDisablesScanner()
+        {
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            ctrl.initialise();
+
+            Assert.True(!ctrl._scanner.Enabled);
+        }
+
+        [WpfFact]
         public void BBUC_OP1_BeginUseCase()
         {
             // Must be done on an STA thread for WPF

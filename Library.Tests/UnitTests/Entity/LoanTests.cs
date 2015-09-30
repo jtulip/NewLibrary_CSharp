@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using Library.Entities;
 using Library.Interfaces.Entities;
 using NSubstitute;
@@ -168,6 +169,8 @@ namespace Library.Tests.UnitTests.Entity
             loan.Commit(1);
 
             loan.Complete();
+
+            Assert.Equal(LoanState.COMPLETE, loan.State);
         }
 
         [Fact]

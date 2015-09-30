@@ -193,6 +193,8 @@ namespace Library.Tests.Integration.Entity
             loan.Commit(loanId);
 
             loan.Complete();
+
+            Assert.Equal(LoanState.COMPLETE, loan.State);
         }
 
     }

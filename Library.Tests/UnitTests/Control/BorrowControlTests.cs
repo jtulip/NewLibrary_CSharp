@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Library.Controllers.Borrow;
 using Library.Controls.Borrow;
 using Library.Entities;
@@ -233,6 +234,7 @@ namespace Library.Tests.UnitTests.Control
             var member = Substitute.For<IMember>();
             member.HasOverDueLoans.Returns(true);
             member.HasReachedLoanLimit.Returns(false);
+            member.HasReachedFineLimit.Returns(false);
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
@@ -264,6 +266,8 @@ namespace Library.Tests.UnitTests.Control
             var member = Substitute.For<IMember>();
             member.HasOverDueLoans.Returns(false);
             member.HasReachedLoanLimit.Returns(true);
+            member.HasReachedFineLimit.Returns(false);
+            
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
@@ -288,17 +292,21 @@ namespace Library.Tests.UnitTests.Control
             borrowctrl.Received().DisplayAtLoanLimitMessage();
         }
 
-
         [WpfFact]
-        public void SwipeBorrowerCardNotRestricted_CardReaderIsDisabled()
+        public void SwipeBorrowerCardShowErrorIfMemberHasReachedFinesLimit()
         {
-            var member = Substitute.For<IMember>();
-
-            //TODO: ALL RETURN DATA TO PROVE MEMBER ISN'T RESTRICTED
-
             var memberId = 1;
+            var member = Substitute.For<IMember>();
+            member.HasOverDueLoans.Returns(false);
+            member.HasReachedLoanLimit.Returns(false);
+            member.HasReachedFineLimit.Returns(true);
+            member.FineAmount.Returns(100.00f);
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
 
             ctrl.initialise();
 
@@ -310,13 +318,61 @@ namespace Library.Tests.UnitTests.Control
 
             _memberDao.GetMemberByID(memberId).Returns(member);
 
-            ctrl.cardSwiped(memberId);     // If we get to the end of the method then it hasn't thrown an exception.
+            ctrl.cardSwiped(memberId);
 
             _memberDao.Received().GetMemberByID(memberId);
 
-            _reader.Received().Enabled = false;
+            borrowctrl.Received().DisplayOverFineLimitMessage(member.FineAmount);
+        }
 
+        [WpfFact]
+        public void SwipeBorrowerCardNotRestricted()
+        {
+            var member = Substitute.For<IMember>();
+            member.HasOverDueLoans.Returns(false);
+            member.HasReachedLoanLimit.Returns(false);
+            member.HasReachedFineLimit.Returns(false);
+            member.FineAmount.Returns(0.00f);
+            member.ID.Returns(1);
+            member.FirstName.Returns("Jim");
+            member.LastName.Returns("Tulip");
+            member.ContactPhone.Returns("Phone");
+            member.Loans.Returns(new List<ILoan>());
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            ctrl.initialise();
+
+            //Test pre-conditions
+            Assert.True(ctrl._reader.Enabled);
+            Assert.Equal(ctrl, ctrl._reader.Listener);
+            Assert.NotNull(ctrl._memberDAO);
+            Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
+
+            _memberDao.GetMemberByID(member.ID).Returns(member);
+
+            ctrl.cardSwiped(member.ID);
+
+            _memberDao.Received().GetMemberByID(member.ID);
+
+            _reader.Received().Enabled = false;
+            _scanner.Received().Enabled = true;
+
+            borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}" , member.ContactPhone);
+
+            foreach (var l in member.Loans)
+            {
+                borrowctrl.Received().DisplayExistingLoan(l.ToString());
+            }
+
+            Assert.Equal(member, ctrl._borrower);
             Assert.True(!ctrl._reader.Enabled);
+            Assert.True(ctrl._scanner.Enabled);
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
         }
 
 

@@ -97,24 +97,33 @@ namespace Library.Controllers.Borrow
                 return;
             }
 
-            if (member.HasOverDueLoans)
-            {
-                _ui.DisplayOverDueMessage();
-                borrowingRestricted = true;
-            }
+            var hasOverdueLoans = member.HasOverDueLoans;
+            var hasReachedLoanLimit = member.HasReachedLoanLimit;
+            var hasReachedFineLimit = member.HasReachedFineLimit;
 
-            if (member.HasReachedLoanLimit)
-            {
-                _ui.DisplayAtLoanLimitMessage();
-                borrowingRestricted = true;
-            }
+            if (hasOverdueLoans || hasReachedLoanLimit || hasReachedFineLimit) borrowingRestricted = true;
 
-            //_borrower = member;
+            setState(borrowingRestricted ? EBorrowState.BORROWING_RESTRICTED : EBorrowState.SCANNING_BOOKS);
 
             _reader.Enabled = false;
             _scanner.Enabled = true;
-            
-            _state = EBorrowState.SCANNING_BOOKS;
+
+            _ui.DisplayScannedBookDetails("");
+
+            _ui.DisplayPendingLoan("");
+
+            if (hasOverdueLoans)
+                _ui.DisplayOverDueMessage();
+
+            if (member.HasReachedLoanLimit)
+                _ui.DisplayAtLoanLimitMessage();
+
+            if (member.HasReachedFineLimit)
+                _ui.DisplayOverFineLimitMessage(member.FineAmount);
+
+            _borrower = member;
+
+            _ui.DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
         }
 
         public void bookScanned(int barcode)
@@ -141,6 +150,7 @@ namespace Library.Controllers.Borrow
         private void setState(EBorrowState state)
         {
             _state = state;
+            _ui.State = state;
         }
 
 

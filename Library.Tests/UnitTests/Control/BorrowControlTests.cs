@@ -148,7 +148,7 @@ namespace Library.Tests.UnitTests.Control
         {
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
-            ctrl.initialise();  // If test does not fail to this point it hasn't thrown, so Initialise method has worked.
+            ctrl.initialise(); // If test does not fail to this point it hasn't thrown, so Initialise method has worked.
         }
 
         [WpfFact]
@@ -194,7 +194,7 @@ namespace Library.Tests.UnitTests.Control
             Assert.NotNull(ctrl._memberDAO);
             Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
 
-            ctrl.cardSwiped(1);     // If we get to the end of the method then it hasn't thrown an exception.
+            ctrl.cardSwiped(1); // If we get to the end of the method then it hasn't thrown an exception.
         }
 
         [WpfFact]
@@ -216,7 +216,7 @@ namespace Library.Tests.UnitTests.Control
             Assert.NotNull(ctrl._memberDAO);
             Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
 
-            _memberDao.GetMemberByID(memberId).Returns((Member)null);
+            _memberDao.GetMemberByID(memberId).Returns((Member) null);
 
             ctrl.cardSwiped(memberId);
 
@@ -225,6 +225,46 @@ namespace Library.Tests.UnitTests.Control
             // Test using mocks that it received a Borrower not found error.
             borrowctrl.Received().DisplayErrorMessage("Borrower was not found in database");
         }
+
+        [WpfFact]
+        public void SwipeBorrowerCardCheckIfMemberRestricted()        
+        {
+            //TODO: MUST DO THESE CHECKS HERE NEXT!
+
+            Assert.True(true);    
+        }
+
+
+        [WpfFact]
+        public void SwipeBorrowerCardNotRestricted_CardReaderIsDisabled()
+        {
+            var member = Substitute.For<IMember>();
+
+            //TODO: ALL RETURN DATA TO PROVE MEMBER ISN'T RESTRICTED
+
+            var memberId = 1;
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            ctrl.initialise();
+
+            //Test pre-conditions
+            Assert.True(ctrl._reader.Enabled);
+            Assert.Equal(ctrl, ctrl._reader.Listener);
+            Assert.NotNull(ctrl._memberDAO);
+            Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
+
+            _memberDao.GetMemberByID(memberId).Returns(member);
+
+            ctrl.cardSwiped(memberId);     // If we get to the end of the method then it hasn't thrown an exception.
+
+            _memberDao.Received().GetMemberByID(memberId);
+
+            _reader.Received().Enabled = false;
+
+            Assert.True(!ctrl._reader.Enabled);
+        }
+
 
         //[WpfFact]
         //public void BBUC_OP1_BeginUseCase()

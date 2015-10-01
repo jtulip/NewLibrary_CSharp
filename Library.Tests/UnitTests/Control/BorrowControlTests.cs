@@ -533,6 +533,19 @@ namespace Library.Tests.UnitTests.Control
             ctrl.bookScanned(0); // if we get this far we've worked.
         }
 
+        [WpfFact]
+        public void ScanBookControlNotScanningBooks()
+        {
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            ctrl.initialise();
+
+            var ex = Assert.Throws<InvalidOperationException>(() => { ctrl.bookScanned(0); });
+
+            Assert.Equal("Control state must be set to 'Scanning Books'", ex.Message);
+        }
+
+
         public void Dispose()
         {
             _display = null;

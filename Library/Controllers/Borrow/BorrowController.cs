@@ -141,6 +141,8 @@ namespace Library.Controllers.Borrow
 
         public void bookScanned(int barcode)
         {
+            if (_state != EBorrowState.SCANNING_BOOKS)
+                throw new InvalidOperationException("Control state must be set to 'Scanning Books'");
         }
 
         public void scansCompleted()

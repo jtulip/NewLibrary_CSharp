@@ -503,6 +503,23 @@ namespace Library.Tests.UnitTests.Control
             Assert.True(!_reader.Enabled);
         }
 
+        [WpfFact]
+        public void ScanBooksScannerEnabled()
+        {
+            var member = CreateMockIMember();
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            // Make the bookDao return a successful read
+            _bookDao.GetBookByID(0).Returns(Substitute.For<IBook>());
+
+            ctrl.bookScanned(0); // if we get this far we've worked.
+
+            Assert.True(_scanner.Enabled);
+        }
+
         private static IMember CreateMockIMember()
         {
             var member = Substitute.For<IMember>();

@@ -141,7 +141,6 @@ namespace Library.Controllers.Borrow
 
         public void bookScanned(int barcode)
         {
-            throw new ApplicationException("Not implemented yet");
         }
 
         public void scansCompleted()

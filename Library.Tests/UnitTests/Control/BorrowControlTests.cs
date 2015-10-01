@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting;
 using Library.Controllers.Borrow;
 using Library.Controls.Borrow;
 using Library.Entities;
@@ -496,6 +497,40 @@ namespace Library.Tests.UnitTests.Control
             Assert.True(!ctrl._reader.Enabled);
             Assert.True(!ctrl._scanner.Enabled);
             Assert.Equal(EBorrowState.BORROWING_RESTRICTED, ctrl._state);
+        }
+
+        [WpfFact]
+        public void CanScanBook()
+        {
+            var member = Substitute.For<IMember>();
+            member.HasOverDueLoans.Returns(false);
+            member.HasReachedLoanLimit.Returns(false);
+            member.HasReachedFineLimit.Returns(false);
+            member.FineAmount.Returns(0.00f);
+            member.ID.Returns(1);
+            member.FirstName.Returns("Jim");
+            member.LastName.Returns("Tulip");
+            member.ContactPhone.Returns("Phone");
+            member.Loans.Returns(new List<ILoan>());
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            ctrl.initialise();
+
+            _memberDao.GetMemberByID(member.ID).Returns(member);
+
+            ctrl.cardSwiped(member.ID);
+
+            // Test Pre-conditions
+            Assert.NotNull(ctrl);
+            Assert.NotNull(ctrl._scanner);
+            Assert.Equal(ctrl._scanner.Listener, ctrl);
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
+
+            // Make the bookDao return a successful read
+            _bookDao.GetBookByID(0).Returns(Substitute.For<IBook>());
+
+            ctrl.bookScanned(0); // if we get this far we've worked.
         }
 
         public void Dispose()

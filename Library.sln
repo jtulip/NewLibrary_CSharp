@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UAT Documents", "UAT Docume
 	ProjectSection(SolutionItems) = preProject
 		UAT Documents\UC01 Begin Use Case Description.docx = UAT Documents\UC01 Begin Use Case Description.docx
 		UAT Documents\UC01 Begin Use Case Script - Attempt 1.docx = UAT Documents\UC01 Begin Use Case Script - Attempt 1.docx
+		UAT Documents\UC01 Begin Use Case Script - Attempt 2.docx = UAT Documents\UC01 Begin Use Case Script - Attempt 2.docx
 	EndProjectSection
 EndProject
 Global

@@ -544,6 +544,33 @@ namespace Library.Tests.UnitTests.Control
             Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
         }
 
+        [WpfFact]
+        public void ScanBooksBookNotAvailable()
+        {
+            var member = CreateMockIMember();
+
+            var book = Substitute.For<IBook>();
+            book.State.Returns(BookState.DISPOSED);
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            _bookDao.GetBookByID(0).Returns(book);
+
+            ctrl.bookScanned(0); // if we get this far we've worked.
+
+            _bookDao.Received().GetBookByID(0);
+
+            borrowctrl.Received().DisplayErrorMessage("Book is not available to be borrowed");
+
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
+        }
+
         private static IMember CreateMockIMember()
         {
             var member = Substitute.For<IMember>();

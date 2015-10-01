@@ -149,6 +149,15 @@ namespace Library.Controllers.Borrow
             if (book == null)
             {
                 _ui.DisplayErrorMessage("Book scanned was not found");
+
+                return;
+            }
+
+            if (book.State != BookState.AVAILABLE)
+            {
+                _ui.DisplayErrorMessage("Book is not available to be borrowed");
+
+                return;
             }
         }
 

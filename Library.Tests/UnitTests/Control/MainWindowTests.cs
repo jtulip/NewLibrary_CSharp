@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Library.Controls;
 using Xunit;
 
 namespace Library.Tests.UnitTests.Control
@@ -16,6 +17,14 @@ namespace Library.Tests.UnitTests.Control
             var mainWindow = new MainWindow();
 
             Assert.NotNull(mainWindow);
+        }
+
+        [WpfFact]
+        public void WhenMainWindowCreatedMainControllerGetsMadeDisplay()
+        {
+            var mainWindow = new MainWindow();
+
+            Assert.True(mainWindow.Display is MainMenuControl);
         }
     }
 }

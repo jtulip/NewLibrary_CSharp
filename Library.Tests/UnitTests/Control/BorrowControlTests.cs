@@ -826,6 +826,16 @@ namespace Library.Tests.UnitTests.Control
             Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
         }
 
+        [WpfFact]
+        public void RejectLoansControlNotConfirmingLoans()
+        {
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            var ex = Assert.Throws<InvalidOperationException>(() => { ctrl.loansRejected(); });
+
+            Assert.Equal("Control state must be set to 'Confirming Loans'", ex.Message);
+        }
+
         private static IMember CreateMockIMember()
         {
             var member = Substitute.For<IMember>();

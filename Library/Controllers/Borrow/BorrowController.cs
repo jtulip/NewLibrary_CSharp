@@ -215,6 +215,8 @@ namespace Library.Controllers.Borrow
 
         public void loansRejected()
         {
+            if(_state != EBorrowState.CONFIRMING_LOANS) throw new InvalidOperationException("Control state must be set to 'Confirming Loans'");
+
             _loanList.Clear();
             _bookList.Clear();
             setState(EBorrowState.SCANNING_BOOKS);

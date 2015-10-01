@@ -402,6 +402,23 @@ namespace Library.Tests.Integration.Control
             Assert.True(!_reader.Enabled);
         }
 
+        [WpfFact]
+        public void ScanBooksScannerEnabled()
+        {
+            var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
+
+            var book = _bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            ctrl.bookScanned(book.ID);
+
+            Assert.True(_scanner.Enabled);
+        }
+
+
 
         private void InitialiseToScanBookPreConditions(BorrowController ctrl, IMember member)
         {

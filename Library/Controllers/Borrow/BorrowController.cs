@@ -188,7 +188,11 @@ namespace Library.Controllers.Borrow
 
         public void scansCompleted()
         {
-            throw new ApplicationException("Not implemented yet");
+            setState(EBorrowState.CONFIRMING_LOANS);
+
+            foreach(var l in _loanList) _ui.DisplayPendingLoan(l.ToString());
+
+            _reader.Enabled = false;
         }
 
         public void loansConfirmed()

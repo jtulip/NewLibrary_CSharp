@@ -703,6 +703,37 @@ namespace Library.Tests.UnitTests.Control
             Assert.Equal(EBorrowState.CONFIRMING_LOANS, ctrl._state);
         }
 
+        [WpfFact]
+        public void CanCompleteScans()
+        {
+            var loan = Substitute.For<ILoan>();
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            ctrl.initialise();
+
+            // Set Pre-conditions
+            ctrl._state = EBorrowState.SCANNING_BOOKS;
+            ctrl._loanList.Add(loan);
+            ctrl._loanList.Add(loan);
+
+            Assert.NotNull(ctrl);
+            Assert.NotEmpty(ctrl._loanList);
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
+
+            ctrl.scansCompleted();
+
+            borrowctrl.Received(2).DisplayPendingLoan(loan.ToString());
+
+            Assert.True(!_reader.Enabled);
+            Assert.True(!_scanner.Enabled);
+            Assert.Equal(EBorrowState.CONFIRMING_LOANS, ctrl._state);
+        }
+
         private static IMember CreateMockIMember()
         {
             var member = Substitute.For<IMember>();

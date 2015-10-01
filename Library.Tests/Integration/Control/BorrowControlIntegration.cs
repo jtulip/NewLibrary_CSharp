@@ -386,6 +386,23 @@ namespace Library.Tests.Integration.Control
             ctrl.bookScanned(book.ID); // if we get this far we've worked.
         }
 
+        [WpfFact]
+        public void ScanBooksCardReaderDisabled()
+        {
+            var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
+
+            var book = _bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            ctrl.bookScanned(book.ID);
+
+            Assert.True(!_reader.Enabled);
+        }
+
+
         private void InitialiseToScanBookPreConditions(BorrowController ctrl, IMember member)
         {
             ctrl.initialise();

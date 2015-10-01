@@ -199,7 +199,16 @@ namespace Library.Controllers.Borrow
 
         public void loansConfirmed()
         {
-            throw new ApplicationException("Not implemented yet");
+            foreach (var loan in _loanList)
+            {
+                _loanDAO.CommitLoan(loan);
+                _printer.print(loan.ToString());
+            }
+
+            _reader.Enabled = false;
+            _scanner.Enabled = false;
+
+            setState(EBorrowState.COMPLETED);
         }
 
         public void loansRejected()

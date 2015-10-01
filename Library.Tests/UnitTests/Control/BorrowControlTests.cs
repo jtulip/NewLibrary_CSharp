@@ -787,6 +787,44 @@ namespace Library.Tests.UnitTests.Control
             Assert.Equal("Control state must be set to 'Confirming Loans'", ex.Message);
         }
 
+        [WpfFact]
+        public void CanRejectLoans()
+        {
+            var loan = Substitute.For<ILoan>();
+
+
+            var member = CreateMockIMember();
+            member.Loans.Returns(new List<ILoan>() { loan });
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            // Set Pre-conditions
+            ctrl._state = EBorrowState.CONFIRMING_LOANS;
+            ctrl._loanList.Add(loan);
+            ctrl._loanList.Add(loan);
+
+            Assert.NotNull(ctrl);
+            Assert.NotEmpty(ctrl._loanList);
+            Assert.Equal(EBorrowState.CONFIRMING_LOANS, ctrl._state);
+
+            ctrl.loansRejected();
+
+            borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
+            borrowctrl.Received().DisplayExistingLoan(loan.ToString());
+
+            Assert.Empty(ctrl._loanList);
+            Assert.Empty(ctrl._bookList);
+            Assert.Equal(1, ctrl.scanCount);
+            Assert.True(!_reader.Enabled);
+            Assert.True(_scanner.Enabled);
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
+        }
 
         private static IMember CreateMockIMember()
         {

@@ -215,7 +215,13 @@ namespace Library.Controllers.Borrow
 
         public void loansRejected()
         {
-            throw new ApplicationException("Not implemented yet");
+            _loanList.Clear();
+            _bookList.Clear();
+            setState(EBorrowState.SCANNING_BOOKS);
+
+            _ui.DisplayMemberDetails(_borrower.ID, $"{_borrower.FirstName} {_borrower.LastName}", _borrower.ContactPhone);
+
+            foreach(var loan in _borrower.Loans) _ui.DisplayExistingLoan(loan.ToString());
         }
 
 

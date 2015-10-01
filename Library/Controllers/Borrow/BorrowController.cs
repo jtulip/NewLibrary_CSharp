@@ -199,6 +199,8 @@ namespace Library.Controllers.Borrow
 
         public void loansConfirmed()
         {
+            if(_state != EBorrowState.CONFIRMING_LOANS) throw new InvalidOperationException("Control state must be set to 'Confirming Loans'");
+
             foreach (var loan in _loanList)
             {
                 _loanDAO.CommitLoan(loan);

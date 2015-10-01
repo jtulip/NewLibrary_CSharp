@@ -461,6 +461,30 @@ namespace Library.Tests.Integration.Control
             Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
         }
 
+        [WpfFact]
+        public void ScanBooksBookAlreadyScanned()
+        {
+            var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
+
+            var book = _bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            ctrl._bookList.Add(book); // Add the book to the booklist.
+
+            ctrl.bookScanned(book.ID);
+
+            borrowctrl.Received().DisplayErrorMessage("Book has already been scanned");
+
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
+        }
+
 
 
         private void InitialiseToScanBookPreConditions(BorrowController ctrl, IMember member)

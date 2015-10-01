@@ -170,16 +170,19 @@ namespace Library.Controllers.Borrow
                 return;
             }
 
-            if (this.scanCount < BookConstants.LOAN_LIMIT)
+            this.scanCount++;
+
+            var loan = _loanDAO.CreateLoan(_borrower, book, DateTime.Today, DateTime.Today.AddDays(7));
+
+            _ui.DisplayPendingLoan(loan.ToString());
+
+            _loanList.Add(loan);
+            _bookList.Add(book);
+
+            if (this.scanCount == BookConstants.LOAN_LIMIT)
             {
-                this.scanCount++;
-
-                var loan = _loanDAO.CreateLoan(_borrower, book, DateTime.Today, DateTime.Today.AddDays(7));
-
-                _ui.DisplayPendingLoan(loan.ToString());
-
-                _loanList.Add(loan);
-                _bookList.Add(book);
+                _scanner.Enabled = false;
+                setState(EBorrowState.CONFIRMING_LOANS);
             }
         }
 

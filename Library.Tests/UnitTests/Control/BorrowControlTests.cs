@@ -727,11 +727,21 @@ namespace Library.Tests.UnitTests.Control
 
             ctrl.scansCompleted();
 
-            borrowctrl.Received(2).DisplayPendingLoan(loan.ToString());
+            borrowctrl.Received(2).DisplayConfirmingLoan(loan.ToString());
 
             Assert.True(!_reader.Enabled);
             Assert.True(!_scanner.Enabled);
             Assert.Equal(EBorrowState.CONFIRMING_LOANS, ctrl._state);
+        }
+
+        [WpfFact]
+        public void CompleteScansControlNotScanningBooks()
+        {
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            var ex = Assert.Throws<InvalidOperationException>(() => { ctrl.scansCompleted(); });
+
+            Assert.Equal("Control state must be set to 'Scanning Books'", ex.Message);
         }
 
         private static IMember CreateMockIMember()

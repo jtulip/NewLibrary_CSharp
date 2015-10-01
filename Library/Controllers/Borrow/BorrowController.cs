@@ -188,9 +188,11 @@ namespace Library.Controllers.Borrow
 
         public void scansCompleted()
         {
+            if(_state != EBorrowState.SCANNING_BOOKS) throw new InvalidOperationException("Control state must be set to 'Scanning Books'");
+
             setState(EBorrowState.CONFIRMING_LOANS);
 
-            foreach(var l in _loanList) _ui.DisplayPendingLoan(l.ToString());
+            foreach(var l in _loanList) _ui.DisplayConfirmingLoan(l.ToString());
 
             _reader.Enabled = false;
         }

@@ -98,6 +98,66 @@ namespace Library.Tests.Scenarios
             Assert.Equal(EBorrowState.SCANNING_BOOKS, controller._state);
         }
 
+        [WpfFact]
+        public void RunBookNotAvailable()
+        {
+            // Some test data initialisation
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
+
+            var existingBook = _bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+            var existingLoan = _loanDao.CreateLoan(member, existingBook, borrowDate, dueDate);
+
+            _loanDao.CommitLoan(existingLoan);
+
+            var book = _bookDao.AddBook("Jim Tulip", "Adventures in Programming 2", "call number");
+            book.Dispose();
+
+            // Set up
+            var controller = new BorrowController(_display, _reader, _scanner, _printer,
+                                                        _bookDao, _loanDao, _memberDao);
+
+            controller.initialise();
+            controller.cardSwiped(member.ID);
+
+            // Test Pre-conditions
+            Assert.True(_display.Display.IsEnabled);
+
+            var borrowCtrl = ((BorrowControl)_display.Display);
+            var scanBookCtrl = borrowCtrl._controlDict.Single(c => c.Value is ScanBookControl).Value as ScanBookControl;
+
+            Assert.NotNull(scanBookCtrl);
+            Assert.True(scanBookCtrl.IsEnabled);
+            Assert.True(scanBookCtrl.cancelButton.IsEnabled);
+            Assert.True(scanBookCtrl.completeButton.IsEnabled);
+
+            Assert.True(!_reader.Enabled);
+            Assert.True(_scanner.Enabled);
+            Assert.Equal(controller, _scanner.Listener);
+
+            Assert.Equal(member.Loans.Count, controller.scanCount);
+            Assert.Equal(member, controller._borrower);
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, controller._state);
+
+            // Run use case
+            controller.bookScanned(book.ID);
+
+            // Test Post-conditions
+            Assert.True(scanBookCtrl.IsEnabled);
+            Assert.True(scanBookCtrl.cancelButton.IsEnabled);
+            Assert.True(scanBookCtrl.completeButton.IsEnabled);
+
+            Assert.True(!_reader.Enabled);
+            Assert.True(_scanner.Enabled);
+
+            Assert.Equal("Book is not available to be borrowed", scanBookCtrl.errorMessage.Content);
+
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, controller._state);
+        }
+
 
         public void Dispose()
             {

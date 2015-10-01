@@ -196,6 +196,7 @@ namespace Library.Controllers.Borrow
             foreach(var l in _loanList) _ui.DisplayConfirmingLoan(l.ToString());
 
             _reader.Enabled = false;
+            _scanner.Enabled = false;
         }
 
         public void loansConfirmed()

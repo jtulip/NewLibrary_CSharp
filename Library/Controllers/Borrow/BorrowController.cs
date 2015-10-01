@@ -175,6 +175,7 @@ namespace Library.Controllers.Borrow
             var loan = _loanDAO.CreateLoan(_borrower, book, DateTime.Today, DateTime.Today.AddDays(7));
 
             _ui.DisplayPendingLoan(loan.ToString());
+            _ui.DisplayScannedBookDetails(book.ToString());
 
             _loanList.Add(loan);
             _bookList.Add(book);

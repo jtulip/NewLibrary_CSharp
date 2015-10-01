@@ -485,6 +485,41 @@ namespace Library.Tests.Integration.Control
             Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
         }
 
+        [WpfFact]
+        public void ScanBooksBookScanCountLessThanLoanLimit()
+        {
+            var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
+
+            var book = _bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            ctrl.bookScanned(book.ID);
+
+            borrowctrl.Received().DisplayScannedBookDetails(book.ToString());
+
+            Assert.Equal(1, ctrl.scanCount);
+            Assert.NotNull(ctrl._loanList);
+            Assert.NotEmpty(ctrl._loanList);
+            Assert.Equal(1, ctrl._loanList.Count);
+
+            borrowctrl.Received().DisplayPendingLoan(ctrl._loanList[0].ToString());
+
+            Assert.NotNull(ctrl._bookList);
+            Assert.NotEmpty(ctrl._bookList);
+            Assert.Equal(1, ctrl._bookList.Count);
+
+            Assert.Equal(book, ctrl._bookList[0]);
+
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
+        }
+
 
 
         private void InitialiseToScanBookPreConditions(BorrowController ctrl, IMember member)

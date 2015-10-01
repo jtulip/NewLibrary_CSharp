@@ -228,6 +228,9 @@ namespace Library.Controllers.Borrow
             foreach(var loan in _borrower.Loans) _ui.DisplayExistingLoan(loan.ToString());
 
             this.scanCount = _borrower.Loans.Count;
+
+            _reader.Enabled = false;
+            _scanner.Enabled = true;
         }
 
 

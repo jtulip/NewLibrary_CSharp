@@ -9,8 +9,6 @@ using Library.Daos;
 using Library.Entities;
 using Library.Hardware;
 using Library.Interfaces.Controllers.Borrow;
-using Library.Interfaces.Hardware;
-using NSubstitute;
 using Xunit;
 
 namespace Library.Tests.Scenarios

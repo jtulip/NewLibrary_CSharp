@@ -11,7 +11,6 @@ using Library.Hardware;
 using Library.Interfaces.Controllers.Borrow;
 using Library.Interfaces.Daos;
 using Library.Interfaces.Hardware;
-using NSubstitute;
 using Xunit;
 
 namespace Library.Tests.Scenarios

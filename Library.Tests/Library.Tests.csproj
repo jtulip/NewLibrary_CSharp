@@ -79,6 +79,7 @@
     <Compile Include="Scenarios\Scenario02SwipeBorrowerCard.cs" />
     <Compile Include="Scenarios\Scenario03ScanBook.cs" />
     <Compile Include="Scenarios\Scenario04CompleteScans.cs" />
+    <Compile Include="Scenarios\Scenario05ConfirmLoans.cs" />
     <Compile Include="UnitTests\Control\MainWindowTests.cs" />
     <Compile Include="UnitTests\Dao\BookDaoTests.cs" />
     <Compile Include="UnitTests\Helper\BookHelperTests.cs" />

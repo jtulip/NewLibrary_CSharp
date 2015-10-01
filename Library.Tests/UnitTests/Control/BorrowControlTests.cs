@@ -498,7 +498,7 @@ namespace Library.Tests.UnitTests.Control
             // Make the bookDao return a successful read
             _bookDao.GetBookByID(0).Returns(Substitute.For<IBook>());
 
-            ctrl.bookScanned(0); // if we get this far we've worked.
+            ctrl.bookScanned(0);
 
             Assert.True(!_reader.Enabled);
         }
@@ -515,7 +515,7 @@ namespace Library.Tests.UnitTests.Control
             // Make the bookDao return a successful read
             _bookDao.GetBookByID(0).Returns(Substitute.For<IBook>());
 
-            ctrl.bookScanned(0); // if we get this far we've worked.
+            ctrl.bookScanned(0);
 
             Assert.True(_scanner.Enabled);
         }
@@ -535,7 +535,7 @@ namespace Library.Tests.UnitTests.Control
 
             _bookDao.GetBookByID(0).Returns((IBook)null);
             
-            ctrl.bookScanned(0); // if we get this far we've worked.
+            ctrl.bookScanned(0);
 
             _bookDao.Received().GetBookByID(0);
 
@@ -562,7 +562,7 @@ namespace Library.Tests.UnitTests.Control
 
             _bookDao.GetBookByID(0).Returns(book);
 
-            ctrl.bookScanned(0); // if we get this far we've worked.
+            ctrl.bookScanned(0);
 
             _bookDao.Received().GetBookByID(0);
 
@@ -591,7 +591,7 @@ namespace Library.Tests.UnitTests.Control
 
             ctrl._bookList.Add(book); // Add the book to the booklist.
 
-            ctrl.bookScanned(0); // if we get this far we've worked.
+            ctrl.bookScanned(0);
 
             _bookDao.Received().GetBookByID(0);
 
@@ -624,7 +624,7 @@ namespace Library.Tests.UnitTests.Control
             _bookDao.GetBookByID(0).Returns(book);
             _loanDao.CreateLoan(member, book, borrowDate, dueDate).Returns(loan);
 
-            ctrl.bookScanned(0); // if we get this far we've worked.
+            ctrl.bookScanned(0);
 
             _bookDao.Received().GetBookByID(0);
             _loanDao.Received().CreateLoan(member, book, borrowDate, dueDate);

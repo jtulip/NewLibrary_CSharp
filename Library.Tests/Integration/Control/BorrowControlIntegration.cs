@@ -632,6 +632,50 @@ namespace Library.Tests.Integration.Control
             Assert.Equal(EBorrowState.COMPLETED, ctrl._state);
         }
 
+        [WpfFact]
+        public void CanRejectLoans()
+        {
+            var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
+
+            var existingBook = _bookDao.AddBook("Jim Tulip", "Adventures in Programming 2", "call number");
+
+            var existingLoan = _loanDao.CreateLoan(member, existingBook, DateTime.Today, DateTime.Today.AddDays(7));
+
+            _loanDao.CommitLoan(existingLoan);
+
+            var book = _bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+            var loan = _loanDao.CreateLoan(member, book, DateTime.Today, DateTime.Today.AddDays(7));
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            // Set Pre-conditions
+            ctrl._state = EBorrowState.CONFIRMING_LOANS;
+            ctrl._loanList.Add(loan);
+
+            Assert.NotNull(ctrl);
+            Assert.NotEmpty(ctrl._loanList);
+            Assert.Equal(EBorrowState.CONFIRMING_LOANS, ctrl._state);
+
+            ctrl.loansRejected();
+
+            borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
+            borrowctrl.Received().DisplayExistingLoan(loan.ToString());
+
+            Assert.Empty(ctrl._loanList);
+            Assert.Empty(ctrl._bookList);
+            Assert.Equal(1, ctrl.scanCount);
+            Assert.True(!_reader.Enabled);
+            Assert.True(_scanner.Enabled);
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
+        }
+
 
         private void InitialiseToScanBookPreConditions(BorrowController ctrl, IMember member)
         {

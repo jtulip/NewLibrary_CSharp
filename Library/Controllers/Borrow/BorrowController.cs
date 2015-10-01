@@ -225,6 +225,8 @@ namespace Library.Controllers.Borrow
             _ui.DisplayMemberDetails(_borrower.ID, $"{_borrower.FirstName} {_borrower.LastName}", _borrower.ContactPhone);
 
             foreach(var loan in _borrower.Loans) _ui.DisplayExistingLoan(loan.ToString());
+
+            this.scanCount = _borrower.Loans.Count;
         }
 
 

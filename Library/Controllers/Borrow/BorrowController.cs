@@ -143,6 +143,13 @@ namespace Library.Controllers.Borrow
         {
             if (_state != EBorrowState.SCANNING_BOOKS)
                 throw new InvalidOperationException("Control state must be set to 'Scanning Books'");
+
+            var book = _bookDAO.GetBookByID(barcode);
+
+            if (book == null)
+            {
+                _ui.DisplayErrorMessage("Book scanned was not found");
+            }
         }
 
         public void scansCompleted()

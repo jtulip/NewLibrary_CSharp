@@ -465,17 +465,7 @@ namespace Library.Tests.UnitTests.Control
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
-            ctrl.initialise();
-
-            _memberDao.GetMemberByID(member.ID).Returns(member);
-
-            ctrl.cardSwiped(member.ID);
-
-            // Test Pre-conditions
-            Assert.NotNull(ctrl);
-            Assert.NotNull(ctrl._scanner);
-            Assert.Equal(ctrl._scanner.Listener, ctrl);
-            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
+            InitialiseToScanBookPreConditions(ctrl, member);
 
             // Make the bookDao return a successful read
             _bookDao.GetBookByID(0).Returns(Substitute.For<IBook>());
@@ -496,6 +486,23 @@ namespace Library.Tests.UnitTests.Control
             Assert.Equal("Control state must be set to 'Scanning Books'", ex.Message);
         }
 
+        [WpfFact]
+        public void ScanBooksCardReaderDisabled()
+        {
+            var member = CreateMockIMember();
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            // Make the bookDao return a successful read
+            _bookDao.GetBookByID(0).Returns(Substitute.For<IBook>());
+
+            ctrl.bookScanned(0); // if we get this far we've worked.
+
+            Assert.True(!_reader.Enabled);
+        }
+
         private static IMember CreateMockIMember()
         {
             var member = Substitute.For<IMember>();
@@ -511,6 +518,21 @@ namespace Library.Tests.UnitTests.Control
             member.Loans.Returns(new List<ILoan>());
 
             return member;
+        }
+
+        private void InitialiseToScanBookPreConditions(BorrowController ctrl, IMember member)
+        {
+            ctrl.initialise();
+
+            _memberDao.GetMemberByID(member.ID).Returns(member);
+
+            ctrl.cardSwiped(member.ID);
+
+            // Test Pre-conditions
+            Assert.NotNull(ctrl);
+            Assert.NotNull(ctrl._scanner);
+            Assert.Equal(ctrl._scanner.Listener, ctrl);
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
         }
 
         public void Dispose()

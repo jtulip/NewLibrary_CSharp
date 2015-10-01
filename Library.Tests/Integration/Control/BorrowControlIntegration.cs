@@ -372,6 +372,33 @@ namespace Library.Tests.Integration.Control
             Assert.Equal(EBorrowState.BORROWING_RESTRICTED, ctrl._state);
         }
 
+        [WpfFact]
+        public void CanScanBook()
+        {
+            var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
+
+            var book = _bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            ctrl.bookScanned(book.ID); // if we get this far we've worked.
+        }
+
+        private void InitialiseToScanBookPreConditions(BorrowController ctrl, IMember member)
+        {
+            ctrl.initialise();
+
+            ctrl.cardSwiped(member.ID);
+
+            // Test Pre-conditions
+            Assert.NotNull(ctrl);
+            Assert.NotNull(ctrl._scanner);
+            Assert.Equal(ctrl._scanner.Listener, ctrl);
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
+        }
+
 
         public void Dispose()
         {

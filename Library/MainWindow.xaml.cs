@@ -56,7 +56,7 @@ namespace Library
             _printer.Show();
 
 
-            //SetUpTestData();
+            SetUpTestData();
 
             MainMenuController mainController =
                 new MainMenuController(this, _reader, _scanner, _printer, 

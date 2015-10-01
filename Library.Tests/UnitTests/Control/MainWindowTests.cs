@@ -49,5 +49,20 @@ namespace Library.Tests.UnitTests.Control
             Assert.Equal(mainWindow._loanDAO, listener._loanDAO);
             Assert.Equal(mainWindow._memberDAO, listener._memberDAO);
         }
+
+        [WpfFact]
+        public void WhenMainWindowCreatedTestDataPopulated()
+        {
+            var mainWindow = new MainWindow();
+
+            Assert.NotNull(mainWindow._bookDAO);
+            Assert.NotNull(mainWindow._loanDAO);
+            Assert.NotNull(mainWindow._memberDAO);
+
+            Assert.NotEmpty(mainWindow._bookDAO.BookList);
+            Assert.NotEmpty(mainWindow._loanDAO.LoanList);
+            Assert.NotEmpty(mainWindow._memberDAO.MemberList);
+        }
+
     }
 }

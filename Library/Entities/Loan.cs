@@ -61,5 +61,10 @@ namespace Library.Entities
         public int ID { get; private set; }
         public LoanState State { get; internal set; }
         public DateTime DueDate { get; private set; }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }

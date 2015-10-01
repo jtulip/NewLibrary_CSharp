@@ -28,14 +28,14 @@ namespace Library
 
     public partial class MainWindow : Window, IDisplay
     {
-        private UserControl _currentControl;
-        private CardReader _reader;
-        private Scanner _scanner;
-        private Printer _printer;
+        internal UserControl _currentControl;
+        internal CardReader _reader;
+        internal Scanner _scanner;
+        internal Printer _printer;
 
-        private IBookDAO _bookDAO;
-        private ILoanDAO _loanDAO;
-        private IMemberDAO _memberDAO;
+        internal IBookDAO _bookDAO;
+        internal ILoanDAO _loanDAO;
+        internal IMemberDAO _memberDAO;
 
         public MainWindow()
         {

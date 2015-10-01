@@ -77,6 +77,7 @@
     <Compile Include="Integration\Entity\MemberIntegration.cs" />
     <Compile Include="Scenarios\Scenario01BeginUseCase.cs" />
     <Compile Include="Scenarios\Scenario02SwipeBorrowerCard.cs" />
+    <Compile Include="UnitTests\Control\MainWindowTests.cs" />
     <Compile Include="UnitTests\Dao\BookDaoTests.cs" />
     <Compile Include="UnitTests\Helper\BookHelperTests.cs" />
     <Compile Include="UnitTests\Entity\BookStateTests.cs" />

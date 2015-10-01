@@ -571,6 +571,84 @@ namespace Library.Tests.UnitTests.Control
             Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
         }
 
+        [WpfFact]
+        public void ScanBooksBookAlreadyScanned()
+        {
+            var member = CreateMockIMember();
+
+            var book = Substitute.For<IBook>();
+            book.State.Returns(BookState.AVAILABLE);
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            _bookDao.GetBookByID(0).Returns(book);
+
+            ctrl._bookList.Add(book); // Add the book to the booklist.
+
+            ctrl.bookScanned(0); // if we get this far we've worked.
+
+            _bookDao.Received().GetBookByID(0);
+
+            borrowctrl.Received().DisplayErrorMessage("Book has already been scanned");
+
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
+        }
+
+        [WpfFact]
+        public void ScanBooksBookScanCountLessThanLoanLimit()
+        {
+            var member = CreateMockIMember();
+
+            var book = Substitute.For<IBook>();
+            book.State.Returns(BookState.AVAILABLE);
+
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            var loan = Substitute.For<Loan>(book, member, borrowDate, dueDate);
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            _bookDao.GetBookByID(0).Returns(book);
+            _loanDao.CreateLoan(member, book, borrowDate, dueDate).Returns(loan);
+
+            ctrl.bookScanned(0); // if we get this far we've worked.
+
+            _bookDao.Received().GetBookByID(0);
+            _loanDao.Received().CreateLoan(member, book, borrowDate, dueDate);
+
+            borrowctrl.DisplayScannedBookDetails(book.ToString());
+
+            borrowctrl.DisplayPendingLoan(loan.ToString());
+
+            Assert.Equal(1, ctrl.scanCount);
+            Assert.NotNull(ctrl._loanList);
+            Assert.NotEmpty(ctrl._loanList);
+            Assert.Equal(1, ctrl._loanList.Count);
+
+            Assert.Equal(loan, ctrl._loanList[0]);
+
+            Assert.NotNull(ctrl._bookList);
+            Assert.NotEmpty(ctrl._bookList);
+            Assert.Equal(1, ctrl._bookList.Count);
+
+            Assert.Equal(book, ctrl._bookList[0]);
+
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
+        }
+
         private static IMember CreateMockIMember()
         {
             var member = Substitute.For<IMember>();

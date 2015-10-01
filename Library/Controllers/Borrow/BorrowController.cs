@@ -61,6 +61,9 @@ namespace Library.Controllers.Borrow
             _reader.Listener = this;
             _scanner.Listener = this;
 
+            _bookList = new List<IBook>();
+            _loanList = new List<ILoan>();
+
             _state = EBorrowState.CREATED;
         }
 
@@ -158,6 +161,25 @@ namespace Library.Controllers.Borrow
                 _ui.DisplayErrorMessage("Book is not available to be borrowed");
 
                 return;
+            }
+
+            if (_bookList.Contains(book))
+            {
+                _ui.DisplayErrorMessage("Book has already been scanned");
+
+                return;
+            }
+
+            if (this.scanCount < BookConstants.LOAN_LIMIT)
+            {
+                this.scanCount++;
+
+                var loan = _loanDAO.CreateLoan(_borrower, book, DateTime.Today, DateTime.Today.AddDays(7));
+
+                _ui.DisplayPendingLoan(loan.ToString());
+
+                _loanList.Add(loan);
+                _bookList.Add(book);
             }
         }
 

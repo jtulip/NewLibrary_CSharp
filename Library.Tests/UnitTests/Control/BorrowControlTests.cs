@@ -186,16 +186,7 @@ namespace Library.Tests.UnitTests.Control
         [WpfFact]
         public void CanSwipeBorrowerCard()
         {
-            var member = Substitute.For<IMember>();
-            member.HasOverDueLoans.Returns(false);
-            member.HasReachedLoanLimit.Returns(false);
-            member.HasReachedFineLimit.Returns(false);
-            member.FineAmount.Returns(0.00f);
-            member.ID.Returns(1);
-            member.FirstName.Returns("Jim");
-            member.LastName.Returns("Tulip");
-            member.ContactPhone.Returns("Phone");
-            member.Loans.Returns(new List<ILoan>());
+            var member = CreateMockIMember();
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
@@ -289,12 +280,8 @@ namespace Library.Tests.UnitTests.Control
         [WpfFact]
         public void SwipeBorrowerCardShowErrorIfMemberHasReachedLoanLimit()
         {
-            var memberId = 1;
-            var member = Substitute.For<IMember>();
-            member.HasOverDueLoans.Returns(false);
+            var member = CreateMockIMember();
             member.HasReachedLoanLimit.Returns(true);
-            member.HasReachedFineLimit.Returns(false);
-            member.Loans.Returns(new List<ILoan>());
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
@@ -310,11 +297,11 @@ namespace Library.Tests.UnitTests.Control
             Assert.NotNull(ctrl._memberDAO);
             Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
 
-            _memberDao.GetMemberByID(memberId).Returns(member);
+            _memberDao.GetMemberByID(member.ID).Returns(member);
 
-            ctrl.cardSwiped(memberId);
+            ctrl.cardSwiped(member.ID);
 
-            _memberDao.Received().GetMemberByID(memberId);
+            _memberDao.Received().GetMemberByID(member.ID);
 
             borrowctrl.Received().DisplayAtLoanLimitMessage();
         }
@@ -322,14 +309,10 @@ namespace Library.Tests.UnitTests.Control
         [WpfFact]
         public void SwipeBorrowerCardShowErrorIfMemberHasReachedFinesLimit()
         {
-            var memberId = 1;
-            var member = Substitute.For<IMember>();
-            member.HasOverDueLoans.Returns(false);
-            member.HasReachedLoanLimit.Returns(false);
+            var member = CreateMockIMember();
             member.HasReachedFineLimit.Returns(true);
             member.FineAmount.Returns(100.00f);
-            member.Loans.Returns(new List<ILoan>());
-
+            
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
             // Set the UI to the mock so we can test
@@ -344,11 +327,11 @@ namespace Library.Tests.UnitTests.Control
             Assert.NotNull(ctrl._memberDAO);
             Assert.Equal(EBorrowState.INITIALIZED, ctrl._state);
 
-            _memberDao.GetMemberByID(memberId).Returns(member);
+            _memberDao.GetMemberByID(member.ID).Returns(member);
 
-            ctrl.cardSwiped(memberId);
+            ctrl.cardSwiped(member.ID);
 
-            _memberDao.Received().GetMemberByID(memberId);
+            _memberDao.Received().GetMemberByID(member.ID);
 
             borrowctrl.Received().DisplayOverFineLimitMessage(member.FineAmount);
         }
@@ -358,15 +341,8 @@ namespace Library.Tests.UnitTests.Control
         {
             var loan = Substitute.For<ILoan>();
 
-            var member = Substitute.For<IMember>();
-            member.HasOverDueLoans.Returns(false);
-            member.HasReachedLoanLimit.Returns(false);
-            member.HasReachedFineLimit.Returns(false);
-            member.FineAmount.Returns(0.00f);
-            member.ID.Returns(1);
-            member.FirstName.Returns("Jim");
-            member.LastName.Returns("Tulip");
-            member.ContactPhone.Returns("Phone");
+            var member = CreateMockIMember();
+
             member.Loans.Returns(new List<ILoan>() { loan, loan, loan });
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
@@ -400,16 +376,7 @@ namespace Library.Tests.UnitTests.Control
         [WpfFact]
         public void SwipeBorrowerCardNotRestricted()
         {
-            var member = Substitute.For<IMember>();
-            member.HasOverDueLoans.Returns(false);
-            member.HasReachedLoanLimit.Returns(false);
-            member.HasReachedFineLimit.Returns(false);
-            member.FineAmount.Returns(0.00f);
-            member.ID.Returns(1);
-            member.FirstName.Returns("Jim");
-            member.LastName.Returns("Tulip");
-            member.ContactPhone.Returns("Phone");
-            member.Loans.Returns(new List<ILoan>());
+            var member = CreateMockIMember();
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
@@ -450,17 +417,9 @@ namespace Library.Tests.UnitTests.Control
         [WpfFact]
         public void SwipeBorrowerCardRestricted()
         {
-            var member = Substitute.For<IMember>();
+            var member = CreateMockIMember();
             member.HasOverDueLoans.Returns(true);
-            member.HasReachedLoanLimit.Returns(false);
-            member.HasReachedFineLimit.Returns(false);
-            member.FineAmount.Returns(0.00f);
-            member.ID.Returns(1);
-            member.FirstName.Returns("Jim");
-            member.LastName.Returns("Tulip");
-            member.ContactPhone.Returns("Phone");
-            member.Loans.Returns(new List<ILoan>());
-
+            
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
             // Set the UI to the mock so we can test
@@ -502,16 +461,7 @@ namespace Library.Tests.UnitTests.Control
         [WpfFact]
         public void CanScanBook()
         {
-            var member = Substitute.For<IMember>();
-            member.HasOverDueLoans.Returns(false);
-            member.HasReachedLoanLimit.Returns(false);
-            member.HasReachedFineLimit.Returns(false);
-            member.FineAmount.Returns(0.00f);
-            member.ID.Returns(1);
-            member.FirstName.Returns("Jim");
-            member.LastName.Returns("Tulip");
-            member.ContactPhone.Returns("Phone");
-            member.Loans.Returns(new List<ILoan>());
+            var member = CreateMockIMember();
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
@@ -533,6 +483,7 @@ namespace Library.Tests.UnitTests.Control
             ctrl.bookScanned(0); // if we get this far we've worked.
         }
 
+
         [WpfFact]
         public void ScanBookControlNotScanningBooks()
         {
@@ -545,6 +496,22 @@ namespace Library.Tests.UnitTests.Control
             Assert.Equal("Control state must be set to 'Scanning Books'", ex.Message);
         }
 
+        private static IMember CreateMockIMember()
+        {
+            var member = Substitute.For<IMember>();
+
+            member.HasOverDueLoans.Returns(false);
+            member.HasReachedLoanLimit.Returns(false);
+            member.HasReachedFineLimit.Returns(false);
+            member.FineAmount.Returns(0.00f);
+            member.ID.Returns(1);
+            member.FirstName.Returns("Jim");
+            member.LastName.Returns("Tulip");
+            member.ContactPhone.Returns("Phone");
+            member.Loans.Returns(new List<ILoan>());
+
+            return member;
+        }
 
         public void Dispose()
         {

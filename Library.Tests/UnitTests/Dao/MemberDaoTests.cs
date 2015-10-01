@@ -62,7 +62,7 @@ namespace Library.Tests.UnitTests.Dao
             Assert.Equal(0, memberDao.MemberList.Count);
 
             // Tell the mock what to return when it is called.
-            helper.MakeMember(firstName, lastName, contactPhone, emailAddress, Arg.Any<int>()).Returns(new Member(firstName, lastName, contactPhone, emailAddress, 1));
+            helper.MakeMember(firstName, lastName, contactPhone, emailAddress, Arg.Any<int>()).Returns(Substitute.For<Member>(firstName, lastName, contactPhone, emailAddress, 1));
 
             var result = memberDao.AddMember(firstName, lastName, contactPhone, emailAddress);
 
@@ -97,7 +97,7 @@ namespace Library.Tests.UnitTests.Dao
             // Make sure the id increments as Members are added.
             for (var id = 1; id < 10; id++)
             {
-                helper.MakeMember(firstName, lastName, contactPhone, emailAddress, id).Returns(new Member(firstName, lastName, contactPhone, emailAddress, id));
+                helper.MakeMember(firstName, lastName, contactPhone, emailAddress, id).Returns(Substitute.For<Member>(firstName, lastName, contactPhone, emailAddress, id));
 
                 var result = memberDao.AddMember(firstName, lastName, contactPhone, emailAddress);
 
@@ -123,9 +123,9 @@ namespace Library.Tests.UnitTests.Dao
 
             memberDao.MemberList = new List<IMember>
             {
-                new Member("one", "two", "three", "four", 1),
-                new Member(firstName, lastName, contactPhone, emailAddress, 2),
-                new Member("one", "two", "three", "four", 3),
+                Substitute.For<IMember>(),
+                Substitute.For<Member>(firstName, lastName, contactPhone, emailAddress, 2),
+                Substitute.For<IMember>(),
             };
 
             var member = memberDao.GetMemberByID(2);
@@ -148,8 +148,8 @@ namespace Library.Tests.UnitTests.Dao
 
             memberDao.MemberList = new List<IMember>
             {
-                new Member("one", "two", "three", "four", 1),
-                new Member("one", "two", "three", "four", 3),
+                Substitute.For<Member>("one", "two", "three", "four", 1),
+                Substitute.For<Member>("one", "two", "three", "four", 3),
             };
 
             var member = memberDao.GetMemberByID(2);
@@ -171,9 +171,9 @@ namespace Library.Tests.UnitTests.Dao
 
             memberDao.MemberList = new List<IMember>
             {
-                new Member("one", "two", "three", "four", 1),
+                Substitute.For<IMember>(),
                 new Member(firstName, lastName, contactPhone, emailAddress, 2),
-                new Member("one", "two", "three", "four", 3),
+                Substitute.For<IMember>(),
             };
 
             var member = memberDao.FindMembersByLastName(lastName).Single();
@@ -198,8 +198,8 @@ namespace Library.Tests.UnitTests.Dao
 
             memberDao.MemberList = new List<IMember>
             {
-                new Member("one", "two", "three", "four", 1),
-                new Member("one", "two", "three", "four", 3),
+                Substitute.For<IMember>(),
+                Substitute.For<IMember>(),
             };
 
             var list = memberDao.FindMembersByLastName(lastName);
@@ -222,9 +222,9 @@ namespace Library.Tests.UnitTests.Dao
 
             memberDao.MemberList = new List<IMember>
             {
-                new Member("one", "two", "three", "four", 1),
-                new Member(firstName, lastName, contactPhone, emailAddress, 2),
-                new Member("one", "two", "three", "four", 3),
+                Substitute.For<IMember>(),
+                Substitute.For<Member>(firstName, lastName, contactPhone, emailAddress, 2),
+                Substitute.For<IMember>(),
             };
 
             var member = memberDao.FindMembersByEmailAddress(emailAddress).Single();
@@ -249,8 +249,8 @@ namespace Library.Tests.UnitTests.Dao
 
             memberDao.MemberList = new List<IMember>
             {
-                new Member("one", "two", "three", "four", 1),
-                new Member("one", "two", "three", "four", 3),
+                Substitute.For<IMember>(),
+                Substitute.For<IMember>(),
             };
 
             var list = memberDao.FindMembersByEmailAddress(emailAddress);
@@ -273,10 +273,10 @@ namespace Library.Tests.UnitTests.Dao
 
             memberDao.MemberList = new List<IMember>
             {
-                new Member("one", "two", "three", "four", 1),
-                new Member(firstName, lastName, contactPhone, emailAddress, 2),
-                new Member("one", "two", "three", "four", 3),
-                new Member(firstName, "Foo", contactPhone, emailAddress, 4),
+                Substitute.For<IMember>(),
+                Substitute.For<Member>(firstName, lastName, contactPhone, emailAddress, 2),
+                Substitute.For<IMember>(),
+                Substitute.For<Member>(firstName, "Foo", contactPhone, emailAddress, 4),
             };
 
             var member = memberDao.FindMembersByNames(firstName, lastName).Single();
@@ -302,8 +302,8 @@ namespace Library.Tests.UnitTests.Dao
 
             memberDao.MemberList = new List<IMember>
             {
-                new Member("one", "two", "three", "four", 1),
-                new Member("one", "two", "three", "four", 3),
+                Substitute.For<IMember>(),
+                Substitute.For<IMember>(),
             };
 
             var list = memberDao.FindMembersByNames(firstName, lastName);

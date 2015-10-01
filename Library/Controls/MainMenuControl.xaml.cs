@@ -18,7 +18,7 @@ namespace Library.Controls
 {
     public partial class MainMenuControl : UserControl, IMainMenuListener
     {
-        IMainMenuListener _listener;
+        internal IMainMenuListener _listener;
 
         public MainMenuControl(IMainMenuListener listener)
         {

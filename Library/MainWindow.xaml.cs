@@ -16,6 +16,8 @@ using System.ComponentModel;
 
 using Library.Interfaces.Hardware;
 using Library.Controllers;
+using Library.Daos;
+using Library.Entities;
 using Library.Hardware;
 using Library.Interfaces.Daos;
 //using Library.Daos;
@@ -42,7 +44,13 @@ namespace Library
             _reader = new CardReader();
             _scanner = new Scanner();
             _printer = new Printer();
+
+            _bookDAO = new BookDao(new BookHelper());
+            _loanDAO = new LoanDao(new LoanHelper());
+            _memberDAO = new MemberDao(new MemberHelper());
+
             InitializeComponent();
+
             _reader.Show();
             _scanner.Show();
             _printer.Show();
@@ -52,7 +60,8 @@ namespace Library
 
             MainMenuController mainController =
                 new MainMenuController(this, _reader, _scanner, _printer, 
-                                        null, null, null);
+                                        _bookDAO, _loanDAO, _memberDAO);
+
             mainController.initialise();
         }
 

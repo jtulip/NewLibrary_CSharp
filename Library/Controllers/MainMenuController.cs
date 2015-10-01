@@ -13,14 +13,14 @@ namespace Library.Controllers
 {
     class MainMenuController : IMainMenuListener
     {
-        private IDisplay _display;
-        private ICardReader _reader;
-        private IScanner _scanner;
-        private IPrinter _printer;
+        internal IDisplay _display;
+        internal ICardReader _reader;
+        internal IScanner _scanner;
+        internal IPrinter _printer;
 
-        private IBookDAO _bookDAO;
-        private ILoanDAO _loanDAO;
-        private IMemberDAO _memberDAO;
+        internal IBookDAO _bookDAO;
+        internal ILoanDAO _loanDAO;
+        internal IMemberDAO _memberDAO;
 
 
         public MainMenuController(IDisplay display, ICardReader reader, IScanner scanner, IPrinter printer,

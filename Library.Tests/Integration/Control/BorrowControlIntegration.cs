@@ -520,6 +520,49 @@ namespace Library.Tests.Integration.Control
             Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
         }
 
+        // Assuming that it becomes equal on the scan otherwise it would allow an additional scan and error?
+        [WpfFact]
+        public void ScanBooksBookScanCountEqualsLoanLimit()
+        {
+            var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
+
+            var book = _bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            ctrl.scanCount = BookConstants.LOAN_LIMIT - 1;
+
+            ctrl.bookScanned(book.ID);
+
+            borrowctrl.DisplayScannedBookDetails(book.ToString());
+
+            Assert.Equal(BookConstants.LOAN_LIMIT, ctrl.scanCount);
+            Assert.NotNull(ctrl._loanList);
+            Assert.NotEmpty(ctrl._loanList);
+            Assert.Equal(1, ctrl._loanList.Count);
+
+            borrowctrl.DisplayPendingLoan(ctrl._loanList[0].ToString());
+
+            Assert.NotNull(ctrl._bookList);
+            Assert.NotEmpty(ctrl._bookList);
+            Assert.Equal(1, ctrl._bookList.Count);
+
+            Assert.Equal(book, ctrl._bookList[0]);
+
+            Assert.True(!_scanner.Enabled);
+
+            Assert.Equal(EBorrowState.CONFIRMING_LOANS, ctrl._state);
+        }
+
 
 
         private void InitialiseToScanBookPreConditions(BorrowController ctrl, IMember member)

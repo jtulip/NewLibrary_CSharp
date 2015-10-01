@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "Library\Library.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Tests", "Library.Tests\Library.Tests.csproj", "{90F55608-7DA0-41B8-BA57-494E2393A2D2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UAT Documents", "UAT Documents", "{B4292692-1094-456A-8679-B604DE155397}"
+	ProjectSection(SolutionItems) = preProject
+		UAT Documents\UC01 Begin Use Case Description.docx = UAT Documents\UC01 Begin Use Case Description.docx
+		UAT Documents\UC01 Begin Use Case Script - Attempt 1.docx = UAT Documents\UC01 Begin Use Case Script - Attempt 1.docx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

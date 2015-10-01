@@ -119,9 +119,9 @@ namespace Library.Tests.UnitTests.Dao
 
             bookDao.BookList = new List<IBook>
             {
-                new Book("one", "two", "three", 1),
-                new Book(author, title, callNo, 2),
-                new Book("one", "two", "three", 3),
+                Substitute.For<Book>("one", "two", "three", 1),
+                Substitute.For<Book>(author, title, callNo, 2),
+                Substitute.For<Book>("one", "two", "three", 3),
             };
 
             var book = bookDao.GetBookByID(2);
@@ -144,8 +144,8 @@ namespace Library.Tests.UnitTests.Dao
 
             bookDao.BookList = new List<IBook>
             {
-                new Book("one", "two", "three", 1),
-                new Book("one", "two", "three", 3),
+                Substitute.For<Book>("one", "two", "three", 1),
+                Substitute.For<Book>("one", "two", "three", 3),
             };
 
             var book = bookDao.GetBookByID(2);
@@ -166,9 +166,9 @@ namespace Library.Tests.UnitTests.Dao
 
             bookDao.BookList = new List<IBook>
             {
-                new Book("one", "two", "three", 1),
-                new Book(author, title, callNo, 2),
-                new Book("one", "two", "three", 3),
+                Substitute.For<Book>("one", "two", "three", 1),
+                Substitute.For<Book>(author, title, callNo, 2),
+                Substitute.For<Book>("one", "two", "three", 3),
             };
 
             var book = bookDao.FindBooksByAuthor(author).Single();
@@ -194,9 +194,9 @@ namespace Library.Tests.UnitTests.Dao
 
             bookDao.BookList = new List<IBook>
             {
-                new Book("one", "two", "three", 1),
-                new Book(author, title, callNo, 2),
-                new Book("one", "two", "three", 3),
+                Substitute.For<Book>("one", "two", "three", 1),
+                Substitute.For<Book>(author, title, callNo, 2),
+                Substitute.For<Book>("one", "two", "three", 3),
             };
 
             var list = bookDao.FindBooksByAuthor("Dahl");
@@ -218,9 +218,9 @@ namespace Library.Tests.UnitTests.Dao
 
             bookDao.BookList = new List<IBook>
             {
-                new Book("one", "two", "three", 1),
-                new Book(author, title, callNo, 2),
-                new Book("one", "two", "three", 3),
+                Substitute.For<Book>("one", "two", "three", 1),
+                Substitute.For<Book>(author, title, callNo, 2),
+                Substitute.For<Book>("one", "two", "three", 3),
             };
 
             var book = bookDao.FindBooksByTitle(title).Single();
@@ -246,9 +246,9 @@ namespace Library.Tests.UnitTests.Dao
 
             bookDao.BookList = new List<IBook>
             {
-                new Book("one", "two", "three", 1),
-                new Book(author, title, callNo, 2),
-                new Book("one", "two", "three", 3),
+                Substitute.For<Book>("one", "two", "three", 1),
+                Substitute.For<Book>(author, title, callNo, 2),
+                Substitute.For<Book>("one", "two", "three", 3),
             };
 
             var list = bookDao.FindBooksByTitle("The Twits");
@@ -270,10 +270,10 @@ namespace Library.Tests.UnitTests.Dao
 
             bookDao.BookList = new List<IBook>
             {
-                new Book("one", "two", "three", 1),
-                new Book(author, title, callNo, 2),
-                new Book("one", "two", "three", 3),
-                new Book(author, "two", callNo, 4),
+                Substitute.For<Book>("one", "two", "three", 1),
+                Substitute.For<Book>(author, title, callNo, 2),
+                Substitute.For<Book>("one", "two", "three", 3),
+                Substitute.For<Book>(author, "two", callNo, 4),
             };
 
             var book = bookDao.FindBooksByAuthorTitle(author, title).Single();
@@ -299,10 +299,10 @@ namespace Library.Tests.UnitTests.Dao
 
             bookDao.BookList = new List<IBook>
             {
-                new Book("one", "two", "three", 1),
-                new Book(author, title, callNo, 2),
-                new Book("one", "two", "three", 3),
-                new Book(author, "two", callNo, 4),
+                Substitute.For<Book>("one", "two", "three", 1),
+                Substitute.For<Book>(author, title, callNo, 2),
+                Substitute.For<Book>("one", "two", "three", 3),
+                Substitute.For<Book>(author, "two", callNo, 4),
             };
 
             var list = bookDao.FindBooksByAuthorTitle("Dahl", "The Twits");

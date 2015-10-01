@@ -118,7 +118,7 @@ namespace Library.Tests.UnitTests.Dao
             Assert.Equal(0, loanDao.LoanList.Count);
 
             // Tell the mock what to return when it is called.
-            helper.MakeLoan(book, member, borrowDate, dueDate).Returns(new Loan(book, member, borrowDate, dueDate));
+            helper.MakeLoan(book, member, borrowDate, dueDate).Returns(Substitute.For<Loan>(book, member, borrowDate, dueDate));
 
             var loan = loanDao.CreateLoan(member, book, borrowDate, dueDate);
 
@@ -146,14 +146,17 @@ namespace Library.Tests.UnitTests.Dao
             var book = Substitute.For<IBook>();
             var member = Substitute.For<IMember>();
 
-            helper.MakeLoan(book, member, DateTime.Today, DateTime.Today.AddDays(7))
-                .Returns(new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(7)));
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            helper.MakeLoan(book, member, borrowDate, dueDate)
+                .Returns(Substitute.For<Loan>(book, member, borrowDate, dueDate));
 
             // Commit one we can test.
-            var loan = loanDao.CreateLoan(member, book, DateTime.Today, DateTime.Today.AddDays(7));
+            var loan = loanDao.CreateLoan(member, book, borrowDate, dueDate);
             loanDao.CommitLoan(loan);
 
-            helper.Received().MakeLoan(book, member, DateTime.Today, DateTime.Today.AddDays(7));
+            helper.Received().MakeLoan(book, member, borrowDate, dueDate);
 
             var max = loanDao.LoanList.Max(l => l.ID);
 
@@ -174,8 +177,8 @@ namespace Library.Tests.UnitTests.Dao
 
             loanDao.LoanList = new List<ILoan>
             {
-                new Loan(Substitute.For<IBook>(), Substitute.For<IMember>(), DateTime.Today, DateTime.Today.AddDays(7)),
-                new Loan(Substitute.For<IBook>(), Substitute.For<IMember>(), DateTime.Today, DateTime.Today.AddDays(7)),
+                Substitute.For<ILoan>(),
+                Substitute.For<ILoan>(),
             };
 
             var loan = loanDao.GetLoanByID(2);
@@ -190,15 +193,18 @@ namespace Library.Tests.UnitTests.Dao
 
             var loanDao = new LoanDao(helper);
 
-            var book = new Book("author", "testing", "call", 1);
+            var book = Substitute.For <Book>("author", "testing", "call", 1);
+            var member = Substitute.For<IMember>();
 
-            var storedLoan = new Loan(book, new Member("first", "last", "phone", "email", 1), DateTime.Today,
-                DateTime.Today.AddDays(7));
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            var storedLoan = Substitute.For<Loan>(book, member, borrowDate, dueDate);
 
             loanDao.LoanList = new List<ILoan>
             {
-                new Loan(new Book("author", "title", "call", 1), new Member("first", "last", "phone", "email", 1), DateTime.Today, DateTime.Today.AddDays(7)),
-                new Loan(new Book("author", "title", "call", 1), new Member("first", "last", "phone", "email", 1), DateTime.Today, DateTime.Today.AddDays(7)),
+                Substitute.For<Loan>(Substitute.For<Book>("author", "title", "call", 1), Substitute.For<IMember>(), borrowDate, dueDate),
+                Substitute.For<Loan>(Substitute.For<Book>("author", "title", "call", 1), Substitute.For<IMember>(), borrowDate, dueDate),
                 storedLoan
             };
 
@@ -215,15 +221,17 @@ namespace Library.Tests.UnitTests.Dao
 
             var loanDao = new LoanDao(helper);
 
-            var borrower = new Member("Borris", "Natasha", "phone", "email", 1);
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
 
-            var storedLoan = new Loan(new Book("author", "title", "call", 1), borrower, DateTime.Today,
-                DateTime.Today.AddDays(7));
+            var borrower = Substitute.For<Member>("Borris", "Natasha", "phone", "email", 1);
+
+            var storedLoan = new Loan(Substitute.For<IBook>(), borrower, borrowDate, dueDate);
 
             loanDao.LoanList = new List<ILoan>
             {
-                new Loan(new Book("author", "title", "call", 1), new Member("first", "last", "phone", "email", 1), DateTime.Today, DateTime.Today.AddDays(7)),
-                new Loan(new Book("author", "title", "call", 1), new Member("first", "last", "phone", "email", 1), DateTime.Today, DateTime.Today.AddDays(7)),
+                Substitute.For<ILoan>(),
+                Substitute.For<ILoan>(),
                 storedLoan
             };
 
@@ -249,7 +257,7 @@ namespace Library.Tests.UnitTests.Dao
             Assert.Equal(0, loanDao.LoanList.Count);
 
             // Tell the mock what to return when it is called.
-            helper.MakeLoan(book, member, borrowDate, dueDate).Returns(new Loan(book, member, borrowDate, dueDate));
+            helper.MakeLoan(book, member, borrowDate, dueDate).Returns(Substitute.For<Loan>(book, member, borrowDate, dueDate));
 
             var loan = loanDao.CreateLoan(member, book, borrowDate, dueDate);
 
@@ -259,8 +267,8 @@ namespace Library.Tests.UnitTests.Dao
             loanDao.CommitLoan(loan);
 
             // Store two more for iteration
-            loanDao.CommitLoan(loanDao.CreateLoan(member, book, DateTime.Today, DateTime.Today.AddDays(7)));
-            loanDao.CommitLoan(loanDao.CreateLoan(member, book, DateTime.Today, DateTime.Today.AddDays(7)));
+            loanDao.CommitLoan(Substitute.For<ILoan>());
+            loanDao.CommitLoan(Substitute.For<ILoan>());
 
             loanDao.UpdateOverDueStatus(DateTime.Today);
 
@@ -286,17 +294,18 @@ namespace Library.Tests.UnitTests.Dao
             Assert.Equal(0, loanDao.LoanList.Count);
 
             // Tell the mock what to return when it is called.
-            helper.MakeLoan(book, member, borrowDate, dueDate).Returns(new Loan(book, member, borrowDate, dueDate));
+            helper.MakeLoan(book, member, borrowDate, dueDate).Returns(Substitute.For<Loan>(book, member, borrowDate, dueDate));
 
             var loan = loanDao.CreateLoan(member, book, borrowDate, dueDate);
             loanDao.CommitLoan(loan);
 
-            // Tell the mock what to return when it is called for testing loans.
-            helper.MakeLoan(book, member, borrowDate, dueDate).Returns(new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(7)));
+            // Assert that the mock's MakeLoan method was called.
+            helper.Received().MakeLoan(book, member, borrowDate, dueDate);
+
 
             // Store two more for testing
-            loanDao.CommitLoan(loanDao.CreateLoan(member, book, DateTime.Today, DateTime.Today.AddDays(7)));
-            loanDao.CommitLoan(loanDao.CreateLoan(member, book, DateTime.Today, DateTime.Today.AddDays(7)));
+            loanDao.CommitLoan(Substitute.For<ILoan>());
+            loanDao.CommitLoan(Substitute.For<ILoan>());
 
             loanDao.UpdateOverDueStatus(DateTime.Today);
 

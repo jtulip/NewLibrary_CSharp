@@ -418,6 +418,27 @@ namespace Library.Tests.Integration.Control
             Assert.True(_scanner.Enabled);
         }
 
+        [WpfFact]
+        public void ScanBooksBookNotFound()
+        {
+            var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            ctrl.bookScanned(0);
+
+            borrowctrl.Received().DisplayErrorMessage("Book scanned was not found");
+
+            Assert.Equal(EBorrowState.SCANNING_BOOKS, ctrl._state);
+        }
+
+
 
 
         private void InitialiseToScanBookPreConditions(BorrowController ctrl, IMember member)

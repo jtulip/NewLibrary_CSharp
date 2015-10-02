@@ -102,7 +102,7 @@ namespace Library.Tests.Scenarios
             Assert.True(borrowCtrl.IsEnabled);
 
             Assert.Equal(LoanState.CURRENT, loan.State);
-            Assert.Equal(loan.ToString(), ((Printer)_printer).printBox.Text);
+            Assert.Equal(loan.ToString() + "\n\n", ((Printer)_printer).printBox.Text);
 
             Assert.True(!_reader.Enabled);
             Assert.True(!_scanner.Enabled);

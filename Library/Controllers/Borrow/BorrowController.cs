@@ -216,6 +216,7 @@ namespace Library.Controllers.Borrow
             _scanner.Enabled = false;
 
             setState(EBorrowState.COMPLETED);
+            this.close();
         }
 
         public void loansRejected()

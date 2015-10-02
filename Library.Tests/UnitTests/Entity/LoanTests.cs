@@ -295,5 +295,18 @@ namespace Library.Tests.UnitTests.Entity
 
             Assert.Equal(0, loan.ID);
         }
+
+        [Fact]
+        public void ReturnLoanReadable()
+        {
+            var book = Substitute.For<Book>("Jim Tulip", "Adventures in Programming", "call number", 1);
+            var member = Substitute.For<Member>("Jim", "Tulip", "Phone", "Email", 1);
+
+            var loan = new Loan(book, member, DateTime.Today, DateTime.Today.AddDays(1));
+
+            var readable =
+                $"Loan ID:\t\t{loan.ID}\nAuthor:\t\t{loan.Book.Author}\nTitle:\t\t{loan.Book.Title}\nBorrower:\t{loan.Borrower.ToString()}\nBorrow Date:\t{loan.BorrowDate.ToShortDateString()}\nDue Date:\t{loan.DueDate.ToShortDateString()}";
+            Assert.Equal(readable, loan.ToString());
+        }
     }
 }

@@ -449,6 +449,16 @@ namespace Library.Tests.UnitTests.Entity
 
             Assert.Equal(id, member.ID);
         }
+
+        [Fact]
+        public void ReturnMemberReadable()
+        {
+            var member = Substitute.For<Member>("Jim", "Tulip", "Phone", "Email", 1);
+
+            var readable = $"{member.FirstName} {member.LastName}";
+
+            Assert.Equal(readable, member.ToString());
+        }
     }
 }
 

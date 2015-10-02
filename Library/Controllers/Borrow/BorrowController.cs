@@ -135,7 +135,7 @@ namespace Library.Controllers.Borrow
 
             _borrower = member;
 
-            _ui.DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
+            _ui.DisplayMemberDetails(member.ID, member.ToString(), member.ContactPhone);
 
             foreach(var loan in member.Loans) _ui.DisplayExistingLoan(loan.ToString());
 
@@ -223,7 +223,7 @@ namespace Library.Controllers.Borrow
             _bookList.Clear();
             setState(EBorrowState.SCANNING_BOOKS);
 
-            _ui.DisplayMemberDetails(_borrower.ID, $"{_borrower.FirstName} {_borrower.LastName}", _borrower.ContactPhone);
+            _ui.DisplayMemberDetails(_borrower.ID, _borrower.ToString(), _borrower.ContactPhone);
 
             foreach(var loan in _borrower.Loans) _ui.DisplayExistingLoan(loan.ToString());
 

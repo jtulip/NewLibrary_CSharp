@@ -401,7 +401,7 @@ namespace Library.Tests.UnitTests.Control
             _reader.Received().Enabled = false;
             _scanner.Received().Enabled = true;
 
-            borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}" , member.ContactPhone);
+            borrowctrl.Received().DisplayMemberDetails(member.ID, member.ToString() , member.ContactPhone);
 
             foreach (var l in member.Loans)
             {
@@ -443,7 +443,7 @@ namespace Library.Tests.UnitTests.Control
             _reader.Received().Enabled = false;
             _scanner.Received().Enabled = false;
 
-            borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
+            borrowctrl.Received().DisplayMemberDetails(member.ID, member.ToString(), member.ContactPhone);
 
             borrowctrl.Received().DisplayErrorMessage("Member has been restricted from borrowing");
 
@@ -815,7 +815,7 @@ namespace Library.Tests.UnitTests.Control
 
             ctrl.loansRejected();
 
-            borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
+            borrowctrl.Received().DisplayMemberDetails(member.ID, member.ToString(), member.ContactPhone);
             borrowctrl.Received().DisplayExistingLoan(loan.ToString());
 
             Assert.Empty(ctrl._loanList);

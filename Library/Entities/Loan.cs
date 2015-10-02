@@ -20,6 +20,7 @@ namespace Library.Entities
             this.Book = book;
             this.Borrower = member;
             this.DueDate = dueDate;
+            this.BorrowDate = borrowDate;
 
             this.ID = 0;
         }
@@ -61,10 +62,11 @@ namespace Library.Entities
         public int ID { get; private set; }
         public LoanState State { get; internal set; }
         public DateTime DueDate { get; private set; }
+        public DateTime BorrowDate { get; private set; }
 
         public override string ToString()
         {
-            return base.ToString();
+            return $"Loan ID:\t\t{this.ID}\nAuthor:\t\t{this.Book.Author}\nTitle:\t\t{this.Book.Title}\nBorrower:\t{this.Borrower.ToString()}\nBorrow Date:\t{this.BorrowDate.ToShortDateString()}\nDue Date:\t{this.DueDate.ToShortDateString()}";
         }
     }
 }

@@ -312,7 +312,7 @@ namespace Library.Tests.Integration.Control
 
             ctrl.cardSwiped(member.ID);
 
-            borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
+            borrowctrl.Received().DisplayMemberDetails(member.ID, member.ToString(), member.ContactPhone);
 
             foreach (var l in member.Loans)
             {
@@ -357,7 +357,7 @@ namespace Library.Tests.Integration.Control
 
             ctrl.cardSwiped(member.ID);
 
-            borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
+            borrowctrl.Received().DisplayMemberDetails(member.ID, member.ToString(), member.ContactPhone);
 
             borrowctrl.Received().DisplayErrorMessage("Member has been restricted from borrowing");
 
@@ -665,8 +665,8 @@ namespace Library.Tests.Integration.Control
 
             ctrl.loansRejected();
 
-            borrowctrl.Received().DisplayMemberDetails(member.ID, $"{member.FirstName} {member.LastName}", member.ContactPhone);
-            borrowctrl.Received().DisplayExistingLoan(loan.ToString());
+            borrowctrl.Received().DisplayMemberDetails(member.ID, member.ToString(), member.ContactPhone);
+            borrowctrl.Received().DisplayExistingLoan(existingLoan.ToString());
 
             Assert.Empty(ctrl._loanList);
             Assert.Empty(ctrl._bookList);

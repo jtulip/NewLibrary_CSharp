@@ -92,5 +92,10 @@ namespace Library.Entities
         public string EmailAddress { get; }
         public int ID { get; }
         public MemberState State { get; internal set; }
+
+        public override string ToString()
+        {
+            return $"{this.FirstName} {this.LastName}";
+        }
     }
 }

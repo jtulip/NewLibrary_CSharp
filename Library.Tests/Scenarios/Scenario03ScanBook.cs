@@ -361,6 +361,7 @@ namespace Library.Tests.Scenarios
             Assert.Equal(member, controller._loanList[0].Borrower);
 
             Assert.True(scanBookCtrl.pendingLoanBox.Text.Contains(controller._loanList[0].ToString()));
+            Assert.True(confirmingLoansCtrl.confirmLoanBox.Text.Contains(controller._loanList[0].ToString()));
 
             Assert.NotNull(controller._bookList);
             Assert.NotEmpty(controller._bookList);

@@ -186,6 +186,7 @@ namespace Library.Controllers.Borrow
             {
                 _scanner.Enabled = false;
                 setState(EBorrowState.CONFIRMING_LOANS);
+                foreach(var l in _loanList) _ui.DisplayConfirmingLoan(l.ToString());
             }
         }
 

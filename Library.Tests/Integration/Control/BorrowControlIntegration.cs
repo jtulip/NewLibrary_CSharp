@@ -543,14 +543,16 @@ namespace Library.Tests.Integration.Control
 
             ctrl.bookScanned(book.ID);
 
-            borrowctrl.DisplayScannedBookDetails(book.ToString());
+            borrowctrl.Received().DisplayScannedBookDetails(book.ToString());
 
             Assert.Equal(BookConstants.LOAN_LIMIT, ctrl.scanCount);
             Assert.NotNull(ctrl._loanList);
             Assert.NotEmpty(ctrl._loanList);
             Assert.Equal(1, ctrl._loanList.Count);
 
-            borrowctrl.DisplayPendingLoan(ctrl._loanList[0].ToString());
+            borrowctrl.Received().DisplayPendingLoan(ctrl._loanList[0].ToString());
+
+            borrowctrl.Received().DisplayConfirmingLoan(ctrl._loanList[0].ToString());
 
             Assert.NotNull(ctrl._bookList);
             Assert.NotEmpty(ctrl._bookList);

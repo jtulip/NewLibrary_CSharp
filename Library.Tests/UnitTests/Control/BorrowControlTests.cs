@@ -700,6 +700,8 @@ namespace Library.Tests.UnitTests.Control
 
             Assert.True(!_scanner.Enabled);
 
+            borrowctrl.Received().DisplayConfirmingLoan(loan.ToString());
+
             Assert.Equal(EBorrowState.CONFIRMING_LOANS, ctrl._state);
         }
 

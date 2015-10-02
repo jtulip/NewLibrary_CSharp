@@ -1,5 +1,7 @@
 # NewLibrary_CSharp
 
+** FINISHED 02/09/15 Final Commit has been performed. **
+
 *Build Status at Appveyor*
 
 *Build status is showing as failed due to an issue testing WPF, if you click in and view the build logs and tests, you will see that it has all passed - it is just exiting the testing framework that is caused an error cleaning up WPF*

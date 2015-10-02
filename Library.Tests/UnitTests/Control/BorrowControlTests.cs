@@ -629,9 +629,9 @@ namespace Library.Tests.UnitTests.Control
             _bookDao.Received().GetBookByID(0);
             _loanDao.Received().CreateLoan(member, book, borrowDate, dueDate);
 
-            borrowctrl.DisplayScannedBookDetails(book.ToString());
+            borrowctrl.Received().DisplayScannedBookDetails(book.ToString());
 
-            borrowctrl.DisplayPendingLoan(loan.ToString());
+            borrowctrl.Received().DisplayPendingLoan(loan.ToString());
 
             Assert.Equal(1, ctrl.scanCount);
             Assert.NotNull(ctrl._loanList);
@@ -681,9 +681,9 @@ namespace Library.Tests.UnitTests.Control
             _bookDao.Received().GetBookByID(0);
             _loanDao.Received().CreateLoan(member, book, borrowDate, dueDate);
 
-            borrowctrl.DisplayScannedBookDetails(book.ToString());
+            borrowctrl.Received().DisplayScannedBookDetails(book.ToString());
 
-            borrowctrl.DisplayPendingLoan(loan.ToString());
+            borrowctrl.Received().DisplayPendingLoan(loan.ToString());
 
             Assert.Equal(BookConstants.LOAN_LIMIT, ctrl.scanCount);
             Assert.NotNull(ctrl._loanList);
@@ -834,6 +834,36 @@ namespace Library.Tests.UnitTests.Control
             var ex = Assert.Throws<InvalidOperationException>(() => { ctrl.loansRejected(); });
 
             Assert.Equal("Control state must be set to 'Confirming Loans'", ex.Message);
+        }
+
+        [WpfFact]
+        public void ScanBooksBookScanCountLessThanLoanLimitClearsPreviousError()
+        {
+            var member = CreateMockIMember();
+
+            var book = Substitute.For<IBook>();
+            book.State.Returns(BookState.AVAILABLE);
+
+            var borrowDate = DateTime.Today;
+            var dueDate = DateTime.Today.AddDays(7);
+
+            var loan = Substitute.For<Loan>(book, member, borrowDate, dueDate);
+
+            var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
+
+            // Set the UI to the mock so we can test
+            var borrowctrl = Substitute.For<ABorrowControl>();
+            ctrl._ui = borrowctrl;
+
+            InitialiseToScanBookPreConditions(ctrl, member);
+
+            _bookDao.GetBookByID(0).Returns(book);
+            _loanDao.CreateLoan(member, book, borrowDate, dueDate).Returns(loan);
+
+            ctrl.bookScanned(0);
+
+            // Expect the error message to be cleared
+            borrowctrl.Received().DisplayErrorMessage("");
         }
 
         private static IMember CreateMockIMember()

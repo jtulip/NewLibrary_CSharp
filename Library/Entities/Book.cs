@@ -83,5 +83,10 @@ namespace Library.Entities
         public string Title { get; }
         public string CallNumber { get; }
         public int ID { get; }
+
+        public override string ToString()
+        {
+            return $"ID:\t\t{this.ID}\nCall Number:\t{this.CallNumber}\nAuthor:\t\t{this.Author}\nTitle:\t\t{this.Title}";
+        }
     }
 }

@@ -177,6 +177,8 @@ namespace Library.Controllers.Borrow
             _ui.DisplayPendingLoan(loan.ToString());
             _ui.DisplayScannedBookDetails(book.ToString());
 
+            _ui.DisplayErrorMessage("");
+
             _loanList.Add(loan);
             _bookList.Add(book);
 

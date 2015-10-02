@@ -453,7 +453,7 @@ namespace Library.Tests.UnitTests.Entity
         [Fact]
         public void ReturnMemberReadable()
         {
-            var member = Substitute.For<Member>("Jim", "Tulip", "Phone", "Email", 1);
+            var member = new Member("Jim", "Tulip", "Phone", "Email", 1);
 
             var readable = $"{member.FirstName} {member.LastName}";
 

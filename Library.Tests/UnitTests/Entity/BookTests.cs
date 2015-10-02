@@ -388,5 +388,20 @@ namespace Library.Tests.UnitTests.Entity
 
             Assert.Equal(id, book.ID);
         }
+
+        [Fact]
+        public void ReturnBookReadable()
+        {
+            var author = "Author";
+            var title = "Title";
+            var callNumber = "Call Number";
+            var id = 1;
+
+            var book = new Book(author, title, callNumber, id);
+
+            var readable = $"ID:\t\t{book.ID}\nCall Number:\t{book.CallNumber}\nAuthor:\t\t{book.Author}\nTitle:\t\t{book.Title}";
+
+            Assert.Equal(readable, book.ToString());
+        }
     }
 }

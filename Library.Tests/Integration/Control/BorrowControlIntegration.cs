@@ -527,6 +527,7 @@ namespace Library.Tests.Integration.Control
             var member = _memberDao.AddMember("Jim", "Tulip", "Phone", "Email");
 
             var book = _bookDao.AddBook("Jim Tulip", "Adventures in Programming", "call number");
+            var book2 = _bookDao.AddBook("Jim Tulip", "Adventures in Programming 2", "call number");
 
             var borrowDate = DateTime.Today;
             var dueDate = DateTime.Today.AddDays(7);
@@ -539,24 +540,28 @@ namespace Library.Tests.Integration.Control
 
             InitialiseToScanBookPreConditions(ctrl, member);
 
-            ctrl.scanCount = BookConstants.LOAN_LIMIT - 1;
+            ctrl.scanCount = BookConstants.LOAN_LIMIT - 2;
 
             ctrl.bookScanned(book.ID);
+            ctrl.bookScanned(book2.ID);
 
             borrowctrl.Received().DisplayScannedBookDetails(book.ToString());
+            borrowctrl.Received().DisplayScannedBookDetails(book2.ToString());
 
             Assert.Equal(BookConstants.LOAN_LIMIT, ctrl.scanCount);
             Assert.NotNull(ctrl._loanList);
             Assert.NotEmpty(ctrl._loanList);
-            Assert.Equal(1, ctrl._loanList.Count);
+            Assert.Equal(2, ctrl._loanList.Count);
 
             borrowctrl.Received().DisplayPendingLoan(ctrl._loanList[0].ToString());
+            borrowctrl.Received().DisplayPendingLoan(ctrl._loanList[1].ToString());
 
             borrowctrl.Received().DisplayConfirmingLoan(ctrl._loanList[0].ToString());
+            borrowctrl.Received().DisplayConfirmingLoan(ctrl._loanList[1].ToString());
 
             Assert.NotNull(ctrl._bookList);
             Assert.NotEmpty(ctrl._bookList);
-            Assert.Equal(1, ctrl._bookList.Count);
+            Assert.Equal(2, ctrl._bookList.Count);
 
             Assert.Equal(book, ctrl._bookList[0]);
 

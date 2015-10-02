@@ -658,10 +658,15 @@ namespace Library.Tests.UnitTests.Control
             var book = Substitute.For<IBook>();
             book.State.Returns(BookState.AVAILABLE);
 
+            var book2 = Substitute.For<IBook>();
+            book2.State.Returns(BookState.AVAILABLE);
+
             var borrowDate = DateTime.Today;
             var dueDate = DateTime.Today.AddDays(7);
 
             var loan = Substitute.For<Loan>(book, member, borrowDate, dueDate);
+            var loan2 = Substitute.For<Loan>(book2, member, borrowDate, dueDate);
+
 
             var ctrl = new BorrowController(_display, _reader, _scanner, _printer, _bookDao, _loanDao, _memberDao);
 
@@ -672,35 +677,45 @@ namespace Library.Tests.UnitTests.Control
             InitialiseToScanBookPreConditions(ctrl, member);
 
             _bookDao.GetBookByID(0).Returns(book);
+            _bookDao.GetBookByID(1).Returns(book2);
             _loanDao.CreateLoan(member, book, borrowDate, dueDate).Returns(loan);
+            _loanDao.CreateLoan(member, book2, borrowDate, dueDate).Returns(loan2);
 
-            ctrl.scanCount = BookConstants.LOAN_LIMIT - 1;
+            ctrl.scanCount = BookConstants.LOAN_LIMIT - 2;
 
-            ctrl.bookScanned(0); 
+            ctrl.bookScanned(0);
+            ctrl.bookScanned(1);
 
             _bookDao.Received().GetBookByID(0);
             _loanDao.Received().CreateLoan(member, book, borrowDate, dueDate);
 
+            _bookDao.Received().GetBookByID(1);
+            _loanDao.Received().CreateLoan(member, book2, borrowDate, dueDate);
+
+
             borrowctrl.Received().DisplayScannedBookDetails(book.ToString());
+            borrowctrl.Received().DisplayScannedBookDetails(book2.ToString());
 
             borrowctrl.Received().DisplayPendingLoan(loan.ToString());
+            borrowctrl.Received().DisplayPendingLoan(loan2.ToString());
 
             Assert.Equal(BookConstants.LOAN_LIMIT, ctrl.scanCount);
             Assert.NotNull(ctrl._loanList);
             Assert.NotEmpty(ctrl._loanList);
-            Assert.Equal(1, ctrl._loanList.Count);
+            Assert.Equal(2, ctrl._loanList.Count);
 
             Assert.Equal(loan, ctrl._loanList[0]);
 
             Assert.NotNull(ctrl._bookList);
             Assert.NotEmpty(ctrl._bookList);
-            Assert.Equal(1, ctrl._bookList.Count);
+            Assert.Equal(2, ctrl._bookList.Count);
 
             Assert.Equal(book, ctrl._bookList[0]);
 
             Assert.True(!_scanner.Enabled);
 
             borrowctrl.Received().DisplayConfirmingLoan(loan.ToString());
+            borrowctrl.Received().DisplayConfirmingLoan(loan2.ToString());
 
             Assert.Equal(EBorrowState.CONFIRMING_LOANS, ctrl._state);
         }

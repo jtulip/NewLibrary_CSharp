@@ -675,6 +675,9 @@ namespace Library.Tests.Integration.Control
             borrowctrl.Received().DisplayMemberDetails(member.ID, member.ToString(), member.ContactPhone);
             borrowctrl.Received().DisplayExistingLoan(existingLoan.ToString());
 
+            borrowctrl.Received().DisplayPendingLoan("");
+            borrowctrl.Received().DisplayScannedBookDetails("");
+
             Assert.Empty(ctrl._loanList);
             Assert.Empty(ctrl._bookList);
             Assert.Equal(1, ctrl.scanCount);

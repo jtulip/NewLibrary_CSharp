@@ -118,6 +118,9 @@ namespace Library.Tests.Scenarios
             Assert.Equal($"{member.FirstName} {member.LastName}", scanBookCtrl.nameLabel.Content.ToString());
             Assert.Equal(member.Loans[0].ToString(), scanBookCtrl.existingLoanBox.Text);  // Test one existing loan is present
 
+            Assert.Equal("", scanBookCtrl.pendingLoanBox.Text);
+            Assert.Equal("", scanBookCtrl.currentbookBox.Text);
+
             Assert.NotNull(controller._bookList);
             Assert.Empty(controller._bookList);
             Assert.NotNull(controller._loanList);

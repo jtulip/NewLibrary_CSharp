@@ -227,6 +227,9 @@ namespace Library.Controllers.Borrow
             _bookList.Clear();
             setState(EBorrowState.SCANNING_BOOKS);
 
+            _ui.DisplayScannedBookDetails("");
+            _ui.DisplayPendingLoan("");
+
             _ui.DisplayMemberDetails(_borrower.ID, _borrower.ToString(), _borrower.ContactPhone);
 
             foreach(var loan in _borrower.Loans) _ui.DisplayExistingLoan(loan.ToString());

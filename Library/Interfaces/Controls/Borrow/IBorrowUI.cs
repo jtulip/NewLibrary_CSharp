@@ -29,7 +29,7 @@ namespace Library.Interfaces.Controls.Borrow
 
         void DisplayErrorMessage(string errorMesg);
 
-        //void setState(EBorrowState state);
+        EBorrowState State { get; set; }
 
     }
 }

@@ -16,10 +16,12 @@ using System.ComponentModel;
 
 using Library.Interfaces.Hardware;
 using Library.Controllers;
-using Library.Hardware;
-using Library.Interfaces.Daos;
 using Library.Daos;
 using Library.Entities;
+using Library.Hardware;
+using Library.Interfaces.Daos;
+//using Library.Daos;
+//using Library.Entities;
 using Library.Interfaces.Entities;
 
 namespace Library
@@ -28,34 +30,38 @@ namespace Library
 
     public partial class MainWindow : Window, IDisplay
     {
-        private UserControl _currentControl;
-        private CardReader _reader;
-        private Scanner _scanner;
-        private Printer _printer;
+        internal UserControl _currentControl;
+        internal CardReader _reader;
+        internal Scanner _scanner;
+        internal Printer _printer;
 
-        private IBookDAO _bookDAO;
-        private ILoanDAO _loanDAO;
-        private IMemberDAO _memberDAO;
+        internal IBookDAO _bookDAO;
+        internal ILoanDAO _loanDAO;
+        internal IMemberDAO _memberDAO;
 
         public MainWindow()
         {
             _reader = new CardReader();
             _scanner = new Scanner();
             _printer = new Printer();
+
+            _bookDAO = new BookDao(new BookHelper());
+            _loanDAO = new LoanDao(new LoanHelper());
+            _memberDAO = new MemberDao(new MemberHelper());
+
             InitializeComponent();
+
             _reader.Show();
             _scanner.Show();
             _printer.Show();
 
-            _bookDAO   = new BookDAO(new BookHelper());
-            _loanDAO   = new LoanDAO(new LoanHelper());
-            _memberDAO = new MemberDAO(new MemberHelper());
 
             SetUpTestData();
 
             MainMenuController mainController =
                 new MainMenuController(this, _reader, _scanner, _printer, 
                                         _bookDAO, _loanDAO, _memberDAO);
+
             mainController.initialise();
         }
 

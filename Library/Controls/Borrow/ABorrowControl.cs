@@ -11,6 +11,19 @@ namespace Library.Controls.Borrow
 {
     public abstract class ABorrowControl : UserControl, IBorrowUI
     {
+        public virtual EBorrowState State
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public abstract void DisplayAtLoanLimitMessage();
 
 
@@ -40,6 +53,6 @@ namespace Library.Controls.Borrow
 
         public abstract void DisplayScannedBookDetails(string bookDetails);
 
-        //public abstract void setState(EBorrowState state);
+
     }
 }

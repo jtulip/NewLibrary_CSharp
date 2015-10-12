@@ -15,30 +15,38 @@ namespace Library.Controllers.Borrow
 {
     class BorrowController : IBorrowListener, ICardReaderListener, IScannerListener
     {
-        private IDisplay _display;
-        private UserControl _previousDisplay;
-        private ABorrowControl _currentControl;
-        private ICardReader _reader;
-        private ICardReaderListener _previousReaderListener;
-        private IScanner _scanner;
-        private IScannerListener _previousScannerListener;
-        private IPrinter _printer;
+        internal IDisplay _display;
+        internal UserControl _previousDisplay;
+        internal ABorrowControl _ui;
+        internal ICardReader _reader;
+        internal ICardReaderListener _previousReaderListener;
+        internal IScanner _scanner;
+        internal IScannerListener _previousScannerListener;
+        internal IPrinter _printer;
 
-        private IBookDAO _bookDAO;
-        private ILoanDAO _loanDAO;
-        private IMemberDAO _memberDAO;
+        internal IBookDAO _bookDAO;
+        internal ILoanDAO _loanDAO;
+        internal IMemberDAO _memberDAO;
 
-        private IMember _borrower;
-        private int scanCount = 0;
-        private EBorrowState _state;
+        internal IMember _borrower;
+        internal int scanCount = 0;
+        internal EBorrowState _state;
 
-        private List<IBook> _bookList;
-        private List<ILoan> _loanList;
+        internal List<IBook> _bookList;
+        internal List<ILoan> _loanList;
 
 
         public BorrowController(IDisplay display, ICardReader reader, IScanner scanner, IPrinter printer,
                                     IBookDAO bookDAO, ILoanDAO loanDAO, IMemberDAO memberDAO)
         {
+            if(display == null) throw new ArgumentException("Display object was not provided to begin the application");
+            if (reader == null) throw new ArgumentException("Reader object was not provided to begin the application");
+            if (scanner == null) throw new ArgumentException("Scanner object was not provided to begin the application");
+            if (printer == null) throw new ArgumentException("Printer object was not provided to begin the application");
+            if (bookDAO == null) throw new ArgumentException("BookDAO object was not provided to begin the application");
+            if (loanDAO == null) throw new ArgumentException("LoanDAO object was not provided to begin the application");
+            if (memberDAO == null) throw new ArgumentException("MemberDAO object was not provided to begin the application");
+
             _display = display;
             _reader = reader;
             _scanner = scanner;
@@ -47,239 +55,217 @@ namespace Library.Controllers.Borrow
             _bookDAO = bookDAO;
             _loanDAO = loanDAO;
             _memberDAO = memberDAO;
+            
+            _ui = new BorrowControl(this);
+
+            _reader.Listener = this;
+            _scanner.Listener = this;
+
+            _bookList = new List<IBook>();
+            _loanList = new List<ILoan>();
+
+            _state = EBorrowState.CREATED;
         }
 
 
         public void initialise()
         {
             Console.WriteLine("BorrowController Initialising");
-            _previousReaderListener = _reader.Listener;
-            _previousScannerListener = _scanner.Listener;
             _previousDisplay = _display.Display;
             Console.WriteLine("BorrowController Initialising, previous display = " + _previousDisplay);
+            _display.Display = _ui;
+
+            _reader.Enabled = true;
+            _scanner.Enabled = false;
+
             setState(EBorrowState.INITIALIZED);
         }
 
 
         public void cancelled()
         {
-            setState(EBorrowState.CANCELLED);
+            close();
+            //setState(EBorrowState.CANCELLED);
         }
 
         public void cardSwiped(int memberID)
         {
-            Console.WriteLine("detected card swipe: {0}", memberID);
-            _scanner.Enabled = true;
-            _reader.Enabled = false;
+            if(_state != EBorrowState.INITIALIZED) throw new InvalidOperationException("Controls must be initialised before member's card is swiped");
 
-            if (_state != EBorrowState.INITIALIZED)
+            var member = _memberDAO.GetMemberByID(memberID);
+
+            if (member == null)
             {
-                throw new ApplicationException(
-                        String.Format("BorrowUC_CTL : cardSwiped : illegal operation in state: {0}", _state));
-            }
-            _borrower = _memberDAO.GetMemberByID(memberID);
-            if (_borrower == null)
-            {
-                _currentControl.DisplayErrorMessage(String.Format("Member ID {0} not found", memberID));
-                _reader.Enabled = true;
+                _ui.DisplayErrorMessage("Borrower was not found in database");
                 return;
             }
-            bool overdue = _borrower.HasOverDueLoans;
-            bool atLoanLimit = _borrower.HasReachedLoanLimit;
-            bool hasFines = _borrower.HasFinesPayable;
-            bool overFineLimit = _borrower.HasReachedFineLimit;
-            bool borrowing_restricted = (overdue || atLoanLimit || overFineLimit);
 
-            if (borrowing_restricted)
+            var hasOverdueLoans = member.HasOverDueLoans;
+            var hasReachedLoanLimit = member.HasReachedLoanLimit;
+            var hasReachedFineLimit = member.HasReachedFineLimit;
+
+            if (hasOverdueLoans || hasReachedLoanLimit || hasReachedFineLimit)
             {
                 setState(EBorrowState.BORROWING_RESTRICTED);
+
+                _reader.Enabled = false;
+                _scanner.Enabled = false;
+
+                _ui.DisplayErrorMessage("Member has been restricted from borrowing");
             }
             else
             {
                 setState(EBorrowState.SCANNING_BOOKS);
+
+                _reader.Enabled = false;
+                _scanner.Enabled = true;
+
+                _ui.DisplayScannedBookDetails("");
+                _ui.DisplayPendingLoan("");
             }
 
-            //display member details
-            int mID = _borrower.ID;
-            string mName = _borrower.FirstName + " " + _borrower.LastName;
-            String mContact = _borrower.ContactPhone;
-            _currentControl.DisplayMemberDetails(mID, mName, mContact);
+            if (hasOverdueLoans)
+                _ui.DisplayOverDueMessage();
 
-            if (overdue)
-            {
-                _currentControl.DisplayOverDueMessage();
-            }
-            if (atLoanLimit)
-            {
-                _currentControl.DisplayAtLoanLimitMessage();
-            }
-            if (hasFines)
-            {
-                float amountOwing = _borrower.FineAmount;
-                _currentControl.DisplayOutstandingFineMessage(amountOwing);
-            }
+            if (member.HasReachedLoanLimit)
+                _ui.DisplayAtLoanLimitMessage();
 
-            if (overFineLimit)
-            {
-                Console.WriteLine("State: " + _state);
-                float amountOwing = _borrower.FineAmount;
-                _currentControl.DisplayOverFineLimitMessage(amountOwing);
-            }
+            if (member.HasReachedFineLimit)
+                _ui.DisplayOverFineLimitMessage(member.FineAmount);
 
-            //display existing loans
-            foreach (ILoan ln in _borrower.Loans)
-            {
-                _currentControl.DisplayExistingLoan(ln.ToString());
-            }
+            _borrower = member;
 
-            //initialize scanCount with number of existing loans
-            //so that member doesn't borrow more than they should
-            scanCount = _borrower.Loans.Count;
+            _ui.DisplayMemberDetails(member.ID, member.ToString(), member.ContactPhone);
 
+            foreach(var loan in member.Loans) _ui.DisplayExistingLoan(loan.ToString());
+
+            this.scanCount = member.Loans.Count;
         }
 
         public void bookScanned(int barcode)
         {
-            Console.WriteLine("bookScanned: got " + barcode);
             if (_state != EBorrowState.SCANNING_BOOKS)
-            {
-                throw new ApplicationException(
-                        String.Format("BorrowUC_CTL : bookScanned : illegal operation in state: {0}", _state));
-            }
-            _currentControl.DisplayErrorMessage("");
-            IBook book = _bookDAO.GetBookByID(barcode);
+                throw new InvalidOperationException("Control state must be set to 'Scanning Books'");
+
+            var book = _bookDAO.GetBookByID(barcode);
+
             if (book == null)
             {
-                _currentControl.DisplayErrorMessage(
-                    String.Format("Book {0} not found", barcode));
+                _ui.DisplayErrorMessage("Book scanned was not found");
+
                 return;
             }
 
             if (book.State != BookState.AVAILABLE)
             {
-                _currentControl.DisplayErrorMessage(
-                    String.Format("Book {0} is not available: {1}", book.ID, book.State));
+                _ui.DisplayErrorMessage("Book is not available to be borrowed");
+
                 return;
             }
+
             if (_bookList.Contains(book))
             {
-                _currentControl.DisplayErrorMessage(
-                    String.Format("Book {0} already scanned: ", book.ID));
+                _ui.DisplayErrorMessage("Book has already been scanned");
+
                 return;
             }
 
-            DateTime borrowDate = DateTime.Now;
-            TimeSpan loanPeriod = new TimeSpan(LoanConstants.LOAN_PERIOD, 0, 0, 0);
-            DateTime dueDate = borrowDate.Add(loanPeriod);
-            ILoan loan = _loanDAO.CreateLoan(_borrower, book, borrowDate, dueDate);
+            this.scanCount++;
 
-            scanCount++;
-            _bookList.Add(book);
+            var loan = _loanDAO.CreateLoan(_borrower, book, DateTime.Today, DateTime.Today.AddDays(7));
+
+            _ui.DisplayPendingLoan(loan.ToString());
+            _ui.DisplayScannedBookDetails(book.ToString());
+
+            _ui.DisplayErrorMessage("");
+
             _loanList.Add(loan);
+            _bookList.Add(book);
 
-            //display current book
-            _currentControl.DisplayScannedBookDetails(book.ToString());
-            //display pending loans
-            _currentControl.DisplayPendingLoan(loan.ToString());
-
-
-            if (scanCount >= MemberConstants.LOAN_LIMIT)
+            if (this.scanCount == BookConstants.LOAN_LIMIT)
             {
+                _scanner.Enabled = false;
                 setState(EBorrowState.CONFIRMING_LOANS);
+                foreach(var l in _loanList) _ui.DisplayConfirmingLoan(l.ToString());
             }
         }
 
         public void scansCompleted()
         {
-            Console.WriteLine("detected scans completed");
+            if(_state != EBorrowState.SCANNING_BOOKS) throw new InvalidOperationException("Control state must be set to 'Scanning Books'");
+
             setState(EBorrowState.CONFIRMING_LOANS);
+
+            foreach(var l in _loanList) _ui.DisplayConfirmingLoan(l.ToString());
+
+            _reader.Enabled = false;
+            _scanner.Enabled = false;
         }
 
         public void loansConfirmed()
         {
+            if(_state != EBorrowState.CONFIRMING_LOANS) throw new InvalidOperationException("Control state must be set to 'Confirming Loans'");
+
+            foreach (var loan in _loanList)
+            {
+                _loanDAO.CommitLoan(loan);
+                _printer.print(loan.ToString());
+            }
+
+            _reader.Enabled = false;
+            _scanner.Enabled = false;
+
             setState(EBorrowState.COMPLETED);
+            this.close();
         }
 
         public void loansRejected()
         {
+            if(_state != EBorrowState.CONFIRMING_LOANS) throw new InvalidOperationException("Control state must be set to 'Confirming Loans'");
+
+            _loanList.Clear();
+            _bookList.Clear();
             setState(EBorrowState.SCANNING_BOOKS);
+
+            _ui.DisplayScannedBookDetails("");
+            _ui.DisplayPendingLoan("");
+
+            _ui.DisplayMemberDetails(_borrower.ID, _borrower.ToString(), _borrower.ContactPhone);
+
+            foreach(var loan in _borrower.Loans) _ui.DisplayExistingLoan(loan.ToString());
+
+            this.scanCount = _borrower.Loans.Count;
+
+            _reader.Enabled = false;
+            _scanner.Enabled = true;
         }
 
 
         private void setState(EBorrowState state)
         {
-           Console.WriteLine("Setting state: " + state);
-
-            this._state = state;
-
-            switch (state)
-            {
-                case EBorrowState.INITIALIZED:
-                    _reader.Listener = this;
-                    _scanner.Listener = this;
-                    _currentControl = new SwipeCardControl(this);
-                    _reader.Enabled = true;
-                    _scanner.Enabled = false;
-                    break;
-
-                case EBorrowState.BORROWING_RESTRICTED:
-                    _currentControl = new RestrictedControl(this);
-                    _reader.Enabled = false;
-                    _scanner.Enabled = false;
-                    _currentControl.DisplayErrorMessage(String.Format("Member {0} cannot borrow at this time.", _borrower.ID));
-                    break;
-
-                case EBorrowState.SCANNING_BOOKS:
-                    _currentControl = new ScanBookControl(this);
-                    _reader.Enabled = false;
-                    _scanner.Enabled = true;
-                    _bookList = new List<IBook>();
-                    _loanList = new List<ILoan>();
-                    break;
-
-                case EBorrowState.CONFIRMING_LOANS:
-                    _currentControl = new ConfirmLoanControl(this);
-                    _reader.Enabled = false;
-                    _scanner.Enabled = false;
-                    //display pending loans
-                    foreach (ILoan loan in _loanList)
-                    {
-                        _currentControl.DisplayConfirmingLoan(loan.ToString());
-                    }
-                    break;
-
-                case EBorrowState.COMPLETED:
-                    _reader.Enabled = false;
-                    _scanner.Enabled = false;
-                    StringBuilder bld = new StringBuilder();
-                    foreach (ILoan loan in _loanList)
-                    {
-                        _loanDAO.CommitLoan(loan);
-                        bld.Append(loan.ToString() + "\n\n");
-                    }
-                    _printer.print(bld.ToString());
-                    close();
-                    return;
-
-                case EBorrowState.CANCELLED:
-                    _reader.Enabled = false;
-                    _scanner.Enabled = false;
-                    close();
-                    return;
-
-                default:
-                    throw new ApplicationException("Unknown state");
-            }
-            _display.Display = _currentControl;
+            _state = state;
+            _ui.State = state;
         }
 
 
         public void close()
         {
             _display.Display  = _previousDisplay;
-            _reader.Listener  = _previousReaderListener;
-            _scanner.Listener = _previousScannerListener;
         }
 
+
+        private string buildLoanListDisplay(List<ILoan> loanList)
+        {
+            StringBuilder bld = new StringBuilder();
+            foreach (ILoan loan in loanList)
+            {
+                if (bld.Length > 0)
+                {
+                    bld.Append("\n\n");
+                }
+                bld.Append(loan.ToString());
+            }
+            return bld.ToString();
+        }
     }
 }

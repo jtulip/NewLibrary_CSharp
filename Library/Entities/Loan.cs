@@ -1,142 +1,72 @@
-﻿using Library.Interfaces.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Library.Interfaces.Entities;
 
 namespace Library.Entities
 {
-    public class Loan : ILoan
+    public class Loan: ILoan
     {
-        private int id;
-        private IMember borrower;
-        private IBook book;
-        private DateTime borrowDate;
-        private DateTime dueDate;
-        private LoanState state;
-
-
-        public Loan(IBook book, IMember borrower, DateTime borrowDate, DateTime dueDate, int id)
+        public Loan(IBook book, IMember member, DateTime borrowDate, DateTime dueDate)
         {
-            if (!sane(book, borrower, borrowDate, dueDate, id))
-            {
-                throw new ArgumentException("Loan: constructor : bad parameters");
-            }
-            this.book = book;
-            this.borrower = borrower;
-            this.borrowDate = borrowDate;
-            this.dueDate = dueDate;
-            this.id = id;
-            this.state = LoanState.PENDING;
+            if(book == null) throw new ArgumentException("Book needs to be provided");
+            if(member == null) throw new ArgumentException("Member needs to be provided");
+            if(borrowDate == DateTime.MinValue) throw new ArgumentException("Borrow date needs to be provided");
+            if(dueDate == DateTime.MinValue) throw new ArgumentException("Due date needs to be provided");
+            if(dueDate < borrowDate) throw new ArgumentException("Due date cannot be before Borrow date");
 
+            this.Book = book;
+            this.Borrower = member;
+            this.DueDate = dueDate;
+            this.BorrowDate = borrowDate;
+
+            this.ID = 0;
         }
 
-
-        private bool sane(IBook book, IMember borrower, DateTime borrowDate, DateTime returnDate, int loanID)
+        public void Commit(int loanID)
         {
-            return (book != null &&
-                      borrower != null &&
-                      borrowDate != null &&
-                      returnDate != null &&
-                      DateTime.Compare(borrowDate, returnDate) <= 0 &&
-                      loanID > 0);
+            if(this.State != LoanState.PENDING) throw new InvalidOperationException("Loan cannot be committed unless state is Pending");
+
+            this.State = LoanState.CURRENT;
+
+            this.Book.Borrow(this);
+            this.Borrower.AddLoan(this);
+
+            this.ID = loanID;
         }
-
-
-        public void Commit()
-        {
-            if (!(state == LoanState.PENDING))
-            {
-                throw new ApplicationException(
-                        String.Format("Loan : commit : incorrect state transition  : {0} -> {1}\n",
-                                state, LoanState.CURRENT));
-            }
-            state = LoanState.CURRENT;
-        }
-
 
         public void Complete()
         {
-            if (!(state == LoanState.CURRENT ||
-                  state == LoanState.OVERDUE))
-            {
-                throw new ApplicationException(
-                        String.Format("Loan : complete : incorrect state transition  : {0} -> {1}\n",
-                                state, LoanState.COMPLETE));
-            }
-            state = LoanState.COMPLETE;
+            if(this.State != LoanState.CURRENT && this.State != LoanState.OVERDUE) throw new InvalidOperationException("Cannot complete a loan if it's not Current or Overdue");
+
+            this.State = LoanState.COMPLETE;
         }
 
-        public bool IsOverDue
-        {
-            get
-            {
-                return (state == LoanState.OVERDUE);
-            }
-        }
-
+        public bool IsOverDue => this.State == LoanState.OVERDUE;  // Return true if LoanState is Overdue.
 
         public bool CheckOverDue(DateTime currentDate)
         {
-            if (!(state == LoanState.CURRENT || state == LoanState.OVERDUE))
-            {
-                throw new ApplicationException(
-                        String.Format("Loan : checkOverDue : incorrect state transition  :{0} -> {1}\n",
-                                state, LoanState.OVERDUE));
-            }
-            if (DateTime.Compare(currentDate, dueDate) > 0)
-            {
-                state = LoanState.OVERDUE;
-            }
-            return IsOverDue;
+            if(this.State != LoanState.CURRENT && this.State != LoanState.OVERDUE) throw new InvalidOperationException("Cannot check Over Due if Loan is not Current or Overdue");
+
+            if (this.DueDate >= currentDate) return false;
+
+            this.State = LoanState.OVERDUE;
+
+            return true;
         }
 
-        public IMember Borrower
-        {
-            get { return borrower; }
-        }
-
-        public IBook Book
-        {
-            get { return book; }
-        }
-
-        public int ID
-        {
-            get { return id; }
-        }
-
-        public LoanState State
-        {
-            get { return state; }
-        }
-
-        LoanState ILoan.State
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public IMember Borrower { get; }
+        public IBook Book { get; }
+        public int ID { get; private set; }
+        public LoanState State { get; internal set; }
+        public DateTime DueDate { get; private set; }
+        public DateTime BorrowDate { get; private set; }
 
         public override string ToString()
         {
-            string cr = Environment.NewLine;
-            return (String.Format("{1,-20}\t{2} " +
-                                  "{0}{3,-20}\t{4} " +
-                                  "{0}{5,-20}\t{6} " +
-                                  "{0}{7,-20}\t{8} {9} " +
-                                  "{0}{10,-20}\t{11:d} " +
-                                  "{0}{12,-20}\t{13:d}",
-                    cr,
-                    "Loan ID:     ", id,
-                    "Author:      ", book.Author,
-                    "Title:       ", book.Title,
-                    "Borrower:    ", borrower.FirstName, borrower.LastName,
-                    "Borrow Date: ", borrowDate,
-                    "Due Date:    ", dueDate));
+            return $"Loan ID:\t\t{this.ID}\nAuthor:\t\t{this.Book.Author}\nTitle:\t\t{this.Book.Title}\nBorrower:\t{this.Borrower.ToString()}\nBorrow Date:\t{this.BorrowDate.ToShortDateString()}\nDue Date:\t{this.DueDate.ToShortDateString()}";
         }
-
     }
 }

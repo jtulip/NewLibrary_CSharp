@@ -57,6 +57,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\Borrow\BorrowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Borrow\ConfirmLoanControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -97,10 +101,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Daos\BookDAO.cs" />
-    <Compile Include="Daos\LoanDAO.cs" />
-    <Compile Include="Daos\MemberDAO.cs" />
-    <Compile Include="Entities\Book.cs" />
+    <Compile Include="Controls\Borrow\BorrowControl.xaml.cs">
+      <DependentUpon>BorrowControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\Borrow\BorrowController.cs" />
     <Compile Include="Controls\Borrow\ABorrowControl.cs" />
     <Compile Include="Controls\Borrow\ConfirmLoanControl.xaml.cs">
@@ -112,6 +115,10 @@
     <Compile Include="Controls\Borrow\ScanBookControl.xaml.cs">
       <DependentUpon>ScanBookControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Daos\BookDao.cs" />
+    <Compile Include="Daos\LoanDao.cs" />
+    <Compile Include="Daos\MemberDao.cs" />
+    <Compile Include="Entities\Book.cs" />
     <Compile Include="Entities\BookHelper.cs" />
     <Compile Include="Entities\Loan.cs" />
     <Compile Include="Entities\LoanHelper.cs" />

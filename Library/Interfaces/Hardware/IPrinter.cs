@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Library.Interfaces.Hardware
 {
-    interface IPrinter
+    public interface IPrinter
     {
         void print(string printData);
     }

@@ -5,6 +5,31 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "Library\Library.csproj", "{057AE89A-E736-415B-B924-58C0E9471AE1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Tests", "Library.Tests\Library.Tests.csproj", "{90F55608-7DA0-41B8-BA57-494E2393A2D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UAT Documents", "UAT Documents", "{B4292692-1094-456A-8679-B604DE155397}"
+	ProjectSection(SolutionItems) = preProject
+		UAT Documents\UC01 Begin Use Case Description.docx = UAT Documents\UC01 Begin Use Case Description.docx
+		UAT Documents\UC01 Begin Use Case Script - Attempt 1.docx = UAT Documents\UC01 Begin Use Case Script - Attempt 1.docx
+		UAT Documents\UC01 Begin Use Case Script - Attempt 2.docx = UAT Documents\UC01 Begin Use Case Script - Attempt 2.docx
+		UAT Documents\UC02 Swipe Borrower Card\UC02 Swipe Borrower Card Description.docx = UAT Documents\UC02 Swipe Borrower Card\UC02 Swipe Borrower Card Description.docx
+		UAT Documents\UC02 Swipe Borrower Card\UC02 Swipe Borrower Card Script - Attempt 1.docx = UAT Documents\UC02 Swipe Borrower Card\UC02 Swipe Borrower Card Script - Attempt 1.docx
+		UAT Documents\UC02 Swipe Borrower Card\UC02 Swipe Borrower Card Script - Attempt 2.docx = UAT Documents\UC02 Swipe Borrower Card\UC02 Swipe Borrower Card Script - Attempt 2.docx
+		UAT Documents\UC03 Scan Book\UC03 Scan Book Description.docx = UAT Documents\UC03 Scan Book\UC03 Scan Book Description.docx
+		UAT Documents\UC03 Scan Book\UC03 Scan Book Script - Attempt 1.docx = UAT Documents\UC03 Scan Book\UC03 Scan Book Script - Attempt 1.docx
+		UAT Documents\UC03 Scan Book\UC03 Scan Book Script - Attempt 2.docx = UAT Documents\UC03 Scan Book\UC03 Scan Book Script - Attempt 2.docx
+		UAT Documents\UC03 Scan Book\UC03 Scan Book Script - Attempt 3.docx = UAT Documents\UC03 Scan Book\UC03 Scan Book Script - Attempt 3.docx
+		UAT Documents\UC03 Scan Book\UC03 Scan Book Script - Attempt 4.docx = UAT Documents\UC03 Scan Book\UC03 Scan Book Script - Attempt 4.docx
+		UAT Documents\UC04 Complete Scans\UC04 Complete Scans Description.docx = UAT Documents\UC04 Complete Scans\UC04 Complete Scans Description.docx
+		UAT Documents\UC04 Complete Scans\UC04 Complete Scans Script - Attempt 1.docx = UAT Documents\UC04 Complete Scans\UC04 Complete Scans Script - Attempt 1.docx
+		UAT Documents\UC05 Confirm Loans\UC05 Confirming Loans Description.docx = UAT Documents\UC05 Confirm Loans\UC05 Confirming Loans Description.docx
+		UAT Documents\UC05 Confirm Loans\UC05 Confirming Loans Script - Attempt 1.docx = UAT Documents\UC05 Confirm Loans\UC05 Confirming Loans Script - Attempt 1.docx
+		UAT Documents\UC05 Confirm Loans\UC05 Confirming Loans Script - Attempt 2.docx = UAT Documents\UC05 Confirm Loans\UC05 Confirming Loans Script - Attempt 2.docx
+		UAT Documents\UC06 Reject Loans\UC06 Reject Loans Description.docx = UAT Documents\UC06 Reject Loans\UC06 Reject Loans Description.docx
+		UAT Documents\UC06 Reject Loans\UC06 Reject Loans Script - Attempt 1.docx = UAT Documents\UC06 Reject Loans\UC06 Reject Loans Script - Attempt 1.docx
+		UAT Documents\UC06 Reject Loans\UC06 Reject Loans Script - Attempt 2.docx = UAT Documents\UC06 Reject Loans\UC06 Reject Loans Script - Attempt 2.docx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +40,10 @@ Global
 		{057AE89A-E736-415B-B924-58C0E9471AE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{057AE89A-E736-415B-B924-58C0E9471AE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{057AE89A-E736-415B-B924-58C0E9471AE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90F55608-7DA0-41B8-BA57-494E2393A2D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90F55608-7DA0-41B8-BA57-494E2393A2D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90F55608-7DA0-41B8-BA57-494E2393A2D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90F55608-7DA0-41B8-BA57-494E2393A2D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

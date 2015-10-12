@@ -11,11 +11,12 @@ namespace Library.Interfaces.Daos
     {
         ILoan CreateLoan(IMember borrower, IBook book, DateTime borrowDate, DateTime dueDate);
 
+        // Next, there is an error in the commitLoan specification of the ILoanDAO interface, which incorrectly states that 
+        // commitLoan returns a reference to an ILoan, when in fact it should be a void method. 
+        //The correct implementation is specified in the interface file.
         void CommitLoan(ILoan loan);
 
         ILoan GetLoanByID(int id);
-
-        ILoan GetLoanByBook(IBook book);
 
         List<ILoan> LoanList
         {

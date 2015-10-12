@@ -24,11 +24,13 @@ namespace Library.Hardware
         public Printer()
         {
             InitializeComponent();
+
+            printBox.Text = "";
         }
+
         public void print(string printData)
         {
-            printBox.Text = "";
-            printBox.Text = printData;
+            printBox.Text += printData + "\n\n";
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
